@@ -11,6 +11,12 @@
 
 package com.gu.glug.gui;
 
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+
+import javax.swing.TransferHandler;
+
 import com.gu.glug.ThreadedSystem;
 
 /**
@@ -27,6 +33,29 @@ final ThreadedSystemViewPanel threadedSystemViewPanel;
         threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
         jScrollPane1.getViewport().add(threadedSystemViewPanel);
         jScrollPane1.validate();
+        TransferHandler newHandler = new TransferHandler() {
+        	@Override
+        	public boolean canImport(TransferSupport support) {
+        		return true;
+        	}
+        	
+        	@Override
+        	public boolean importData(TransferSupport support) {
+        		Object transferData =null;
+        		try {
+        			DataFlavor[] dataFlavors = support.getDataFlavors();
+					transferData = support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+				} catch (UnsupportedFlavorException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		return false;
+        	}
+        };
+		setTransferHandler(newHandler);
     }
 
     /** This method is called from within the constructor to
