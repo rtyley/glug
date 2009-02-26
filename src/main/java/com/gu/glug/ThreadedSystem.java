@@ -59,10 +59,10 @@ public class ThreadedSystem {
 		ThreadedSystem threadedSystem = new ThreadedSystem();
 		SignificantIntervalType type=new SignificantIntervalType("Page request");
 		Random random = new Random();
-		for (int t=0;t<300;++t) {
+		for (int t=0;t<400;++t) {
 			String thread = "thread"+t;
 			int time=0;
-			for (int i=0;i<100;++i) {
+			for (int i=0;i<500;++i) {
 				time+=2+random.nextInt(100);
 				int startTime=time;
 				time+=3+random.nextInt(100);
