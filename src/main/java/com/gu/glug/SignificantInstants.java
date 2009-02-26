@@ -6,11 +6,12 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import java.util.TreeMap;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 public class SignificantInstants {
-	private NavigableMap<Instant, SignificantInterval> significantInstants;
+	private NavigableMap<Instant, SignificantInterval> significantInstants = new TreeMap<Instant, SignificantInterval>();
 
 	SignificantInterval getSignificantIntervalAt(Instant instant) {
 		Entry<Instant, SignificantInterval> floorEntry = significantInstants.floorEntry(instant);
@@ -44,5 +45,9 @@ public class SignificantInstants {
 	
 	private SortedMap<Instant, SignificantInterval> subMapFor(Interval interval) {
 		return significantInstants.subMap(interval.getStart().toInstant(), interval.getEnd().toInstant());
+	}
+
+	public Interval getInterval() {
+		return new Interval(significantInstants.firstKey(),significantInstants.lastKey());
 	}
 }

@@ -3,10 +3,12 @@ package com.gu.glug;
 import org.joda.time.Interval;
 
 public class SignificantInterval implements Comparable<SignificantInterval> {
-	final Interval interval;
+	private final Interval interval;
+	private final SignificantIntervalType type;
 	
-	public SignificantInterval(Interval interval) {
+	public SignificantInterval(SignificantIntervalType type,Interval interval) {
 		this.interval = interval;
+		this.type = type;
 	}
 	
 	public Interval getInterval() {
@@ -40,6 +42,10 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 			return -1;
 		}
 		return 0;
+	}
+
+	public SignificantIntervalType getType() {
+		return type;
 	}
 	
 	
