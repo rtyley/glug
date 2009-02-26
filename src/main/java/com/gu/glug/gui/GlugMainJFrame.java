@@ -18,11 +18,11 @@ import com.gu.glug.ThreadedSystem;
  * @author roberto
  */
 public class GlugMainJFrame extends javax.swing.JFrame {
-
+final ThreadedSystemViewPanel threadedSystemViewPanel;
     /** Creates new form GlugMainJFrame */
     public GlugMainJFrame() {
         initComponents();
-        final ThreadedSystemViewPanel threadedSystemViewPanel = new ThreadedSystemViewPanel();
+        threadedSystemViewPanel = new ThreadedSystemViewPanel();
         threadedSystemViewPanel.setThreadedSystem(ThreadedSystem.createBigOne());
         threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
         jPanel1.add(threadedSystemViewPanel);
@@ -44,6 +44,16 @@ public class GlugMainJFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jSlider1.setPaintTicks(true);
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider1StateChanged(evt);
+            }
+        });
+        jSlider1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jSlider1PropertyChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -75,6 +85,15 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jSlider1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSlider1PropertyChange
+
+    }//GEN-LAST:event_jSlider1PropertyChange
+
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+
+        threadedSystemViewPanel.setMagnification(jSlider1.getValue()/50.0d);
+    }//GEN-LAST:event_jSlider1StateChanged
 
     /**
     * @param args the command line arguments

@@ -63,6 +63,11 @@ public class ThreadedSystemViewPanel extends JComponent {
         
     }
 
+    void setMagnification(double d) {
+        this.magnifactionFactor = d;
+        this.repaint();
+    }
+
 
 	private int graphicsXFor(Instant instant) {
 		int graphicsX = (int) round(instant.minus(intervalCoveredByAllThreads.getStartMillis()).getMillis() * magnifactionFactor);
