@@ -1,6 +1,7 @@
 package com.gu.glug;
 
 public class SignificantIntervalType {
+	public final static SignificantIntervalType PAGE_REQUEST = new SignificantIntervalType("PageRequest");
 	private String name;
 	
 	public SignificantIntervalType(String name) {

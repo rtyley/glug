@@ -11,11 +11,8 @@ import org.joda.time.Interval;
 public class ThreadedSystem {
 	SortedMap<String,ThreadModel> map = new TreeMap<String, ThreadModel>();
 	
-	void add(String threadName, SignificantInterval significantInterval) {
-		if (!map.containsKey(threadName)) {
-			map.put(threadName, new ThreadModel());
-		}
-		map.get(threadName).add(significantInterval);
+	public void add(String threadName, SignificantInterval significantInterval) {
+		getOrCreateThread(threadName).add(significantInterval);
 	}
 
 	public Interval getIntervalCoveredByAllThreads() {
@@ -54,6 +51,13 @@ public class ThreadedSystem {
 		return new Interval(start,end);
 	}
 	
+	public ThreadModel getOrCreateThread(String threadName) {
+		if (!map.containsKey(threadName)) {
+			map.put(threadName, new ThreadModel(threadName));
+		}
+		return map.get(threadName);
+	}
+	
 	
 	public static ThreadedSystem createBigOne() {
 		ThreadedSystem threadedSystem = new ThreadedSystem();
@@ -67,9 +71,11 @@ public class ThreadedSystem {
 				int startTime=time;
 				time+=3+random.nextInt(100);
 				int endTime=time;
-				threadedSystem.add(thread, new SignificantInterval(type,new Interval(startTime,endTime)));
+				threadedSystem.add(thread, new SignificantInterval(null, type,new Interval(startTime,endTime)));
 			}
 		}
 		return threadedSystem;
 	}
+
+
 }

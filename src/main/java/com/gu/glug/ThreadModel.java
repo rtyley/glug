@@ -2,10 +2,8 @@ package com.gu.glug;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.joda.time.Instant;
 import org.joda.time.Interval;
@@ -13,12 +11,17 @@ import org.joda.time.Interval;
 public class ThreadModel {
 	
 	Map<SignificantIntervalType, SignificantInstants> map = new HashMap<SignificantIntervalType, SignificantInstants>();
+	private final String name;
+	
+	public ThreadModel(String name) {
+		this.name = name;
+	}
 	
 	SignificantInterval get(SignificantIntervalType significantIntervalType, Instant instant) {
 		return map.get(significantIntervalType).getSignificantIntervalAt(instant);
 	}
 	
-	void add(SignificantInterval significantInterval) {
+	public void add(SignificantInterval significantInterval) {
         if (!map.containsKey(significantInterval.getType())) {
             map.put(significantInterval.getType(), new SignificantInstants());
         }
@@ -39,5 +42,9 @@ public class ThreadModel {
 			significantInstantsForInterval.addAll(significantInstants.getSignificantIntervalsDuring(interval));
 		}
 		return significantInstantsForInterval;
+	}
+
+	public String getName() {
+		return name;
 	}
 }
