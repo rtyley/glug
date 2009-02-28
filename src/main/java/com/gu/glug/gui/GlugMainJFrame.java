@@ -13,6 +13,8 @@ package com.gu.glug.gui;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,13 +30,14 @@ import com.gu.glug.ThreadedSystem;
  * @author roberto
  */
 public class GlugMainJFrame extends javax.swing.JFrame {
-final ThreadedSystemViewPanel threadedSystemViewPanel;
+	final ThreadedSystem threadedSystem = new ThreadedSystem();
+	
+	final ThreadedSystemViewPanel threadedSystemViewPanel;
     /** Creates new form GlugMainJFrame */
     public GlugMainJFrame() {
         initComponents();
-        threadedSystemViewPanel = new ThreadedSystemViewPanel();
-        threadedSystemViewPanel.setThreadedSystem(ThreadedSystem.createBigOne());
-        threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
+        threadedSystemViewPanel = new ThreadedSystemViewPanel(threadedSystem);
+        //threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
         jScrollPane1.getViewport().add(threadedSystemViewPanel);
         jScrollPane1.validate();
         TransferHandler newHandler = new TransferHandler() {
@@ -140,7 +143,7 @@ final ThreadedSystemViewPanel threadedSystemViewPanel;
 
     private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_timeMagnificationSliderStateChanged
 
-        threadedSystemViewPanel.setMagnification(timeMagnificationSlider.getValue()/50.0d);
+        threadedSystemViewPanel.setMagnification(timeMagnificationSlider.getValue()/1000.0d);
 }//GEN-LAST:event_timeMagnificationSliderStateChanged
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
@@ -150,7 +153,16 @@ final ThreadedSystemViewPanel threadedSystemViewPanel;
             File selectedFile = jFileChooser1.getSelectedFile();
 			System.out.println("You chose to open this file: " +
             		 selectedFile.getName());
-            LogLoadingTask logLoadingProcess = new LogLoadingTask();
+            LogLoadingTask logLoadingProcess = new LogLoadingTask(selectedFile, threadedSystem);
+            logLoadingProcess.addPropertyChangeListener(new PropertyChangeListener() {
+
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					threadedSystemViewPanel.repaint();
+				}
+            	
+            });
+            logLoadingProcess.execute();
             
           }
 }//GEN-LAST:event_openFileMenuItemActionPerformed

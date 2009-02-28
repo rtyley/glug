@@ -5,6 +5,7 @@
 
 package com.gu.glug.gui;
 
+import static java.lang.Math.ceil;
 import static java.lang.Math.round;
 
 import java.awt.Color;
@@ -34,14 +35,21 @@ public class ThreadedSystemViewPanel extends JComponent {
 	private ThreadedSystem threadedSystem;
 	private Interval intervalCoveredByAllThreads;
 	
+	public ThreadedSystemViewPanel(ThreadedSystem threadedSystem) {
+		this.threadedSystem = threadedSystem;
+		cacheIntervalCoveredByAllThreads();
+	}
+	
     @Override
     public Dimension getPreferredSize() {
-        int requiredWidth = (int) Math.ceil(getDrawDistanceFor(intervalCoveredByAllThreads));
+    	if (intervalCoveredByAllThreads==null) {
+    		return super.getPreferredSize();
+    	}
+        int requiredWidth = (int) ceil(getDrawDistanceFor(intervalCoveredByAllThreads));
 		return new Dimension(requiredWidth,threadedSystem.getNumThreads());
     }
 
-	public void setThreadedSystem(ThreadedSystem threadedSystem) {
-		this.threadedSystem = threadedSystem;
+	private void cacheIntervalCoveredByAllThreads() {
 		intervalCoveredByAllThreads = threadedSystem.getIntervalCoveredByAllThreads();
 	}
 
@@ -50,15 +58,18 @@ public class ThreadedSystemViewPanel extends JComponent {
         super.paintComponent(g);
         Graphics2D graphics2D = (Graphics2D) g;
         Rectangle clipBounds = graphics2D.getClipBounds();
-        Interval visibleInterval=visibleIntervalFor(clipBounds);
-        g.setColor(Color.RED);
-        int threadIndex=0;
-        for (ThreadModel threadModel : threadedSystem.getThreads()) {
-        	for (SignificantInterval significantInterval : threadModel.getSignificantIntervalsFor(visibleInterval)) {
-        		Interval aa = significantInterval.getInterval();
-				g.drawLine(graphicsXFor(aa.getStart().toInstant()), -threadIndex, graphicsXFor(aa.getEnd().toInstant()), -threadIndex);
-        	}
-        	--threadIndex;
+        cacheIntervalCoveredByAllThreads();
+        if (intervalCoveredByAllThreads!=null) {
+	        Interval visibleInterval=visibleIntervalFor(clipBounds);
+	        g.setColor(Color.RED);
+	        int threadIndex=0;
+	        for (ThreadModel threadModel : threadedSystem.getThreads()) {
+	        	for (SignificantInterval significantInterval : threadModel.getSignificantIntervalsFor(visibleInterval)) {
+	        		Interval aa = significantInterval.getInterval();
+					g.drawLine(graphicsXFor(aa.getStart().toInstant()), -threadIndex, graphicsXFor(aa.getEnd().toInstant()), -threadIndex);
+	        	}
+	        	--threadIndex;
+	        }
         }
         
     }
