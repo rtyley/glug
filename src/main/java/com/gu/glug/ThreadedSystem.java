@@ -48,8 +48,8 @@ public class ThreadedSystem {
 		if (interval2.contains(interval1)) {
 			return interval2;
 		}
-		Instant start=interval1.getStart().isBefore(interval2.getStart())?interval1.getStart().toInstant():interval2.getStart().toInstant();
-		Instant end=interval1.getEnd().isAfter(interval2.getEnd())?interval1.getEnd().toInstant():interval2.getEnd().toInstant();
+		long start=interval1.getStart().isBefore(interval2.getStart())?interval1.getStartMillis():interval2.getStartMillis();
+		long end=interval1.getEnd().isAfter(interval2.getEnd())?interval1.getEndMillis():interval2.getEndMillis();
 			
 		return new Interval(start,end);
 	}
