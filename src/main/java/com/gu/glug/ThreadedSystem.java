@@ -5,11 +5,14 @@ import java.util.Random;
 import java.util.SortedMap;
 
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
+
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 public class ThreadedSystem {
-	SortedMap<String,ThreadModel> map = new TreeMap<String, ThreadModel>();
+	ConcurrentNavigableMap<String,ThreadModel> map = new ConcurrentSkipListMap<String, ThreadModel>();
 	
 	public void add(String threadName, SignificantInterval significantInterval) {
 		getOrCreateThread(threadName).add(significantInterval);

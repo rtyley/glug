@@ -10,6 +10,7 @@ import java.util.zip.GZIPInputStream;
 import javax.swing.SwingWorker;
 
 import com.gu.glug.ThreadedSystem;
+import com.gu.glug.parser.LogLineParser;
 
 public class LogLoadingTask extends SwingWorker<ThreadedSystem, Void> {
 
@@ -32,10 +33,10 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, Void> {
 			throw new RuntimeException(e);
 		}
 		
-		LogLoader logLoader = new LogLoader(reader, threadedSystem);
+		LogLoader logLoader = new LogLoader(new LogParsingReader(reader,new LogLineParser(threadedSystem)));
 		System.out.print("woo");
 		try {
-			while (!isCancelled() && logLoader.loadLines(100)) {
+			while (!isCancelled() && logLoader.loadLines(10000).endOfStreamReached()) {
 				publish();
 				System.out.print(".");
 				// number = nextPrimeNumber();

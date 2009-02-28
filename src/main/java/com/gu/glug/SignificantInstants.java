@@ -1,17 +1,17 @@
 package com.gu.glug;
 
-import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
-import java.util.TreeMap;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 public class SignificantInstants {
-	private NavigableMap<Instant, SignificantInterval> significantInstants = new TreeMap<Instant, SignificantInterval>();
+	private ConcurrentNavigableMap<Instant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<Instant, SignificantInterval>();
 
 	SignificantInterval getSignificantIntervalAt(Instant instant) {
 		Entry<Instant, SignificantInterval> floorEntry = significantInstants.floorEntry(instant);

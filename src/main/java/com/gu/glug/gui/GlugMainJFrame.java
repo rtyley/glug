@@ -143,7 +143,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 
     private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_timeMagnificationSliderStateChanged
 
-        threadedSystemViewPanel.setMagnification(timeMagnificationSlider.getValue()/1000.0d);
+        threadedSystemViewPanel.setMagnification(timeMagnificationSlider.getValue()/10000.0d);
 }//GEN-LAST:event_timeMagnificationSliderStateChanged
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed

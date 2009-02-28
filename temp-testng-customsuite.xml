@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="glug">
+  <test verbose="2" name="com.gu.glug.gui.LogLoaderTest" annotations="JDK">
+    <classes>
+      <class name="com.gu.glug.gui.LogLoaderTest"/>
+    </classes>
+  </test>
+</suite>
