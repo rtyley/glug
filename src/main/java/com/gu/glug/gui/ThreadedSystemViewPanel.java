@@ -98,5 +98,10 @@ public class ThreadedSystemViewPanel extends JComponent {
 		return intervalCoveredByAllThreads.getStart().toInstant().plus(round(graphicsX/magnifactionFactor));
 	}
 
+	public void repaint(Interval interval) {
+		cacheIntervalCoveredByAllThreads();
+		repaint(graphicsXFor(interval.getStart().toInstant())-1, 0, graphicsXFor(interval.getEnd().toInstant())+1, threadedSystem.getNumThreads());
+	}
+
 
 }

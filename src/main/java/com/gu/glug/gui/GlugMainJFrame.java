@@ -143,7 +143,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 
     private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_timeMagnificationSliderStateChanged
 
-        threadedSystemViewPanel.setMagnification(timeMagnificationSlider.getValue()/10000.0d);
+        threadedSystemViewPanel.setMagnification(Math.pow(2, ((timeMagnificationSlider.getValue()/4f)-80)/16 ));
 }//GEN-LAST:event_timeMagnificationSliderStateChanged
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
@@ -153,16 +153,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
             File selectedFile = jFileChooser1.getSelectedFile();
 			System.out.println("You chose to open this file: " +
             		 selectedFile.getName());
-            LogLoadingTask logLoadingProcess = new LogLoadingTask(selectedFile, threadedSystem);
-            logLoadingProcess.addPropertyChangeListener(new PropertyChangeListener() {
-
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					threadedSystemViewPanel.repaint();
-				}
-            	
-            });
-            logLoadingProcess.execute();
+            new LogLoadingTask(selectedFile, threadedSystem, threadedSystemViewPanel).execute();
             
           }
 }//GEN-LAST:event_openFileMenuItemActionPerformed

@@ -1,11 +1,10 @@
-package com.gu.glug.gui;
+package com.gu.glug.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.ParseException;
 
 import com.gu.glug.SignificantInterval;
-import com.gu.glug.parser.LogLineParser;
 
 public class LogParsingReader {
 

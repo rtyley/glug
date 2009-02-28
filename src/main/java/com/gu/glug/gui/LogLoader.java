@@ -8,7 +8,7 @@ import java.text.ParseException;
 import org.joda.time.Interval;
 
 import com.gu.glug.SignificantInterval;
-import com.gu.glug.parser.LogLineParser;
+import com.gu.glug.parser.LogParsingReader;
 
 public class LogLoader {
 

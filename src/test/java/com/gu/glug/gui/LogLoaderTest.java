@@ -20,6 +20,7 @@ import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.gui.LogLoader.LoadReport;
 import com.gu.glug.parser.LogLineParser;
+import com.gu.glug.parser.LogParsingReader;
 
 
 public class LogLoaderTest {

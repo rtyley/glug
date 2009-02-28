@@ -1,4 +1,4 @@
-package com.gu.glug.gui;
+package com.gu.glug.parser;
 
 import static org.mockito.Mockito.mock;
 
@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import org.junit.Test;
 
 import com.gu.glug.SignificantInterval;
-import com.gu.glug.parser.LogLineParser;
 
 
 public class LogParsingReaderTest {

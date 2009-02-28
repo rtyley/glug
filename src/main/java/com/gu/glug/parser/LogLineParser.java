@@ -40,6 +40,7 @@ public class LogLineParser {
 2009-02-25 00:00:05,979 [resin-tcp-connection-respub.gul3.gnl:6802-197] INFO  com.gu.r2.common.webutil.RequestLoggingFilter - Request for /pages/Guardian/world/rss completed in 5 ms
 	 */
 	
+	SimpleDateFormat gfg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
 	public final static int DATETIME_FIELD_LENGTH = "2009-02-25 00:00:00,093".length();
 	public final static int THREAD_NAME_START_INDEX = DATETIME_FIELD_LENGTH+2;
 	
@@ -65,7 +66,6 @@ public class LogLineParser {
 			int durationInMillis = parseInt(durationInMillisText);
 			String logDateTimeText=line.substring(0, DATETIME_FIELD_LENGTH);
 			//long logInstantInMillis = ISODateTimeFormat.dateHourMinuteSecondMillis().parseMillis(logDateTimeText);
-			SimpleDateFormat gfg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
 			long logInstantInMillis = gfg.parse(logDateTimeText).getTime();
 			
 			Interval interval = new Interval(logInstantInMillis-durationInMillis,logInstantInMillis);
