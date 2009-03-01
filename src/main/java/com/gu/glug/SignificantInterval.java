@@ -11,6 +11,7 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 		this.threadModel = threadModel;
 		this.interval = interval;
 		this.type = type;
+		threadModel.add(this);
 	}
 	
 	public Interval getInterval() {

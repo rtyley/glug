@@ -70,7 +70,7 @@ public class ThreadedSystem {
 				int startTime=time;
 				time+=3+random.nextInt(100);
 				int endTime=time;
-				threadedSystem.add(thread, new SignificantInterval(null, type,new Interval(startTime,endTime)));
+				new SignificantInterval(threadedSystem.getOrCreateThread(thread), type,new Interval(startTime,endTime));
 			}
 		}
 		return threadedSystem;
