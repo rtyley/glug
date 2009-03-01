@@ -48,6 +48,6 @@ public class SignificantInstants {
 	}
 
 	public Interval getInterval() {
-		return new Interval(significantInstants.firstKey(),significantInstants.lastKey());
+		return significantInstants.isEmpty()?null:new Interval(significantInstants.firstKey(),significantInstants.lastKey());
 	}
 }

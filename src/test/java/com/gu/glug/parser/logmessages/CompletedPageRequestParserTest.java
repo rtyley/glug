@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import org.junit.Test;
 
 import com.gu.glug.SignificantInterval;
+import com.gu.glug.SignificantIntervalOccupier;
 import com.gu.glug.ThreadModel;
 
 
@@ -29,5 +30,6 @@ public class CompletedPageRequestParserTest {
 		
 		assertThat(sigInt.getInterval().getStartMillis(), equalTo(5000L));
 		assertThat(sigInt.getInterval().toDurationMillis(), equalTo(712L));
+		assertThat(sigInt.getType(), equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/lifeandstyle")));
 	}
 }

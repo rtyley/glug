@@ -34,7 +34,8 @@ public class LogLoaderTest {
 		ThreadedSystem threadedSystem = new ThreadedSystem();
 		LogLoader logLoader=new LogLoader(new LogParsingReader(reader,new LogLineParser(new LogCoordinateParser(threadedSystem),LogMessageParserRegistry.EXAMPLE)));
 		while (!logLoader.loadLines(100000).endOfStreamReached()) {
-			System.out.println(threadedSystem.getIntervalCoveredByAllThreads());
+			Interval intervalCoveredByAllThreads = threadedSystem.getIntervalCoveredByAllThreads();
+			System.out.println(intervalCoveredByAllThreads);
 		}
 	}
 	

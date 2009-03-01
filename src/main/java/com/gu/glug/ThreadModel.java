@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 public class ThreadModel {
@@ -19,15 +18,12 @@ public class ThreadModel {
 		this.name = name;
 	}
 	
-	SignificantInterval get(SignificantIntervalOccupier significantIntervalType, Instant instant) {
-		return map.get(significantIntervalType).getSignificantIntervalAt(instant);
-	}
-	
 	public void add(SignificantInterval significantInterval) {
-        if (!map.containsKey(significantInterval.getType())) {
-            map.put(significantInterval.getType().getClass(), new SignificantInstants());
+		Class<? extends SignificantIntervalOccupier> clazz = significantInterval.getType().getClass();
+        if (!map.containsKey(clazz)) {
+			map.put(clazz, new SignificantInstants());
         }
-		map.get(significantInterval.getType().getClass()).add(significantInterval);
+		map.get(clazz).add(significantInterval);
 	}
 
 	public Interval getInterval() {

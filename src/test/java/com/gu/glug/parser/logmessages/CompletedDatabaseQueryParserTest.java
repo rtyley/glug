@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import org.junit.Test;
 
 import com.gu.glug.SignificantInterval;
+import com.gu.glug.SignificantIntervalOccupier;
 import com.gu.glug.ThreadModel;
 
 
@@ -27,5 +28,7 @@ public class CompletedDatabaseQueryParserTest {
 		
 		assertThat(sigInt.getInterval().getStartMillis(), equalTo(980L));
 		assertThat(sigInt.getInterval().toDurationMillis(), equalTo(20L));
+		assertThat(sigInt.getType(), equalTo((SignificantIntervalOccupier) new CompletedDatabaseQuery("load com.gu.r2.common.model.page.LivePage")));
+		
 	}
 }

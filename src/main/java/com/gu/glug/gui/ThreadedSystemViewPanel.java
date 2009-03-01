@@ -22,6 +22,7 @@ import org.joda.time.Interval;
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
+import com.gu.glug.parser.logmessages.CompletedPageRequest;
 
 /**
  *
@@ -60,10 +61,14 @@ public class ThreadedSystemViewPanel extends JComponent {
         cacheIntervalCoveredByAllThreads();
         if (intervalCoveredByAllThreads!=null) {
 	        Interval visibleInterval=visibleIntervalFor(clipBounds);
-	        g.setColor(Color.RED);
 	        int threadIndex=0;
 	        for (ThreadModel threadModel : threadedSystem.getThreads()) {
 	        	for (SignificantInterval significantInterval : threadModel.getSignificantIntervalsFor(visibleInterval)) {
+	        		if (significantInterval.getType() instanceof CompletedPageRequest) {
+	        			g.setColor(Color.RED);		
+	        		} else {
+	        			g.setColor(Color.BLACK);
+	        		}
 	        		Interval aa = significantInterval.getInterval();
 					g.drawLine(graphicsXFor(aa.getStart().toInstant()), -threadIndex, graphicsXFor(aa.getEnd().toInstant()), -threadIndex);
 	        	}

@@ -12,14 +12,14 @@ import com.gu.glug.ThreadModel;
 
 public class CompletedPageRequestParser implements LogMessageParser {
 
-	private static final Pattern requestCompletedPattern = Pattern.compile("Request for [^ ]+ completed in (\\d+) ms");
+	private static final Pattern requestCompletedPattern = Pattern.compile("Request for ([^ ]+) completed in (\\d+) ms");
 	
 
 	@Override
 	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, long logInstantInMillis) {
-		String durationInMillisText = matcher.group(1);
+		String durationInMillisText = matcher.group(2);
 		int durationInMillis = parseInt(durationInMillisText);
-		String pagePath = matcher.group(0);
+		String pagePath = matcher.group(1);
 		Interval interval = new Interval(logInstantInMillis-durationInMillis,logInstantInMillis);
 		return new SignificantInterval(threadModel,new CompletedPageRequest(pagePath),interval);
 	}

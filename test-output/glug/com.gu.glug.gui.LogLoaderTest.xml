@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.gu.glug.gui.LogLoaderTest" failures="0" tests="0" time="0.013" errors="0">
+<testsuite name="com.gu.glug.gui.LogLoaderTest" failures="0" tests="0" time="0.0040" errors="0">
   <properties/>
 </testsuite>

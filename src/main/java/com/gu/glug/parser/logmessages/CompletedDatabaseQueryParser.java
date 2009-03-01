@@ -23,10 +23,11 @@ Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithCon
 
 	@Override
 	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, long logInstantInMillis) {
+		String dbQuery = matcher.group(1);
 		String durationInMillisText = matcher.group(3);
 		int durationInMillis = parseInt(durationInMillisText);
 		Interval interval = new Interval(logInstantInMillis-durationInMillis,logInstantInMillis);
-		return new SignificantInterval(threadModel,new CompletedDatabaseQuery(),interval);
+		return new SignificantInterval(threadModel,new CompletedDatabaseQuery(dbQuery),interval);
 	}
 
 	@Override
