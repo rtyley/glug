@@ -19,8 +19,10 @@ import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.gui.LogLoader.LoadReport;
+import com.gu.glug.parser.LogCoordinateParser;
 import com.gu.glug.parser.LogLineParser;
 import com.gu.glug.parser.LogParsingReader;
+import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
 
 
 public class LogLoaderTest {
@@ -30,7 +32,7 @@ public class LogLoaderTest {
 		BufferedReader reader = new BufferedReader(new InputStreamReader( new GZIPInputStream(new FileInputStream(file))));
 		
 		ThreadedSystem threadedSystem = new ThreadedSystem();
-		LogLoader logLoader=new LogLoader(new LogParsingReader(reader,new LogLineParser(threadedSystem)));
+		LogLoader logLoader=new LogLoader(new LogParsingReader(reader,new LogLineParser(new LogCoordinateParser(threadedSystem),LogMessageParserRegistry.EXAMPLE)));
 		while (!logLoader.loadLines(100000).endOfStreamReached()) {
 			System.out.println(threadedSystem.getIntervalCoveredByAllThreads());
 		}

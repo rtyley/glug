@@ -15,7 +15,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import org.joda.time.Instant;
 import org.joda.time.Interval;

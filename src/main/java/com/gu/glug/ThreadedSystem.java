@@ -2,13 +2,9 @@ package com.gu.glug;
 
 import java.util.Collection;
 import java.util.Random;
-import java.util.SortedMap;
-
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 public class ThreadedSystem {

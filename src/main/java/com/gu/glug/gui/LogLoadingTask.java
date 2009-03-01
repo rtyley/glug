@@ -16,8 +16,10 @@ import org.joda.time.Interval;
 
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.gui.LogLoader.LoadReport;
+import com.gu.glug.parser.LogCoordinateParser;
 import com.gu.glug.parser.LogLineParser;
 import com.gu.glug.parser.LogParsingReader;
+import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
 
 public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 
@@ -42,7 +44,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 			throw new RuntimeException(e);
 		}
 		
-		LogLoader logLoader = new LogLoader(new LogParsingReader(reader,new LogLineParser(threadedSystem)));
+		LogLoader logLoader = new LogLoader(new LogParsingReader(reader,new LogLineParser(new LogCoordinateParser(threadedSystem),LogMessageParserRegistry.EXAMPLE )));
 		System.out.print("woo");
 		LoadReport loadReport;
 		try {
@@ -55,6 +57,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+		System.out.println("Finished loading");
 		return threadedSystem;
 	}
 	

@@ -2,6 +2,11 @@ package com.gu.glug.parser;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,6 +22,7 @@ import org.junit.Test;
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.SignificantIntervalType;
 import com.gu.glug.ThreadedSystem;
+import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
 
 public class LogLineParserTest {
 
@@ -26,7 +32,7 @@ public class LogLineParserTest {
 	@Before
 	public void setUp() {
 		threadedSystem = new ThreadedSystem();
-		logLineParser = new LogLineParser(threadedSystem);
+		logLineParser = new LogLineParser(new LogCoordinateParser(threadedSystem), LogMessageParserRegistry.EXAMPLE);
 	}
 	
 	@Test
@@ -39,7 +45,6 @@ public class LogLineParserTest {
 			logLineParser.parse(line);
 		}
 	}
-	
 	
 	@Test
 	public void shouldParsePageRequest() throws ParseException {
@@ -62,6 +67,15 @@ public class LogLineParserTest {
 		assertThat(interval.getStart().getYear(),equalTo(2009));
 	}
 	
-
+	@Test
+	public void shouldNotParseLoggerNameIfMessageSplitIsNotFound() throws ParseException {
+		LogCoordinateParser logCoordinateParser = mock(LogCoordinateParser.class);
+		
+		logLineParser = new LogLineParser(logCoordinateParser,null);
+		logLineParser.parse("a log line that is full of junk");
+		logLineParser.parse("a line that is too short - the dash normally comes much later");
+		
+		verify(logCoordinateParser,never()).getLoggerName(anyString(), anyInt());
+	}
 
 }
