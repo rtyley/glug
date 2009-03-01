@@ -10,22 +10,24 @@ import org.joda.time.Interval;
 
 public class ThreadModel {
 	
-	Map<SignificantIntervalType, SignificantInstants> map = new HashMap<SignificantIntervalType, SignificantInstants>();
+	private Map<Class<? extends SignificantIntervalOccupier>, SignificantInstants> map =
+		new HashMap<Class<? extends SignificantIntervalOccupier>, SignificantInstants>();
+	
 	private final String name;
 	
 	public ThreadModel(String name) {
 		this.name = name;
 	}
 	
-	SignificantInterval get(SignificantIntervalType significantIntervalType, Instant instant) {
+	SignificantInterval get(SignificantIntervalOccupier significantIntervalType, Instant instant) {
 		return map.get(significantIntervalType).getSignificantIntervalAt(instant);
 	}
 	
 	public void add(SignificantInterval significantInterval) {
         if (!map.containsKey(significantInterval.getType())) {
-            map.put(significantInterval.getType(), new SignificantInstants());
+            map.put(significantInterval.getType().getClass(), new SignificantInstants());
         }
-		map.get(significantInterval.getType()).add(significantInterval);
+		map.get(significantInterval.getType().getClass()).add(significantInterval);
 	}
 
 	public Interval getInterval() {

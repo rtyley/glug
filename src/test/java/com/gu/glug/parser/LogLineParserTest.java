@@ -20,8 +20,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.gu.glug.SignificantInterval;
-import com.gu.glug.SignificantIntervalType;
+import com.gu.glug.SignificantIntervalOccupier;
 import com.gu.glug.ThreadedSystem;
+import com.gu.glug.parser.logmessages.CompletedPageRequest;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
 
 public class LogLineParserTest {
@@ -54,7 +55,7 @@ public class LogLineParserTest {
 		Interval interval = significantInterval.getInterval();
 		assertThat(interval.toDurationMillis(),equalTo(5L));
 		assertThat(interval.getStart().getYear(),equalTo(2009));
-		assertThat(significantInterval.getType(),equalTo(SignificantIntervalType.PAGE_REQUEST));
+		assertThat(significantInterval.getType(),equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/world/rss")));
 	}
 	
 	@Test

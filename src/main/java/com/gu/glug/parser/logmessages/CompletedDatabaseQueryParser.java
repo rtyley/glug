@@ -1,6 +1,5 @@
 package com.gu.glug.parser.logmessages;
 
-import static com.gu.glug.SignificantIntervalType.PAGE_REQUEST;
 import static java.lang.Integer.parseInt;
 
 import java.util.regex.Matcher;
@@ -27,8 +26,7 @@ Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithCon
 		String durationInMillisText = matcher.group(3);
 		int durationInMillis = parseInt(durationInMillisText);
 		Interval interval = new Interval(logInstantInMillis-durationInMillis,logInstantInMillis);
-		SignificantInterval significantInterval = new SignificantInterval(threadModel,PAGE_REQUEST,interval);
-		return significantInterval;
+		return new SignificantInterval(threadModel,new CompletedDatabaseQuery(),interval);
 	}
 
 	@Override

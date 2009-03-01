@@ -4,13 +4,13 @@ import org.joda.time.Interval;
 
 public class SignificantInterval implements Comparable<SignificantInterval> {
 	private final Interval interval;
-	private final SignificantIntervalType type;
+	private final SignificantIntervalOccupier intervalOccupier;
 	private final ThreadModel threadModel;
 	
-	public SignificantInterval(ThreadModel threadModel, SignificantIntervalType type,Interval interval) {
+	public SignificantInterval(ThreadModel threadModel, SignificantIntervalOccupier intervalOccupier,Interval interval) {
 		this.threadModel = threadModel;
 		this.interval = interval;
-		this.type = type;
+		this.intervalOccupier = intervalOccupier;
 		threadModel.add(this);
 	}
 	
@@ -26,7 +26,7 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 				+ ((interval == null) ? 0 : interval.hashCode());
 		result = prime * result
 				+ ((threadModel == null) ? 0 : threadModel.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((intervalOccupier == null) ? 0 : intervalOccupier.hashCode());
 		return result;
 	}
 
@@ -51,10 +51,10 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 				return false;
 		} else if (!threadModel.equals(other.threadModel))
 			return false;
-		if (type == null) {
-			if (other.type != null)
+		if (intervalOccupier == null) {
+			if (other.intervalOccupier != null)
 				return false;
-		} else if (!type.equals(other.type))
+		} else if (!intervalOccupier.equals(other.intervalOccupier))
 			return false;
 		return true;
 	}
@@ -70,8 +70,8 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 		return 0;
 	}
 
-	public SignificantIntervalType getType() {
-		return type;
+	public SignificantIntervalOccupier getType() {
+		return intervalOccupier;
 	}
 
 	public ThreadModel getThread() {

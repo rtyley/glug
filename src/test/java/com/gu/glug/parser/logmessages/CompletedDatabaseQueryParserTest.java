@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import java.util.regex.Matcher;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;

@@ -1,6 +1,5 @@
 package com.gu.glug.gui;
 
-import static com.gu.glug.SignificantIntervalType.PAGE_REQUEST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
@@ -16,6 +15,7 @@ import org.joda.time.Interval;
 import org.junit.Test;
 
 import com.gu.glug.SignificantInterval;
+import com.gu.glug.SignificantIntervalOccupier;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.gui.LogLoader.LoadReport;
@@ -44,9 +44,10 @@ public class LogLoaderTest {
 		ThreadedSystem threadedSystem = new ThreadedSystem();
 		ThreadModel thread = threadedSystem.getOrCreateThread("blahThread");
 		
+		SignificantIntervalOccupier significantIntervalOccupierStub = mock(SignificantIntervalOccupier.class);
 		when(reader.parseNext()).thenReturn(
-				new SignificantInterval(thread, PAGE_REQUEST, new Interval(0,1000)),
-				new SignificantInterval(thread, PAGE_REQUEST, new Interval(3000,4000)));
+				new SignificantInterval(thread, significantIntervalOccupierStub, new Interval(0,1000)),
+				new SignificantInterval(thread, significantIntervalOccupierStub, new Interval(3000,4000)));
 		LogLoader logLoader=new LogLoader(reader);
 		LoadReport loadReport = logLoader.loadLines(2);
 

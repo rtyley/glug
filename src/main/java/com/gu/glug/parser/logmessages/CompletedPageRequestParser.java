@@ -1,6 +1,5 @@
 package com.gu.glug.parser.logmessages;
 
-import static com.gu.glug.SignificantIntervalType.PAGE_REQUEST;
 import static java.lang.Integer.parseInt;
 
 import java.util.regex.Matcher;
@@ -20,9 +19,9 @@ public class CompletedPageRequestParser implements LogMessageParser {
 	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, long logInstantInMillis) {
 		String durationInMillisText = matcher.group(1);
 		int durationInMillis = parseInt(durationInMillisText);
-		//String pagePath = matcher.group(0);
+		String pagePath = matcher.group(0);
 		Interval interval = new Interval(logInstantInMillis-durationInMillis,logInstantInMillis);
-		return new SignificantInterval(threadModel,PAGE_REQUEST,interval);
+		return new SignificantInterval(threadModel,new CompletedPageRequest(pagePath),interval);
 	}
 
 	@Override
