@@ -54,7 +54,7 @@ public class LogLineParserTest {
 		assertThat(significantInterval.getThread().getName(), equalTo("resin-tcp-connection-respub.gul3.gnl:6802-197"));
 		Interval interval = significantInterval.getInterval();
 		assertThat(interval.toDurationMillis(),equalTo(5L));
-		assertThat(interval.getStart().getYear(),equalTo(2009));
+		assertThat(interval.getStart().getInstant().toDateTime().getYear(),equalTo(2009));
 		assertThat(significantInterval.getType(),equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/world/rss")));
 	}
 	
@@ -65,7 +65,7 @@ public class LogLineParserTest {
 		assertThat(significantInterval.getThread().getName(), equalTo("resin-tcp-connection-*:8080-631"));
 		Interval interval = significantInterval.getInterval();
 		assertThat(interval.toDurationMillis(),equalTo(470L));
-		assertThat(interval.getStart().getYear(),equalTo(2009));
+		assertThat(interval.getStart().getInstant().toDateTime().getYear(),equalTo(2009));
 	}
 	
 	@Test

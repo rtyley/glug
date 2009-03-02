@@ -1,7 +1,5 @@
 package com.gu.glug.gui;
 
-import static com.gu.glug.ThreadedSystem.union;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,7 +63,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 	protected void process(List<LoadReport> loadReports) {
 		Interval interval = null;
 		for (LoadReport loadReport : loadReports) {
-			interval = union(interval, loadReport.getUpdatedInterval());
+			interval = loadReport.getUpdatedInterval().union(interval);
 		}
 		threadedSystemViewPanel.repaint(interval);
 	}

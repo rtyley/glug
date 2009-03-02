@@ -16,8 +16,7 @@ public class ThreadedSystem {
 	public Interval getIntervalCoveredByAllThreads() {
 		Interval big = null;
 		for (ThreadModel threadModel : map.values()) {
-			big = union(big,threadModel.getInterval());
-
+			big = threadModel.getInterval().union(big);
 		}
 		return big;
 	}
@@ -28,25 +27,6 @@ public class ThreadedSystem {
 
 	public Collection<ThreadModel> getThreads() {
 		return map.values();
-	}
-	
-	public static Interval union(Interval interval1, Interval interval2) {
-		if (interval1==null) {
-			return interval2;
-		}
-		if (interval2==null) {
-			return interval1;
-		}
-		if (interval1.contains(interval2)) {
-			return interval1;
-		}
-		if (interval2.contains(interval1)) {
-			return interval2;
-		}
-		long start=interval1.getStart().isBefore(interval2.getStart())?interval1.getStartMillis():interval2.getStartMillis();
-		long end=interval1.getEnd().isAfter(interval2.getEnd())?interval1.getEndMillis():interval2.getEndMillis();
-			
-		return new Interval(start,end);
 	}
 	
 	public ThreadModel getOrCreateThread(String threadName) {

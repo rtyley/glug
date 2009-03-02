@@ -1,7 +1,5 @@
 package com.gu.glug.gui;
 
-import static com.gu.glug.ThreadedSystem.union;
-
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -24,7 +22,7 @@ public class LogLoader {
 			try {
 				SignificantInterval significantInterval = reader.parseNext();
 				if (significantInterval!=null) {
-					intervalUpdated=union(intervalUpdated, significantInterval.getInterval());
+					intervalUpdated=significantInterval.getInterval().union(intervalUpdated);
 				}
 			} catch (ParseException e) {
 				e.printStackTrace();

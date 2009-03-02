@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
+import com.gu.glug.time.LogInstant;
 
 public class LogCoordinateParser {
 	
@@ -24,11 +25,11 @@ public class LogCoordinateParser {
 		return loggerName;
 	}
 
-	public long getLogLineInstantInMillis(String line) throws ParseException {
+	public LogInstant getLogLineInstantInMillis(String line) throws ParseException {
 		String logDateTimeText=line.substring(0, DATETIME_FIELD_LENGTH);
 		//long logInstantInMillis = ISODateTimeFormat.dateHourMinuteSecondMillis().parseMillis(logDateTimeText);
 		long logInstantInMillis = gfg.parse(logDateTimeText).getTime();
-		return logInstantInMillis;
+		return new LogInstant(logInstantInMillis*1000000);
 	}
 
 	public ThreadModel getThreadModel(String line) {

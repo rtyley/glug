@@ -1,34 +1,41 @@
 package com.gu.glug;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import org.joda.time.Instant;
 import org.joda.time.Interval;
 
-public class SignificantInstants {
-	private ConcurrentNavigableMap<Instant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<Instant, SignificantInterval>();
+import com.gu.glug.time.LogInstant;
+import com.gu.glug.time.LogInterval;
 
-	SignificantInterval getSignificantIntervalAt(Instant instant) {
-		Entry<Instant, SignificantInterval> floorEntry = significantInstants.floorEntry(instant);
-		if (floorEntry==null) {
-			return null;
-		}
-		SignificantInterval sigInt = floorEntry.getValue();
-		return sigInt.getInterval().contains(instant) ? sigInt : null;
-	}
+public class SignificantInstants {
+	private ConcurrentNavigableMap<LogInstant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<LogInstant, SignificantInterval>();
+
+//	SignificantInterval getSignificantIntervalAt(LogInstant instant) {
+//		Entry<LogInstant, SignificantInterval> floorEntry = significantInstants.floorEntry(instant);
+//		if (floorEntry==null) {
+//			return null;
+//		}
+//		SignificantInterval sigInt = floorEntry.getValue();
+//		return sigInt.getInterval().contains(instant) ? sigInt : null;
+//	}
 	
 	SortedSet<SignificantInterval> getSignificantIntervalsDuring(Interval interval) {
-		return new TreeSet<SignificantInterval>(subMapFor(interval).values()); // Make SignificantInterval implement Comparable!
+		LogInterval logInterval = new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),0));
+		SortedMap<LogInstant, SignificantInterval> subMap = subMapFor(logInterval);
+		List<SignificantInterval> dfsdf = new ArrayList<SignificantInterval>(subMap.values());
+		return new TreeSet<SignificantInterval>(subMap.values()); // Make SignificantInterval implement Comparable!
 	}
 	
-	void add(SignificantInterval significantInterval) {
-		Interval interval = significantInterval.getInterval();
-		Instant startInstant = interval.getStart().toInstant(), endInstant = interval.getEnd().toInstant();
+	public void add(SignificantInterval significantInterval) {
+		LogInterval interval = significantInterval.getLogInterval();
+		LogInstant startInstant = interval.getStart(), endInstant = interval.getEnd();
 		
 		if (significantInstants.containsKey(startInstant) ||
 			significantInstants.containsKey(endInstant) ||
@@ -39,15 +46,15 @@ public class SignificantInstants {
 		significantInstants.put(endInstant, significantInterval);
 	}
 
-	private boolean containsSignificantInstantsDuring(Interval interval) {
+	private boolean containsSignificantInstantsDuring(LogInterval interval) {
 		return !subMapFor(interval).isEmpty();
 	}
 	
-	private SortedMap<Instant, SignificantInterval> subMapFor(Interval interval) {
-		return significantInstants.subMap(interval.getStart().toInstant(), interval.getEnd().toInstant());
+	private SortedMap<LogInstant, SignificantInterval> subMapFor(LogInterval interval) {
+		return significantInstants.subMap(interval.getStart(), interval.getEnd());
 	}
 
-	public Interval getInterval() {
-		return significantInstants.isEmpty()?null:new Interval(significantInstants.firstKey(),significantInstants.lastKey());
+	public LogInterval getLogInterval() {
+		return significantInstants.isEmpty()?null:new LogInterval(significantInstants.firstKey(),significantInstants.lastKey());
 	}
 }

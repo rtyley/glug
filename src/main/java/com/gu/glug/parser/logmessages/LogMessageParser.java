@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
+import com.gu.glug.time.LogInstant;
 
 
 
@@ -15,6 +16,6 @@ public interface LogMessageParser {
 
 	public String getLoggerClassName();
 
-	public SignificantInterval process(Matcher matcher,	ThreadModel threadModel, long logInstantInMillis);
+	public SignificantInterval process(Matcher matcher,	ThreadModel threadModel, LogInstant logInstant);
 	
 }

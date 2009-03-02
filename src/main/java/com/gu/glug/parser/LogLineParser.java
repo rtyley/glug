@@ -8,6 +8,7 @@ import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.parser.logmessages.LogMessageParser;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
+import com.gu.glug.time.LogInstant;
 
 public class LogLineParser {
 
@@ -51,8 +52,8 @@ public class LogLineParser {
 				
 				if (matcher.find()) {
 					ThreadModel threadModel = logCoordinateParser.getThreadModel(line);
-					long logInstantInMillis = logCoordinateParser.getLogLineInstantInMillis(line);
-					return messageParser.process(matcher, threadModel, logInstantInMillis);
+					LogInstant logInstant = logCoordinateParser.getLogLineInstantInMillis(line);
+					return messageParser.process(matcher, threadModel, logInstant);
 				}
 			}
 		}

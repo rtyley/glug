@@ -9,6 +9,7 @@ import org.joda.time.Interval;
 
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
+import com.gu.glug.time.LogInstant;
 
 public class CompletedDatabaseQueryParser implements LogMessageParser {
 
@@ -22,11 +23,11 @@ Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithCon
 	
 
 	@Override
-	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, long logInstantInMillis) {
+	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant) {
 		String dbQuery = matcher.group(1);
 		String durationInMillisText = matcher.group(3);
 		int durationInMillis = parseInt(durationInMillisText);
-		Interval interval = new Interval(logInstantInMillis-durationInMillis,logInstantInMillis);
+		Interval interval = new Interval(logInstant.minusMillis(durationInMillis),logInstant);
 		return new SignificantInterval(threadModel,new CompletedDatabaseQuery(dbQuery),interval);
 	}
 

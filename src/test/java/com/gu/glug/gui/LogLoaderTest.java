@@ -23,6 +23,7 @@ import com.gu.glug.parser.LogCoordinateParser;
 import com.gu.glug.parser.LogLineParser;
 import com.gu.glug.parser.LogParsingReader;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
+import com.gu.glug.time.LogInstant;
 
 
 public class LogLoaderTest {
@@ -47,7 +48,7 @@ public class LogLoaderTest {
 		
 		SignificantIntervalOccupier significantIntervalOccupierStub = mock(SignificantIntervalOccupier.class);
 		when(reader.parseNext()).thenReturn(
-				new SignificantInterval(thread, significantIntervalOccupierStub, new Interval(0,1000)),
+				new SignificantInterval(thread, significantIntervalOccupierStub, new Interval(new LogInstant(1000,1))),
 				new SignificantInterval(thread, significantIntervalOccupierStub, new Interval(3000,4000)));
 		LogLoader logLoader=new LogLoader(reader);
 		LoadReport loadReport = logLoader.loadLines(2);

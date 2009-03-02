@@ -7,6 +7,8 @@ import java.util.TreeSet;
 
 import org.joda.time.Interval;
 
+import com.gu.glug.time.LogInterval;
+
 public class ThreadModel {
 	
 	private Map<Class<? extends SignificantIntervalOccupier>, SignificantInstants> map =
@@ -26,10 +28,10 @@ public class ThreadModel {
 		map.get(clazz).add(significantInterval);
 	}
 
-	public Interval getInterval() {
-		Interval interval = null;
+	public LogInterval getInterval() {
+		LogInterval interval = null;
 		for (SignificantInstants significantInstants : map.values()) {
-			interval = ThreadedSystem.union(interval, significantInstants.getInterval()) ;
+			interval = significantInstants.getLogInterval().union(interval);
 		}
 		return interval;
 	}

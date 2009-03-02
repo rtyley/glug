@@ -12,6 +12,7 @@ import org.junit.Test;
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.SignificantIntervalOccupier;
 import com.gu.glug.ThreadModel;
+import com.gu.glug.time.LogInstant;
 
 
 public class CompletedPageRequestParserTest {
@@ -26,9 +27,8 @@ public class CompletedPageRequestParserTest {
 		
 		Matcher matcher = parser.getPattern().matcher(logMessage);
 		assertThat(matcher.find(), is(true));
-		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), 5712L);
+		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L));
 		
-		assertThat(sigInt.getInterval().getStartMillis(), equalTo(5000L));
 		assertThat(sigInt.getInterval().toDurationMillis(), equalTo(712L));
 		assertThat(sigInt.getType(), equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/lifeandstyle")));
 	}

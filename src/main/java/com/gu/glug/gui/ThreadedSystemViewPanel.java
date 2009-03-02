@@ -16,13 +16,13 @@ import java.awt.Rectangle;
 
 import javax.swing.JComponent;
 
-import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.parser.logmessages.CompletedPageRequest;
+import com.gu.glug.time.LogInstant;
 
 /**
  *
@@ -84,8 +84,9 @@ public class ThreadedSystemViewPanel extends JComponent {
     }
 
 
-	private int graphicsXFor(Instant instant) {
-		int graphicsX = (int) round(instant.minus(intervalCoveredByAllThreads.getStartMillis()).getMillis() * magnifactionFactor);
+	private int graphicsXFor(LogInstant instant) {
+		
+		int graphicsX = (int) round(instant.differenceInNanosFrom(intervalCoveredByAllThreads.getStart()) * magnifactionFactor);
 		return graphicsX;
 	}
 
@@ -98,13 +99,13 @@ public class ThreadedSystemViewPanel extends JComponent {
 	}
 
 
-	private Instant instantFor(double graphicsX) {
+	private LogInstant instantFor(double graphicsX) {
 		return intervalCoveredByAllThreads.getStart().toInstant().plus(round(graphicsX/magnifactionFactor));
 	}
 
 	public void repaint(Interval interval) {
 		cacheIntervalCoveredByAllThreads();
-		repaint(graphicsXFor(interval.getStart().toInstant())-1, 0, graphicsXFor(interval.getEnd().toInstant())+1, threadedSystem.getNumThreads());
+		repaint(graphicsXFor(interval.getStart())-1, 0, graphicsXFor(interval.getEnd())+1, threadedSystem.getNumThreads());
 	}
 
 
