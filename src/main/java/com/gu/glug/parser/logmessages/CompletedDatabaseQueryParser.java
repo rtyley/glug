@@ -26,7 +26,7 @@ Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithCon
 
 	@Override
 	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant) {
-		String dbQuery = matcher.group(1);
+		String dbQuery = matcher.group(1).intern();
 		String durationInMillisText = matcher.group(3);
 		int durationInMillis = parseInt(durationInMillisText);
 		LogInterval interval = new LogInterval(new Duration(durationInMillis),logInstant);
