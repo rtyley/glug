@@ -1,6 +1,7 @@
 package com.gu.glug.time;
 
 import org.joda.time.Duration;
+import org.joda.time.Interval;
 
 public class LogInterval {
 
@@ -55,12 +56,12 @@ public class LogInterval {
      * exclusive of the end. A zero duration interval cannot contain anything.
      * <p>
      */
-    public boolean contains(LogInstant instant) {
-    	return !start.isAfter(instant) && end.isAfter(instant);
+    public boolean contains(LogInstant otherInstant) {
+    	return !otherInstant.isBefore(start) && otherInstant.isBefore(end);
     }
     
-    public boolean contains(LogInterval interval) {
-    	return true;
+    public boolean contains(LogInterval otherInterval) {
+    	return contains(otherInterval.start) && !otherInterval.end.isAfter(end);
     }
     
 	public LogInterval union(LogInterval otherInterval) {
@@ -79,4 +80,16 @@ public class LogInterval {
 		return new LogInterval(unionStart,unionEnd);
 	}
 
+	public long toDurationMillis() {
+		return end.getMillis()-start.getMillis();
+	}
+
+	@Override
+	public String toString() {
+		return toJodaInterval().toString();
+	}
+
+	private Interval toJodaInterval() {
+		return new Interval(start.getInstant(),end.getInstant());
+	}
 }

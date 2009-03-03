@@ -5,11 +5,13 @@ import static java.lang.Integer.parseInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.time.Duration;
 import org.joda.time.Interval;
 
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.time.LogInstant;
+import com.gu.glug.time.LogInterval;
 
 public class CompletedDatabaseQueryParser implements LogMessageParser {
 
@@ -27,7 +29,7 @@ Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithCon
 		String dbQuery = matcher.group(1);
 		String durationInMillisText = matcher.group(3);
 		int durationInMillis = parseInt(durationInMillisText);
-		Interval interval = new Interval(logInstant.minusMillis(durationInMillis),logInstant);
+		LogInterval interval = new LogInterval(new Duration(durationInMillis),logInstant);
 		return new SignificantInterval(threadModel,new CompletedDatabaseQuery(dbQuery),interval);
 	}
 

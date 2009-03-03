@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import org.joda.time.Interval;
+import com.gu.glug.time.LogInterval;
 
 public class ThreadedSystem {
 	ConcurrentNavigableMap<String,ThreadModel> map = new ConcurrentSkipListMap<String, ThreadModel>();
@@ -13,12 +13,12 @@ public class ThreadedSystem {
 		getOrCreateThread(threadName).add(significantInterval);
 	}
 
-	public Interval getIntervalCoveredByAllThreads() {
-		Interval big = null;
+	public LogInterval getIntervalCoveredByAllThreads() {
+		LogInterval logIntervalCoveredByAllThreads = null;
 		for (ThreadModel threadModel : map.values()) {
-			big = threadModel.getInterval().union(big);
+			logIntervalCoveredByAllThreads = threadModel.getInterval().union(logIntervalCoveredByAllThreads);
 		}
-		return big;
+		return logIntervalCoveredByAllThreads;
 	}
 
 	public int getNumThreads() {

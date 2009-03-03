@@ -34,7 +34,7 @@ public class LogLineParser {
 2009-02-25 00:00:05,979 [resin-tcp-connection-respub.gul3.gnl:6802-197] INFO  com.gu.r2.common.webutil.RequestLoggingFilter - Request for /pages/Guardian/world/rss completed in 5 ms
 	 */
 	
-	public SignificantInterval parse(String line) throws ParseException {
+	public SignificantInterval parse(String line, int lineNumber) throws ParseException {
 		int messageSplitIndex = line.indexOf(" - ", lengthOfLogStringJustUpToBeforeDash);
 		
 		if (messageSplitIndex==-1) {
@@ -52,7 +52,7 @@ public class LogLineParser {
 				
 				if (matcher.find()) {
 					ThreadModel threadModel = logCoordinateParser.getThreadModel(line);
-					LogInstant logInstant = logCoordinateParser.getLogLineInstantInMillis(line);
+					LogInstant logInstant = new LogInstant(logCoordinateParser.getLogLineInstantInMillis(line),lineNumber);
 					return messageParser.process(matcher, threadModel, logInstant);
 				}
 			}

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -34,9 +35,9 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 	@Override
 	public ThreadedSystem doInBackground() {
 		System.out.print("Processing "+logFile);
-		BufferedReader reader;
+		LineNumberReader reader;
 		try {
-			reader = new BufferedReader(new InputStreamReader( new GZIPInputStream(new FileInputStream(logFile))));
+			reader = new LineNumberReader(new InputStreamReader( new GZIPInputStream(new FileInputStream(logFile))));
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

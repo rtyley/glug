@@ -24,6 +24,7 @@ import com.gu.glug.SignificantIntervalOccupier;
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.parser.logmessages.CompletedPageRequest;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
+import com.gu.glug.time.LogInterval;
 
 public class LogLineParserTest {
 
@@ -43,16 +44,16 @@ public class LogLineParserTest {
 		BufferedReader reader = new BufferedReader(new InputStreamReader( new GZIPInputStream(new FileInputStream(file))));
 		String line;
 		while ((line=reader.readLine())!=null) {
-			logLineParser.parse(line);
+			logLineParser.parse(line, null);
 		}
 	}
 	
 	@Test
 	public void shouldParsePageRequest() throws ParseException {
 		String testInput = "2009-02-25 00:00:05,979 [resin-tcp-connection-respub.gul3.gnl:6802-197] INFO  com.gu.r2.common.webutil.RequestLoggingFilter - Request for /pages/Guardian/world/rss completed in 5 ms";
-		SignificantInterval significantInterval = logLineParser.parse(testInput);
+		SignificantInterval significantInterval = logLineParser.parse(testInput, 1001);
 		assertThat(significantInterval.getThread().getName(), equalTo("resin-tcp-connection-respub.gul3.gnl:6802-197"));
-		Interval interval = significantInterval.getInterval();
+		LogInterval interval = significantInterval.getLogInterval();
 		assertThat(interval.toDurationMillis(),equalTo(5L));
 		assertThat(interval.getStart().getInstant().toDateTime().getYear(),equalTo(2009));
 		assertThat(significantInterval.getType(),equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/world/rss")));
@@ -61,7 +62,7 @@ public class LogLineParserTest {
 	@Test
 	public void shouldParsePageRequestWithoutThrowingADamnRuntimeException() throws ParseException {
 		String testInput = "2009-02-25 00:00:00,539 [resin-tcp-connection-*:8080-631] INFO  com.gu.r2.common.webutil.RequestLoggingFilter - Request for /management/cache/clear completed in 470 ms";
-		SignificantInterval significantInterval = logLineParser.parse(testInput);
+		SignificantInterval significantInterval = logLineParser.parse(testInput, null);
 		assertThat(significantInterval.getThread().getName(), equalTo("resin-tcp-connection-*:8080-631"));
 		Interval interval = significantInterval.getInterval();
 		assertThat(interval.toDurationMillis(),equalTo(470L));
@@ -73,8 +74,8 @@ public class LogLineParserTest {
 		LogCoordinateParser logCoordinateParser = mock(LogCoordinateParser.class);
 		
 		logLineParser = new LogLineParser(logCoordinateParser,null);
-		logLineParser.parse("a log line that is full of junk");
-		logLineParser.parse("a line that is too short - the dash normally comes much later");
+		logLineParser.parse("a log line that is full of junk", null);
+		logLineParser.parse("a line that is too short - the dash normally comes much later", null);
 		
 		verify(logCoordinateParser,never()).getLoggerName(anyString(), anyInt());
 	}

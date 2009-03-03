@@ -8,6 +8,11 @@ public class LogInstant implements Comparable<LogInstant> {
 	private final int logLineNumber;
 	private final Instant instant;
 
+	public LogInstant(long millis, int logLineNumber) {
+		this.instant = new Instant(millis);
+		this.logLineNumber = logLineNumber;
+	}
+	
 	public LogInstant(Instant instant, int logLineNumber) {
 		this.instant = instant;
 		this.logLineNumber = logLineNumber;

@@ -1,29 +1,29 @@
 package com.gu.glug.parser;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.text.ParseException;
 
 import com.gu.glug.SignificantInterval;
 
 public class LogParsingReader {
 
-	private final BufferedReader bufferedReader;
+	private final LineNumberReader lineNumberReader;
 	private final LogLineParser logLineParser;
 	private boolean endOfStream = false;
 
-	public LogParsingReader(BufferedReader bufferedReader, LogLineParser logLineParser) {
-		this.bufferedReader = bufferedReader;
+	public LogParsingReader(LineNumberReader lineNumberReader, LogLineParser logLineParser) {
+		this.lineNumberReader = lineNumberReader;
 		this.logLineParser = logLineParser;
 	}
 
 	public SignificantInterval parseNext() throws IOException, ParseException {
-		String line = bufferedReader.readLine();
+		String line = lineNumberReader.readLine();
 		if (line==null) {
 			endOfStream=true;
 			return null;
 		}
-		return logLineParser.parse(line);
+		return logLineParser.parse(line, lineNumberReader.getLineNumber());
 	}
 
 	public boolean endOfStream() {

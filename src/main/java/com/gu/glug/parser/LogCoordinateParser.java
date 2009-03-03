@@ -3,9 +3,10 @@ package com.gu.glug.parser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.joda.time.Instant;
+
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
-import com.gu.glug.time.LogInstant;
 
 public class LogCoordinateParser {
 	
@@ -25,11 +26,11 @@ public class LogCoordinateParser {
 		return loggerName;
 	}
 
-	public LogInstant getLogLineInstantInMillis(String line) throws ParseException {
+	public Instant getLogLineInstantInMillis(String line) throws ParseException {
 		String logDateTimeText=line.substring(0, DATETIME_FIELD_LENGTH);
 		//long logInstantInMillis = ISODateTimeFormat.dateHourMinuteSecondMillis().parseMillis(logDateTimeText);
 		long logInstantInMillis = gfg.parse(logDateTimeText).getTime();
-		return new LogInstant(logInstantInMillis*1000000);
+		return new Instant(logInstantInMillis);
 	}
 
 	public ThreadModel getThreadModel(String line) {

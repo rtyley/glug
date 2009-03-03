@@ -16,6 +16,7 @@ import java.awt.Rectangle;
 
 import javax.swing.JComponent;
 
+import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 import com.gu.glug.SignificantInterval;
@@ -99,7 +100,7 @@ public class ThreadedSystemViewPanel extends JComponent {
 	}
 
 
-	private LogInstant instantFor(double graphicsX) {
+	private Instant instantFor(double graphicsX) {
 		return intervalCoveredByAllThreads.getStart().toInstant().plus(round(graphicsX/magnifactionFactor));
 	}
 

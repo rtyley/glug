@@ -7,6 +7,7 @@ import org.joda.time.Interval;
 
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.parser.LogParsingReader;
+import com.gu.glug.time.LogInterval;
 
 public class LogLoader {
 
@@ -17,12 +18,12 @@ public class LogLoader {
 	}
 
 	public LoadReport loadLines(int numLines) throws IOException {
-		Interval intervalUpdated = null;
+		LogInterval intervalUpdated = null;
 		for (int numLinesRead=0;numLinesRead<numLines && !reader.endOfStream();++numLinesRead) {
 			try {
 				SignificantInterval significantInterval = reader.parseNext();
 				if (significantInterval!=null) {
-					intervalUpdated=significantInterval.getInterval().union(intervalUpdated);
+					intervalUpdated=significantInterval.getLogInterval().union(intervalUpdated);
 				}
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -34,14 +35,14 @@ public class LogLoader {
 	public static class LoadReport {
 
 		private final boolean endOfStream;
-		private final Interval intervalUpdated;
+		private final LogInterval intervalUpdated;
 
-		public LoadReport(boolean endOfStream, Interval intervalUpdated) {
+		public LoadReport(boolean endOfStream, LogInterval intervalUpdated) {
 			this.endOfStream = endOfStream;
 			this.intervalUpdated = intervalUpdated;
 		}
 
-		public Interval getUpdatedInterval() {
+		public LogInterval getUpdatedInterval() {
 			return intervalUpdated;
 		}
 
