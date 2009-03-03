@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.joda.time.Duration;
-import org.joda.time.Interval;
 
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
@@ -26,11 +25,11 @@ Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithCon
 
 	@Override
 	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant) {
-		String dbQuery = matcher.group(1).intern();
+		String dbQuery = matcher.group(1);
 		String durationInMillisText = matcher.group(3);
 		int durationInMillis = parseInt(durationInMillisText);
 		LogInterval interval = new LogInterval(new Duration(durationInMillis),logInstant);
-		return new SignificantInterval(threadModel,new CompletedDatabaseQuery(dbQuery),interval);
+		return new SignificantInterval(threadModel,CompletedDatabaseQuery.createCompletedDatabaseQueryFor(dbQuery),interval);
 	}
 
 	@Override

@@ -1,14 +1,29 @@
 package com.gu.glug.parser.logmessages;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.gu.glug.SignificantIntervalOccupier;
 
 public class CompletedDatabaseQuery implements SignificantIntervalOccupier {
 
+	private final static Map<String,CompletedDatabaseQuery> cache = new HashMap<String,CompletedDatabaseQuery>();
+	
+	public static CompletedDatabaseQuery createCompletedDatabaseQueryFor(String dbQuery) {
+		CompletedDatabaseQuery completedDatabaseQuery = cache.get(dbQuery);
+		if (completedDatabaseQuery==null) {
+			completedDatabaseQuery = new CompletedDatabaseQuery(dbQuery);
+			cache.put(dbQuery, completedDatabaseQuery);
+		}
+		return completedDatabaseQuery;
+	}
+	
+	
+	
 	private final String dbQuery;
 
-	public CompletedDatabaseQuery(String dbQuery) {
+	private CompletedDatabaseQuery(String dbQuery) {
 		this.dbQuery = dbQuery;
-		// TODO Auto-generated constructor stub
 	}
 	
 	public String getDbQuery() {
