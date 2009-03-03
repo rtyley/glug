@@ -77,5 +77,8 @@ public class LogInstant implements Comparable<LogInstant> {
 		return true;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return instant+":line="+logLineNumber;
+	}
 }
