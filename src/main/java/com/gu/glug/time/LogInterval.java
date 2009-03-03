@@ -1,6 +1,7 @@
 package com.gu.glug.time;
 
 import org.joda.time.Duration;
+import org.joda.time.Interval;
 
 public class LogInterval {
 
@@ -117,6 +118,10 @@ public class LogInterval {
 		} else if (!start.equals(other.start))
 			return false;
 		return true;
+	}
+
+	public Interval toJodaInterval() {
+		return new Interval(start.getMillis(),end.getMillis());
 	}
 
 	

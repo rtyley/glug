@@ -3,8 +3,6 @@ package com.gu.glug.gui;
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.joda.time.Interval;
-
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.parser.LogParsingReader;
 import com.gu.glug.time.LogInterval;

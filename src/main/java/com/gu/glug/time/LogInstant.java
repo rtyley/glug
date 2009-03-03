@@ -2,8 +2,6 @@ package com.gu.glug.time;
 
 import org.joda.time.Instant;
 
-import com.gu.glug.SignificantInterval;
-
 public class LogInstant implements Comparable<LogInstant> {
 	private final int logLineNumber;
 	private final Instant instant;

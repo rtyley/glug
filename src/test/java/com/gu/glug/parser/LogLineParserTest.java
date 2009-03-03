@@ -8,14 +8,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.text.ParseException;
-import java.util.zip.GZIPInputStream;
 
-import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,17 +32,6 @@ public class LogLineParserTest {
 	}
 	
 	@Test
-	public void shouldParseExampleFile() throws Exception {
-		File file = new File("/home/roberto/development/glug/src/test/resources/r2frontend.respub01.first10000.log.gz");
-		assert (file.exists());
-		BufferedReader reader = new BufferedReader(new InputStreamReader( new GZIPInputStream(new FileInputStream(file))));
-		String line;
-		while ((line=reader.readLine())!=null) {
-			logLineParser.parse(line, null);
-		}
-	}
-	
-	@Test
 	public void shouldParsePageRequest() throws ParseException {
 		String testInput = "2009-02-25 00:00:05,979 [resin-tcp-connection-respub.gul3.gnl:6802-197] INFO  com.gu.r2.common.webutil.RequestLoggingFilter - Request for /pages/Guardian/world/rss completed in 5 ms";
 		SignificantInterval significantInterval = logLineParser.parse(testInput, 1001);
@@ -62,9 +45,9 @@ public class LogLineParserTest {
 	@Test
 	public void shouldParsePageRequestWithoutThrowingADamnRuntimeException() throws ParseException {
 		String testInput = "2009-02-25 00:00:00,539 [resin-tcp-connection-*:8080-631] INFO  com.gu.r2.common.webutil.RequestLoggingFilter - Request for /management/cache/clear completed in 470 ms";
-		SignificantInterval significantInterval = logLineParser.parse(testInput, null);
+		SignificantInterval significantInterval = logLineParser.parse(testInput, 1001);
 		assertThat(significantInterval.getThread().getName(), equalTo("resin-tcp-connection-*:8080-631"));
-		Interval interval = significantInterval.getInterval();
+		LogInterval interval = significantInterval.getLogInterval();
 		assertThat(interval.toDurationMillis(),equalTo(470L));
 		assertThat(interval.getStart().getInstant().toDateTime().getYear(),equalTo(2009));
 	}
@@ -74,8 +57,8 @@ public class LogLineParserTest {
 		LogCoordinateParser logCoordinateParser = mock(LogCoordinateParser.class);
 		
 		logLineParser = new LogLineParser(logCoordinateParser,null);
-		logLineParser.parse("a log line that is full of junk", null);
-		logLineParser.parse("a line that is too short - the dash normally comes much later", null);
+		logLineParser.parse("a log line that is full of junk", 1001);
+		logLineParser.parse("a line that is too short - the dash normally comes much later", 1002);
 		
 		verify(logCoordinateParser,never()).getLoggerName(anyString(), anyInt());
 	}

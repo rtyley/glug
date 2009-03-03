@@ -1,6 +1,5 @@
 package com.gu.glug.gui;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,14 +10,13 @@ import java.util.zip.GZIPInputStream;
 
 import javax.swing.SwingWorker;
 
-import org.joda.time.Interval;
-
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.gui.LogLoader.LoadReport;
 import com.gu.glug.parser.LogCoordinateParser;
 import com.gu.glug.parser.LogLineParser;
 import com.gu.glug.parser.LogParsingReader;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
+import com.gu.glug.time.LogInterval;
 
 public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 
@@ -62,11 +60,11 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 	
 	@Override
 	protected void process(List<LoadReport> loadReports) {
-		Interval interval = null;
+		LogInterval interval = null;
 		for (LoadReport loadReport : loadReports) {
 			interval = loadReport.getUpdatedInterval().union(interval);
 		}
-		threadedSystemViewPanel.repaint(interval);
+		threadedSystemViewPanel.repaint(interval.toJodaInterval());
 	}
 
 }

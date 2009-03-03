@@ -27,9 +27,9 @@ public class CompletedPageRequestParserTest {
 		
 		Matcher matcher = parser.getPattern().matcher(logMessage);
 		assertThat(matcher.find(), is(true));
-		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L));
+		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L,101));
 		
-		assertThat(sigInt.getInterval().toDurationMillis(), equalTo(712L));
+		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(712L));
 		assertThat(sigInt.getType(), equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/lifeandstyle")));
 	}
 }

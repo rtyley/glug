@@ -24,6 +24,7 @@ import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.parser.logmessages.CompletedPageRequest;
 import com.gu.glug.time.LogInstant;
+import com.gu.glug.time.LogInterval;
 
 /**
  *
@@ -34,7 +35,7 @@ public class ThreadedSystemViewPanel extends JComponent {
 	private static final long serialVersionUID = 1L;
 	private double magnifactionFactor = 0.1d;
 	private ThreadedSystem threadedSystem;
-	private Interval intervalCoveredByAllThreads;
+	private LogInterval intervalCoveredByAllThreads;
 	
 	public ThreadedSystemViewPanel(ThreadedSystem threadedSystem) {
 		this.threadedSystem = threadedSystem;
@@ -70,8 +71,8 @@ public class ThreadedSystemViewPanel extends JComponent {
 	        		} else {
 	        			g.setColor(Color.BLACK);
 	        		}
-	        		Interval aa = significantInterval.getInterval();
-					g.drawLine(graphicsXFor(aa.getStart().toInstant()), -threadIndex, graphicsXFor(aa.getEnd().toInstant()), -threadIndex);
+	        		LogInterval aa = significantInterval.getLogInterval();
+					g.drawLine(graphicsXFor(aa.getStart().getInstant()), -threadIndex, graphicsXFor(aa.getEnd().getInstant()), -threadIndex);
 	        	}
 	        	--threadIndex;
 	        }
@@ -85,28 +86,32 @@ public class ThreadedSystemViewPanel extends JComponent {
     }
 
 
-	private int graphicsXFor(LogInstant instant) {
+	private int graphicsXFor(Instant instant) {
 		
-		int graphicsX = (int) round(instant.differenceInNanosFrom(intervalCoveredByAllThreads.getStart()) * magnifactionFactor);
+		int graphicsX = (int) round((differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(instant)) * magnifactionFactor);
 		return graphicsX;
+	}
+
+	private long differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(Instant instant) {
+		return instant.getMillis() - intervalCoveredByAllThreads.getStart().getMillis();
 	}
 
 	private Interval visibleIntervalFor(Rectangle clipBounds) {
 		return new Interval(instantFor(clipBounds.getMinX()),instantFor(clipBounds.getMaxX()));
 	}
 
-	private double getDrawDistanceFor(Interval interval) {
+	private double getDrawDistanceFor(LogInterval interval) {
 		return interval.toDurationMillis() * magnifactionFactor;
 	}
 
 
 	private Instant instantFor(double graphicsX) {
-		return intervalCoveredByAllThreads.getStart().toInstant().plus(round(graphicsX/magnifactionFactor));
+		return intervalCoveredByAllThreads.getStart().getInstant().plus(round(graphicsX/magnifactionFactor));
 	}
 
 	public void repaint(Interval interval) {
 		cacheIntervalCoveredByAllThreads();
-		repaint(graphicsXFor(interval.getStart())-1, 0, graphicsXFor(interval.getEnd())+1, threadedSystem.getNumThreads());
+		repaint(graphicsXFor(interval.getStart().toInstant())-1, 0, graphicsXFor(interval.getEnd().toInstant())+1, threadedSystem.getNumThreads());
 	}
 
 
