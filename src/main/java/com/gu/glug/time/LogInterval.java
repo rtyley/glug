@@ -31,7 +31,7 @@ public class LogInterval {
      * Intervals are inclusive of the start instant and exclusive of the end.
      */
 	public boolean isAfter(LogInterval otherLogInterval) {
-        return !otherLogInterval.start.isBefore(end);
+        return !otherLogInterval.end.isAfter(start);
 	}
 
     /**

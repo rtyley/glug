@@ -1,8 +1,5 @@
 package com.gu.glug;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -28,9 +25,7 @@ public class SignificantInstants {
 	
 	SortedSet<SignificantInterval> getSignificantIntervalsDuring(Interval interval) {
 		LogInterval logInterval = new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),0));
-		SortedMap<LogInstant, SignificantInterval> subMap = subMapFor(logInterval);
-		List<SignificantInterval> dfsdf = new ArrayList<SignificantInterval>(subMap.values());
-		return new TreeSet<SignificantInterval>(subMap.values()); // Make SignificantInterval implement Comparable!
+		return new TreeSet<SignificantInterval>(subMapFor(logInterval).values()); // Make SignificantInterval implement Comparable!
 	}
 	
 	public void add(SignificantInterval significantInterval) {
