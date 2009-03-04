@@ -45,8 +45,11 @@ public class ThreadedSystemViewPanel extends JComponent {
 	public ThreadedSystemViewPanel(ThreadedSystem threadedSystem) {
 		this.threadedSystem = threadedSystem;
 		cacheIntervalCoveredByAllThreads();
-		
-        ToolTipManager.sharedInstance().registerComponent(this);
+		ToolTipManager sharedInstance = ToolTipManager.sharedInstance();
+		sharedInstance.setInitialDelay(20);
+		sharedInstance.setReshowDelay(10);
+		sharedInstance.setDismissDelay(10000);
+		sharedInstance.registerComponent(this);
 	}
 	
     @Override
@@ -140,7 +143,7 @@ public class ThreadedSystemViewPanel extends JComponent {
 		if (significantIntervalsFor.isEmpty()) {
 			return null;
 		}
-		return significantIntervalsFor.toString();
+		return "<html>"+significantIntervalsFor.toString()+"</html>";
 	}
 
 	private ThreadModel threadFor(Point point) {

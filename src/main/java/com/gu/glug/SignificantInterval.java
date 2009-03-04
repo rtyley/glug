@@ -78,7 +78,7 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 	
 	@Override
 	public String toString() {
-		return logInterval+"\n"+intervalOccupier;
+		return "<p>"+logInterval+"<p>"+intervalOccupier;
 	}
 	
 }
