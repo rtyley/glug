@@ -3,7 +3,7 @@ package com.gu.glug.time;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
-public class LogInterval {
+public class LogInterval implements Comparable<LogInterval> {
 
 	private final LogInstant start,end;
 
@@ -122,6 +122,15 @@ public class LogInterval {
 
 	public Interval toJodaInterval() {
 		return new Interval(start.getMillis(),end.getMillis());
+	}
+
+	@Override
+	public int compareTo(LogInterval otherLogInterval) {
+		int startCompare = start.compareTo(otherLogInterval.start);
+		if (startCompare!=0) {
+			return startCompare;
+		}
+		return end.compareTo(otherLogInterval.end);
 	}
 
 	

@@ -7,6 +7,7 @@ import java.util.TreeSet;
 
 import org.joda.time.Interval;
 
+import com.gu.glug.time.LogInstant;
 import com.gu.glug.time.LogInterval;
 
 public class ThreadModel {
@@ -37,14 +38,26 @@ public class ThreadModel {
 	}
 
 	public Iterable<SignificantInterval> getSignificantIntervalsFor(Interval interval) {
-		SortedSet<SignificantInterval> significantInstantsForInterval = new TreeSet<SignificantInterval>();
+		SortedSet<SignificantInterval> significantIntervals = new TreeSet<SignificantInterval>();
 		for (SignificantInstants significantInstants : map.values()) {
-			significantInstantsForInterval.addAll(significantInstants.getSignificantIntervalsDuring(interval));
+			significantIntervals.addAll(significantInstants.getSignificantIntervalsDuring(interval));
 		}
-		return significantInstantsForInterval;
+		return significantIntervals;
 	}
 
 	public String getName() {
 		return name;
+	}
+
+	public SortedSet<SignificantInterval> getSignificantIntervalsFor(LogInstant instant) {
+		SortedSet<SignificantInterval> significantIntervals = new TreeSet<SignificantInterval>();
+		for (SignificantInstants significantInstants : map.values()) {
+			SignificantInterval significantIntervalAtInstant = significantInstants.getSignificantIntervalAt(instant);
+			if (significantIntervalAtInstant!=null) {
+				significantIntervals.add(significantIntervalAtInstant);
+			}
+		}
+		return significantIntervals;
+		
 	}
 }

@@ -12,9 +12,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.SortedSet;
 
 import javax.swing.JComponent;
+import javax.swing.ToolTipManager;
 
 import org.joda.time.Instant;
 import org.joda.time.Interval;
@@ -23,6 +28,7 @@ import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.parser.logmessages.CompletedPageRequest;
+import com.gu.glug.time.LogInstant;
 import com.gu.glug.time.LogInterval;
 
 /**
@@ -39,16 +45,22 @@ public class ThreadedSystemViewPanel extends JComponent {
 	public ThreadedSystemViewPanel(ThreadedSystem threadedSystem) {
 		this.threadedSystem = threadedSystem;
 		cacheIntervalCoveredByAllThreads();
+		
+        ToolTipManager.sharedInstance().registerComponent(this);
 	}
 	
     @Override
     public Dimension getPreferredSize() {
-    	if (intervalCoveredByAllThreads==null) {
+    	if (!containsData()) {
     		return super.getPreferredSize();
     	}
         int requiredWidth = (int) ceil(getDrawDistanceFor(intervalCoveredByAllThreads));
 		return new Dimension(requiredWidth,threadedSystem.getNumThreads());
     }
+
+	private boolean containsData() {
+		return intervalCoveredByAllThreads!=null;
+	}
 
 	private void cacheIntervalCoveredByAllThreads() {
 		intervalCoveredByAllThreads = threadedSystem.getIntervalCoveredByAllThreads();
@@ -114,4 +126,30 @@ public class ThreadedSystemViewPanel extends JComponent {
 	}
 
 
+	@Override
+	public String getToolTipText(MouseEvent event) {
+		if (!containsData()) {
+			return null;
+		}
+		ThreadModel thread = threadFor(event.getPoint());
+		if (thread==null) {
+			return null;
+		}
+		Instant instant = instantFor(event.getX());
+		SortedSet<SignificantInterval> significantIntervalsFor = thread.getSignificantIntervalsFor(new LogInstant(instant,0));
+		if (significantIntervalsFor.isEmpty()) {
+			return null;
+		}
+		return significantIntervalsFor.toString();
+	}
+
+	private ThreadModel threadFor(Point point) {
+		
+		ArrayList<ThreadModel> threads = new ArrayList<ThreadModel>(threadedSystem.getThreads());
+		int threadIndex = point.y;
+		if (threadIndex>=0 && threadIndex<threads.size()) {
+			return threads.get(threadIndex);			
+		}
+		return null;
+	}
 }

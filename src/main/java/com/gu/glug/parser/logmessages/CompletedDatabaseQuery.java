@@ -55,4 +55,8 @@ public class CompletedDatabaseQuery implements SignificantIntervalOccupier {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()+"["+dbQuery+"]";
+	}
 }

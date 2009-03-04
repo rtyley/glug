@@ -15,14 +15,12 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 	}
 
 	@Override
-	public int compareTo(SignificantInterval o) {
-		if (logInterval.isAfter(o.logInterval)) {
-			return 1;
+	public int compareTo(SignificantInterval otherSignificantInterval) {
+		int logIntervalCompare = logInterval.compareTo(otherSignificantInterval.logInterval);
+		if (logIntervalCompare!=0) {
+			return logIntervalCompare;
 		}
-		if (logInterval.isBefore(o.logInterval)) {
-			return -1;
-		}
-		return 0;
+		return this.getClass().hashCode() - otherSignificantInterval.getClass().hashCode(); // TODO Welcome to hackarama
 	}
 
 	public SignificantIntervalOccupier getType() {
@@ -76,6 +74,11 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 		} else if (!threadModel.equals(other.threadModel))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return logInterval+"\n"+intervalOccupier;
 	}
 	
 }

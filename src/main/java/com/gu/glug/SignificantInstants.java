@@ -3,6 +3,7 @@ package com.gu.glug;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -14,14 +15,14 @@ import com.gu.glug.time.LogInterval;
 public class SignificantInstants {
 	private ConcurrentNavigableMap<LogInstant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<LogInstant, SignificantInterval>();
 
-//	SignificantInterval getSignificantIntervalAt(LogInstant instant) {
-//		Entry<LogInstant, SignificantInterval> floorEntry = significantInstants.floorEntry(instant);
-//		if (floorEntry==null) {
-//			return null;
-//		}
-//		SignificantInterval sigInt = floorEntry.getValue();
-//		return sigInt.getInterval().contains(instant) ? sigInt : null;
-//	}
+	SignificantInterval getSignificantIntervalAt(LogInstant instant) {
+		Entry<LogInstant, SignificantInterval> floorEntry = significantInstants.floorEntry(instant);
+		if (floorEntry==null) {
+			return null;
+		}
+		SignificantInterval sigInt = floorEntry.getValue();
+		return sigInt.getLogInterval().contains(instant) ? sigInt : null;
+	}
 	
 	SortedSet<SignificantInterval> getSignificantIntervalsDuring(Interval interval) {
 		LogInterval logInterval = new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),0));
