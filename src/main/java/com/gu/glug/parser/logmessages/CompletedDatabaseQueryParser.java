@@ -20,7 +20,7 @@ public class CompletedDatabaseQueryParser implements LogMessageParser {
 Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithConstantHeading) completed in 20 ms
  */
 	
-	private static final Pattern databaseQueryPattern = Pattern.compile("Query \"(.+)\" \\(component: (.+)\\) completed in (\\d+) ms");
+	private static final Pattern databaseQueryPattern = Pattern.compile("Query \"(.+?)\" \\(component: (.+?)\\) completed in (\\d+?) ms");
 	
 
 	@Override

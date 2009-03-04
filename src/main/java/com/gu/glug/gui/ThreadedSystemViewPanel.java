@@ -23,7 +23,6 @@ import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
 import com.gu.glug.parser.logmessages.CompletedPageRequest;
-import com.gu.glug.time.LogInstant;
 import com.gu.glug.time.LogInterval;
 
 /**
@@ -66,13 +65,13 @@ public class ThreadedSystemViewPanel extends JComponent {
 	        int threadIndex=0;
 	        for (ThreadModel threadModel : threadedSystem.getThreads()) {
 	        	for (SignificantInterval significantInterval : threadModel.getSignificantIntervalsFor(visibleInterval)) {
+	        		LogInterval aa = significantInterval.getLogInterval();
 	        		if (significantInterval.getType() instanceof CompletedPageRequest) {
 	        			g.setColor(Color.RED);		
 	        		} else {
 	        			g.setColor(Color.BLACK);
 	        		}
-	        		LogInterval aa = significantInterval.getLogInterval();
-					g.drawLine(graphicsXFor(aa.getStart().getInstant()), -threadIndex, graphicsXFor(aa.getEnd().getInstant()), -threadIndex);
+	        		g.drawLine(graphicsXFor(aa.getStart().getInstant()), -threadIndex, graphicsXFor(aa.getEnd().getInstant()), -threadIndex);
 	        	}
 	        	--threadIndex;
 	        }

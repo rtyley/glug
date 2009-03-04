@@ -14,7 +14,8 @@ import com.gu.glug.time.LogInterval;
 
 public class CompletedPageRequestParser implements LogMessageParser {
 
-	private static final Pattern requestCompletedPattern = Pattern.compile("Request for ([^ ]+) completed in (\\d+) ms");
+	private static final Pattern requestCompletedPattern = 
+		Pattern.compile("^Request for ([^ ]+?) completed in (\\d+?) ms$");
 	
 
 	@Override
