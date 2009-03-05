@@ -20,6 +20,7 @@ import java.io.InputStream;
 import javax.swing.JFileChooser;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
+import javax.swing.plaf.SliderUI;
 
 import com.gu.glug.ThreadedSystem;
 
@@ -38,6 +39,8 @@ public class GlugMainJFrame extends javax.swing.JFrame {
         //threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
         jScrollPane1.getViewport().add(threadedSystemViewPanel);
         jScrollPane1.validate();
+        logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
+        zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(threadedSystemViewPanel, logarithmicBoundedRange);
         TransferHandler newHandler = new TransferHandler() {
         	@Override
         	public boolean canImport(TransferSupport support) {
@@ -140,8 +143,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_timeMagnificationSliderStateChanged
-
-        threadedSystemViewPanel.setMagnification(Math.pow(2, ((timeMagnificationSlider.getValue()/4f)-80)/16 ));
+        threadedSystemViewPanel.setMillisecondsPerPixel(logarithmicBoundedRange.getCurrentMillisecondsPerPixel());
 }//GEN-LAST:event_timeMagnificationSliderStateChanged
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
@@ -151,7 +153,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
             File selectedFile = jFileChooser1.getSelectedFile();
 			System.out.println("You chose to open this file: " +
             		 selectedFile.getName());
-            new LogLoadingTask(selectedFile, threadedSystem, threadedSystemViewPanel).execute();
+            new LogLoadingTask(selectedFile, threadedSystem, threadedSystemViewPanel, zoomFactorSlideUpdater).execute();
             
           }
 }//GEN-LAST:event_openFileMenuItemActionPerformed
@@ -181,5 +183,9 @@ public class GlugMainJFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem openFileMenuItem;
     private javax.swing.JSlider timeMagnificationSlider;
     // End of variables declaration//GEN-END:variables
+
+	private LogarithmicBoundedRange logarithmicBoundedRange;
+
+	private ZoomFactorSlideUpdater zoomFactorSlideUpdater;
 
 }

@@ -14,6 +14,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.SortedSet;
@@ -32,78 +33,95 @@ import com.gu.glug.time.LogInstant;
 import com.gu.glug.time.LogInterval;
 
 /**
- *
+ * 
  * @author roberto
  */
 public class ThreadedSystemViewPanel extends JComponent {
 
 	private static final long serialVersionUID = 1L;
-	private double magnifactionFactor = 0.1d;
+	private double millisecondsPerPixel = 0.25d;
 	private ThreadedSystem threadedSystem;
 	private LogInterval intervalCoveredByAllThreads;
-	
+	LogarithmicBoundedRange logarithmicBoundedRange;
+
 	public ThreadedSystemViewPanel(ThreadedSystem threadedSystem) {
 		this.threadedSystem = threadedSystem;
 		cacheIntervalCoveredByAllThreads();
-		ToolTipManager sharedInstance = ToolTipManager.sharedInstance();
-		sharedInstance.setInitialDelay(20);
-		sharedInstance.setReshowDelay(10);
-		sharedInstance.setDismissDelay(10000);
-		sharedInstance.registerComponent(this);
+		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+		makeResponsive(toolTipManager);
+		toolTipManager.registerComponent(this);
+		
+
 	}
+
 	
-    @Override
-    public Dimension getPreferredSize() {
-    	if (!containsData()) {
-    		return super.getPreferredSize();
-    	}
-        int requiredWidth = (int) ceil(getDrawDistanceFor(intervalCoveredByAllThreads));
-		return new Dimension(requiredWidth,threadedSystem.getNumThreads());
-    }
+	private void makeResponsive(ToolTipManager toolTipManager) {
+		toolTipManager.setInitialDelay(20);
+		toolTipManager.setReshowDelay(10);
+		toolTipManager.setDismissDelay(10000);
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		if (!containsData()) {
+			return super.getPreferredSize();
+		}
+		int requiredWidth = (int) ceil(getDrawDistanceFor(intervalCoveredByAllThreads));
+		return new Dimension(requiredWidth, threadedSystem.getNumThreads());
+	}
 
 	private boolean containsData() {
-		return intervalCoveredByAllThreads!=null;
+		return intervalCoveredByAllThreads != null;
 	}
 
+	public LogInterval getIntervalCoveredByAllThreads(boolean update) {
+		if (update) {
+			cacheIntervalCoveredByAllThreads();
+		}
+		return intervalCoveredByAllThreads;
+	}
+	
 	private void cacheIntervalCoveredByAllThreads() {
 		intervalCoveredByAllThreads = threadedSystem.getIntervalCoveredByAllThreads();
 	}
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D graphics2D = (Graphics2D) g;
-        Rectangle clipBounds = graphics2D.getClipBounds();
-        cacheIntervalCoveredByAllThreads();
-        if (intervalCoveredByAllThreads!=null) {
-	        Interval visibleInterval=visibleIntervalFor(clipBounds);
-	        int threadIndex=0;
-	        for (ThreadModel threadModel : threadedSystem.getThreads()) {
-	        	for (SignificantInterval significantInterval : threadModel.getSignificantIntervalsFor(visibleInterval)) {
-	        		LogInterval aa = significantInterval.getLogInterval();
-	        		if (significantInterval.getType() instanceof CompletedPageRequest) {
-	        			g.setColor(Color.RED);		
-	        		} else {
-	        			g.setColor(Color.BLACK);
-	        		}
-	        		g.drawLine(graphicsXFor(aa.getStart().getInstant()), -threadIndex, graphicsXFor(aa.getEnd().getInstant()), -threadIndex);
-	        	}
-	        	--threadIndex;
-	        }
-        }
-        
-    }
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D graphics2D = (Graphics2D) g;
+		Rectangle clipBounds = graphics2D.getClipBounds();
+		cacheIntervalCoveredByAllThreads();
+		if (intervalCoveredByAllThreads != null) {
+			Interval visibleInterval = visibleIntervalFor(clipBounds);
+			int threadIndex = 0;
+			for (ThreadModel threadModel : threadedSystem.getThreads()) {
+				for (SignificantInterval significantInterval : threadModel
+						.getSignificantIntervalsFor(visibleInterval)) {
+					LogInterval aa = significantInterval.getLogInterval();
+					if (significantInterval.getType() instanceof CompletedPageRequest) {
+						g.setColor(Color.RED);
+					} else {
+						g.setColor(Color.BLACK);
+					}
+					g.drawLine(graphicsXFor(aa.getStart().getInstant()),
+							-threadIndex,
+							graphicsXFor(aa.getEnd().getInstant()),
+							-threadIndex);
+				}
+				--threadIndex;
+			}
+		}
 
-    void setMagnification(double d) {
-        this.magnifactionFactor = d;
-        this.repaint();
-    }
+	}
 
+	void setMillisecondsPerPixel(double millisecondsPerPixel) {
+		this.millisecondsPerPixel = millisecondsPerPixel;
+		System.out.println("millisecondsPerPixel = "+millisecondsPerPixel);
+		this.repaint();
+	}
 
 	private int graphicsXFor(Instant instant) {
-		
-		int graphicsX = (int) round((differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(instant)) * magnifactionFactor);
-		return graphicsX;
+		return (int) round((differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(instant)) / millisecondsPerPixel);
 	}
 
 	private long differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(Instant instant) {
@@ -111,23 +129,25 @@ public class ThreadedSystemViewPanel extends JComponent {
 	}
 
 	private Interval visibleIntervalFor(Rectangle clipBounds) {
-		return new Interval(instantFor(clipBounds.getMinX()),instantFor(clipBounds.getMaxX()));
+		return new Interval(instantFor(clipBounds.getMinX()),
+				instantFor(clipBounds.getMaxX()));
 	}
 
 	private double getDrawDistanceFor(LogInterval interval) {
-		return interval.toDurationMillis() * magnifactionFactor;
+		return interval.toDurationMillis() / millisecondsPerPixel;
 	}
 
-
 	private Instant instantFor(double graphicsX) {
-		return intervalCoveredByAllThreads.getStart().getInstant().plus(round(graphicsX/magnifactionFactor));
+		return intervalCoveredByAllThreads.getStart().getInstant().plus(
+				round(graphicsX * millisecondsPerPixel));
 	}
 
 	public void repaint(Interval interval) {
 		cacheIntervalCoveredByAllThreads();
-		repaint(graphicsXFor(interval.getStart().toInstant())-1, 0, graphicsXFor(interval.getEnd().toInstant())+1, threadedSystem.getNumThreads());
+		repaint(graphicsXFor(interval.getStart().toInstant()) - 1, 0,
+				graphicsXFor(interval.getEnd().toInstant()) + 1, threadedSystem
+						.getNumThreads());
 	}
-
 
 	@Override
 	public String getToolTipText(MouseEvent event) {
@@ -135,24 +155,37 @@ public class ThreadedSystemViewPanel extends JComponent {
 			return null;
 		}
 		ThreadModel thread = threadFor(event.getPoint());
-		if (thread==null) {
+		if (thread == null) {
 			return null;
 		}
 		Instant instant = instantFor(event.getX());
-		SortedSet<SignificantInterval> significantIntervalsFor = thread.getSignificantIntervalsFor(new LogInstant(instant,0));
+		SortedSet<SignificantInterval> significantIntervalsFor = thread
+				.getSignificantIntervalsFor(new LogInstant(instant, 0));
 		if (significantIntervalsFor.isEmpty()) {
 			return null;
 		}
-		return "<html>"+significantIntervalsFor.toString()+"</html>";
+		return "<html>" + significantIntervalsFor.toString() + "</html>";
 	}
 
 	private ThreadModel threadFor(Point point) {
-		
-		ArrayList<ThreadModel> threads = new ArrayList<ThreadModel>(threadedSystem.getThreads());
+
+		ArrayList<ThreadModel> threads = new ArrayList<ThreadModel>(
+				threadedSystem.getThreads());
 		int threadIndex = point.y;
-		if (threadIndex>=0 && threadIndex<threads.size()) {
-			return threads.get(threadIndex);			
+		if (threadIndex >= 0 && threadIndex < threads.size()) {
+			return threads.get(threadIndex);
 		}
 		return null;
 	}
+
+	@Override
+	protected void processComponentEvent(ComponentEvent e) {
+		super.processComponentEvent(e);
+		if (e.getID() == ComponentEvent.COMPONENT_RESIZED) {
+			
+		}
+	}
+
+
+
 }

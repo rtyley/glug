@@ -23,11 +23,13 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 	private final File logFile;
 	private final ThreadedSystem threadedSystem;
 	private final ThreadedSystemViewPanel threadedSystemViewPanel;
+	private final ZoomFactorSlideUpdater zoomFactorSlideUpdater;
 	
-	public LogLoadingTask(File logFile,ThreadedSystem threadedSystem, ThreadedSystemViewPanel threadedSystemViewPanel) {
+	public LogLoadingTask(File logFile,ThreadedSystem threadedSystem, ThreadedSystemViewPanel threadedSystemViewPanel, ZoomFactorSlideUpdater zoomFactorSlideUpdater) {
 		this.logFile = logFile;
 		this.threadedSystem = threadedSystem;
 		this.threadedSystemViewPanel = threadedSystemViewPanel;
+		this.zoomFactorSlideUpdater = zoomFactorSlideUpdater;
 	}
 
 	@Override
@@ -64,6 +66,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 		for (LoadReport loadReport : loadReports) {
 			interval = loadReport.getUpdatedInterval().union(interval);
 		}
+		zoomFactorSlideUpdater.updateSliderMax();
 		threadedSystemViewPanel.repaint(interval.toJodaInterval());
 	}
 
