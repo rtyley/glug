@@ -4,20 +4,23 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import javax.swing.JSlider;
+import javax.swing.JViewport;
 
 import com.gu.glug.time.LogInterval;
 
 public class ZoomFactorSlideUpdater {
 	private final LogarithmicBoundedRange logarithmicBoundedRange;
-	private final ThreadedSystemViewPanel threadedSystemViewPanel;
+	private final ThreadedSystemViewComponent threadedSystemViewPanel;
+	private final JViewport viewport;
 
-	public ZoomFactorSlideUpdater(ThreadedSystemViewPanel threadedSystemViewPanel, LogarithmicBoundedRange logarithmicBoundedRange) {
+	public ZoomFactorSlideUpdater(JViewport viewport, ThreadedSystemViewComponent threadedSystemViewPanel, LogarithmicBoundedRange logarithmicBoundedRange) {
+		this.viewport = viewport;
 		this.threadedSystemViewPanel = threadedSystemViewPanel;
 		this.logarithmicBoundedRange = logarithmicBoundedRange;
 		
 		updateSliderBounds();
 		
-		threadedSystemViewPanel.addComponentListener(new ComponentAdapter() {
+		viewport.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				updateSliderMax();
@@ -33,7 +36,7 @@ public class ZoomFactorSlideUpdater {
 	public void updateSliderMax() {
 		LogInterval intervalCoveredByAllThreads = threadedSystemViewPanel.getIntervalCoveredByAllThreads(true);
 		if (intervalCoveredByAllThreads!=null) {
-			int width = threadedSystemViewPanel.getWidth();
+			int width = viewport.getExtentSize().width;
 			long millis=intervalCoveredByAllThreads.toDurationMillis();
 			double millisPerPixelRequiredToShowEntireInterval = ((double)millis) / width;
 			logarithmicBoundedRange.setMaxMillisecondsPerPixel(millisPerPixelRequiredToShowEntireInterval);

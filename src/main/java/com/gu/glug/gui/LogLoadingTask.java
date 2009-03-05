@@ -22,10 +22,10 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 
 	private final File logFile;
 	private final ThreadedSystem threadedSystem;
-	private final ThreadedSystemViewPanel threadedSystemViewPanel;
+	private final ThreadedSystemViewComponent threadedSystemViewPanel;
 	private final ZoomFactorSlideUpdater zoomFactorSlideUpdater;
 	
-	public LogLoadingTask(File logFile,ThreadedSystem threadedSystem, ThreadedSystemViewPanel threadedSystemViewPanel, ZoomFactorSlideUpdater zoomFactorSlideUpdater) {
+	public LogLoadingTask(File logFile,ThreadedSystem threadedSystem, ThreadedSystemViewComponent threadedSystemViewPanel, ZoomFactorSlideUpdater zoomFactorSlideUpdater) {
 		this.logFile = logFile;
 		this.threadedSystem = threadedSystem;
 		this.threadedSystemViewPanel = threadedSystemViewPanel;

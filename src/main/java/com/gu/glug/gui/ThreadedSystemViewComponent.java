@@ -36,7 +36,7 @@ import com.gu.glug.time.LogInterval;
  * 
  * @author roberto
  */
-public class ThreadedSystemViewPanel extends JComponent {
+public class ThreadedSystemViewComponent extends JComponent {
 
 	private static final long serialVersionUID = 1L;
 	private double millisecondsPerPixel = 0.25d;
@@ -44,14 +44,12 @@ public class ThreadedSystemViewPanel extends JComponent {
 	private LogInterval intervalCoveredByAllThreads;
 	LogarithmicBoundedRange logarithmicBoundedRange;
 
-	public ThreadedSystemViewPanel(ThreadedSystem threadedSystem) {
+	public ThreadedSystemViewComponent(ThreadedSystem threadedSystem) {
 		this.threadedSystem = threadedSystem;
 		cacheIntervalCoveredByAllThreads();
 		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
 		makeResponsive(toolTipManager);
 		toolTipManager.registerComponent(this);
-		
-
 	}
 
 	
@@ -116,7 +114,8 @@ public class ThreadedSystemViewPanel extends JComponent {
 
 	void setMillisecondsPerPixel(double millisecondsPerPixel) {
 		this.millisecondsPerPixel = millisecondsPerPixel;
-		System.out.println("millisecondsPerPixel = "+millisecondsPerPixel);
+		setSize(getPreferredSize());
+		// System.out.println("millisecondsPerPixel = "+millisecondsPerPixel);
 		this.repaint();
 	}
 

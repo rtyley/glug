@@ -31,16 +31,17 @@ import com.gu.glug.ThreadedSystem;
 public class GlugMainJFrame extends javax.swing.JFrame {
 	final ThreadedSystem threadedSystem = new ThreadedSystem();
 	
-	final ThreadedSystemViewPanel threadedSystemViewPanel;
+	final ThreadedSystemViewComponent threadedSystemViewPanel;
     /** Creates new form GlugMainJFrame */
     public GlugMainJFrame() {
         initComponents();
-        threadedSystemViewPanel = new ThreadedSystemViewPanel(threadedSystem);
+        threadedSystemViewPanel = new ThreadedSystemViewComponent(threadedSystem);
         //threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
         jScrollPane1.getViewport().add(threadedSystemViewPanel);
         jScrollPane1.validate();
         logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
-        zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(threadedSystemViewPanel, logarithmicBoundedRange);
+        zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(jScrollPane1.getViewport(),threadedSystemViewPanel, logarithmicBoundedRange);
+        
         TransferHandler newHandler = new TransferHandler() {
         	@Override
         	public boolean canImport(TransferSupport support) {
