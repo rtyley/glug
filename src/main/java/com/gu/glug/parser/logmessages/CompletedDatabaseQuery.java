@@ -1,12 +1,17 @@
 package com.gu.glug.parser.logmessages;
 
+import static java.awt.Color.BLACK;
+
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.gu.glug.SignificantIntervalOccupier;
 
 public class CompletedDatabaseQuery implements SignificantIntervalOccupier {
-
+	
+	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(2,BLACK);
+	
 	private final static Map<String,CompletedDatabaseQuery> cache = new HashMap<String,CompletedDatabaseQuery>();
 	
 	public static CompletedDatabaseQuery createCompletedDatabaseQueryFor(String dbQuery) {
@@ -24,6 +29,11 @@ public class CompletedDatabaseQuery implements SignificantIntervalOccupier {
 
 	private CompletedDatabaseQuery(String dbQuery) {
 		this.dbQuery = dbQuery;
+	}
+	
+	@Override
+	public IntervalTypeDescriptor getIntervalTypeDescriptor() {
+		return intervalTypeDescriptor;
 	}
 	
 	public String getDbQuery() {

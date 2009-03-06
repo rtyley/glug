@@ -1,14 +1,23 @@
 package com.gu.glug.parser.logmessages;
 
+import static java.awt.Color.RED;
+
 import com.gu.glug.SignificantIntervalOccupier;
 
 
 public class CompletedPageRequest implements SignificantIntervalOccupier {
 
+	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(1,RED);
+	
 	private final String pagePath;
 
 	public CompletedPageRequest(String pagePath) {
 		this.pagePath = pagePath;
+	}
+	
+	@Override
+	public IntervalTypeDescriptor getIntervalTypeDescriptor() {
+		return intervalTypeDescriptor;
 	}
 
 	public String getPagePath() {

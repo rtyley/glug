@@ -1,7 +1,7 @@
 package com.gu.glug;
 
+import java.util.Collection;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -24,9 +24,10 @@ public class SignificantInstants {
 		return sigInt.getLogInterval().contains(instant) ? sigInt : null;
 	}
 	
-	SortedSet<SignificantInterval> getSignificantIntervalsDuring(Interval interval) {
+	Collection<SignificantInterval> getSignificantIntervalsDuring(Interval interval) {
 		LogInterval logInterval = new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),0));
-		return new TreeSet<SignificantInterval>(subMapFor(logInterval).values()); // Make SignificantInterval implement Comparable!
+		// return new TreeSet<SignificantInterval>(subMapFor(logInterval).values()); // Make SignificantInterval implement Comparable!
+		return subMapFor(logInterval).values(); // Make SignificantInterval implement Comparable!
 	}
 	
 	public void add(SignificantInterval significantInterval) {

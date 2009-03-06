@@ -8,7 +8,6 @@ package com.gu.glug.gui;
 import static java.lang.Math.ceil;
 import static java.lang.Math.round;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,7 +16,9 @@ import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.SortedSet;
+import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 import javax.swing.ToolTipManager;
@@ -28,7 +29,7 @@ import org.joda.time.Interval;
 import com.gu.glug.SignificantInterval;
 import com.gu.glug.ThreadModel;
 import com.gu.glug.ThreadedSystem;
-import com.gu.glug.parser.logmessages.CompletedPageRequest;
+import com.gu.glug.parser.logmessages.IntervalTypeDescriptor;
 import com.gu.glug.time.LogInstant;
 import com.gu.glug.time.LogInterval;
 
@@ -93,18 +94,16 @@ public class ThreadedSystemViewComponent extends JComponent {
 			Interval visibleInterval = visibleIntervalFor(clipBounds);
 			int threadIndex = 0;
 			for (ThreadModel threadModel : threadedSystem.getThreads()) {
-				for (SignificantInterval significantInterval : threadModel
-						.getSignificantIntervalsFor(visibleInterval)) {
-					LogInterval aa = significantInterval.getLogInterval();
-					if (significantInterval.getType() instanceof CompletedPageRequest) {
-						g.setColor(Color.RED);
-					} else {
-						g.setColor(Color.BLACK);
+				for (Entry<IntervalTypeDescriptor,Collection<SignificantInterval>> blah : threadModel
+						.getSignificantIntervalsFor(visibleInterval).entrySet()) {
+					g.setColor(blah.getKey().getColour());
+					for (SignificantInterval significantInterval : blah.getValue()) {
+						LogInterval aa = significantInterval.getLogInterval();
+						g.drawLine(graphicsXFor(aa.getStart().getInstant()),
+								-threadIndex,
+								graphicsXFor(aa.getEnd().getInstant()),
+								-threadIndex);						
 					}
-					g.drawLine(graphicsXFor(aa.getStart().getInstant()),
-							-threadIndex,
-							graphicsXFor(aa.getEnd().getInstant()),
-							-threadIndex);
 				}
 				--threadIndex;
 			}

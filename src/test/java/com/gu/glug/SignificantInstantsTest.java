@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.Mockito.mock;
 
-import java.util.SortedSet;
+import java.util.Collection;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -34,7 +34,7 @@ public class SignificantInstantsTest {
 		si.add(si2);
 		si.add(si3);
 		
-		SortedSet<SignificantInterval> storedSignificantIntervals = si.getSignificantIntervalsDuring(new Interval(aCrowdedMillisecond,aCrowdedMillisecond.plus(1)));
+		Collection<SignificantInterval> storedSignificantIntervals = si.getSignificantIntervalsDuring(new Interval(aCrowdedMillisecond,aCrowdedMillisecond.plus(1)));
 		
 		assertThat(storedSignificantIntervals, hasItems(si1,si2,si3));
 	}

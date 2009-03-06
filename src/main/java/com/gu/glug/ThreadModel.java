@@ -1,19 +1,23 @@
 package com.gu.glug;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.joda.time.Interval;
 
+import com.gu.glug.parser.logmessages.IntervalTypeDescriptor;
 import com.gu.glug.time.LogInstant;
 import com.gu.glug.time.LogInterval;
 
 public class ThreadModel {
 	
-	private Map<Class<? extends SignificantIntervalOccupier>, SignificantInstants> map =
-		new HashMap<Class<? extends SignificantIntervalOccupier>, SignificantInstants>();
+	private Map<IntervalTypeDescriptor, SignificantInstants> map =
+		new HashMap<IntervalTypeDescriptor, SignificantInstants>();
 	
 	private final String name;
 	
@@ -22,11 +26,11 @@ public class ThreadModel {
 	}
 	
 	public void add(SignificantInterval significantInterval) {
-		Class<? extends SignificantIntervalOccupier> clazz = significantInterval.getType().getClass();
-        if (!map.containsKey(clazz)) {
-			map.put(clazz, new SignificantInstants());
+		IntervalTypeDescriptor intervalTypeDescriptor = significantInterval.getType().getIntervalTypeDescriptor();
+        if (!map.containsKey(intervalTypeDescriptor)) {
+			map.put(intervalTypeDescriptor, new SignificantInstants());
         }
-		map.get(clazz).add(significantInterval);
+		map.get(intervalTypeDescriptor).add(significantInterval);
 	}
 
 	public LogInterval getInterval() {
@@ -37,10 +41,11 @@ public class ThreadModel {
 		return interval;
 	}
 
-	public Iterable<SignificantInterval> getSignificantIntervalsFor(Interval interval) {
-		SortedSet<SignificantInterval> significantIntervals = new TreeSet<SignificantInterval>();
-		for (SignificantInstants significantInstants : map.values()) {
-			significantIntervals.addAll(significantInstants.getSignificantIntervalsDuring(interval));
+	public SortedMap<IntervalTypeDescriptor,Collection<SignificantInterval>> getSignificantIntervalsFor(Interval interval) {
+		SortedMap<IntervalTypeDescriptor,Collection<SignificantInterval>> significantIntervals = new TreeMap<IntervalTypeDescriptor,Collection<SignificantInterval>>();
+		for (Map.Entry<IntervalTypeDescriptor, SignificantInstants> entry : map.entrySet()) {
+			Collection<SignificantInterval> significantIntervalsDuringInterval = entry.getValue().getSignificantIntervalsDuring(interval);
+			significantIntervals.put(entry.getKey(), significantIntervalsDuringInterval);
 		}
 		return significantIntervals;
 	}
