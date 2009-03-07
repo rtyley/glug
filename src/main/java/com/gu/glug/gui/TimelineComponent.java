@@ -8,6 +8,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.gu.glug.time.LogInstant;
+import com.gu.glug.time.LogInterval;
 
 public abstract class TimelineComponent extends JComponent implements ChangeListener {
 
@@ -29,4 +30,6 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 			repaint(getTimelineCursor().getBoundsForCursorAt(getTimelineCursor().getDot(), this));
 		}
 	}
+
+	abstract LogInterval getEntireInterval();
 }

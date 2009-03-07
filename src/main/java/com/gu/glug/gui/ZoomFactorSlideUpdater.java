@@ -9,12 +9,12 @@ import com.gu.glug.time.LogInterval;
 
 public class ZoomFactorSlideUpdater {
 	private final LogarithmicBoundedRange logarithmicBoundedRange;
-	private final ThreadedSystemViewComponent threadedSystemViewPanel;
+	private final TimelineComponent timelineComponent;
 	private final JViewport viewport;
 
-	public ZoomFactorSlideUpdater(JViewport viewport, ThreadedSystemViewComponent threadedSystemViewPanel, LogarithmicBoundedRange logarithmicBoundedRange) {
+	public ZoomFactorSlideUpdater(JViewport viewport, TimelineComponent timelineComponent, LogarithmicBoundedRange logarithmicBoundedRange) {
 		this.viewport = viewport;
-		this.threadedSystemViewPanel = threadedSystemViewPanel;
+		this.timelineComponent = timelineComponent;
 		this.logarithmicBoundedRange = logarithmicBoundedRange;
 		
 		updateSliderBounds();
@@ -33,7 +33,7 @@ public class ZoomFactorSlideUpdater {
 	}
 
 	public void updateSliderMax() {
-		LogInterval intervalCoveredByAllThreads = threadedSystemViewPanel.getIntervalCoveredByAllThreads(true);
+		LogInterval intervalCoveredByAllThreads = timelineComponent.getEntireInterval();
 		if (intervalCoveredByAllThreads!=null) {
 			int width = viewport.getExtentSize().width;
 			long millis=intervalCoveredByAllThreads.toDurationMillis();
