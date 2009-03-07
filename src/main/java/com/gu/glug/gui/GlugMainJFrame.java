@@ -11,14 +11,10 @@
 
 package com.gu.glug.gui;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 
 import javax.swing.JFileChooser;
-import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 
 import com.gu.glug.ThreadedSystem;
@@ -32,7 +28,8 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 	
 	final ThreadedSystemViewComponent threadedSystemViewPanel;
     /** Creates new form GlugMainJFrame */
-    public GlugMainJFrame() {
+    @SuppressWarnings("serial")
+	public GlugMainJFrame() {
         initComponents();
         threadedSystemViewPanel = new ThreadedSystemViewComponent(threadedSystem, new TimelineCursor());
         //threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
@@ -41,36 +38,14 @@ public class GlugMainJFrame extends javax.swing.JFrame {
         logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
         zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(jScrollPane1.getViewport(),threadedSystemViewPanel, logarithmicBoundedRange);
         
-        TransferHandler newHandler = new TransferHandler() {
-        	@Override
-        	public boolean canImport(TransferSupport support) {
-        		return true;
-        	}
-        	
-        	@Override
-        	public boolean importData(TransferSupport support) {
-        		Object transferData =null;
-        		try {
-        			DataFlavor[] dataFlavors = support.getDataFlavors();
-        			for (DataFlavor dataFlavor : dataFlavors) {
-        				if (dataFlavor.isFlavorJavaFileListType()) {
-        					System.out.println("Hurrah!");
-        				}
-        				
-        			}
-					transferData = support.getTransferable().getTransferData(DataFlavor.getTextPlainUnicodeFlavor());
-					InputStream is = (InputStream) transferData;
-				} catch (UnsupportedFlavorException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+        setTransferHandler(new FileImportDragAndDropTransferHandler() {
+			@Override
+			public void load(List<File> files) {
+				for (File file : files) {
+					loadFile(file);
 				}
-        		return false;
-        	}
-        };
-		setTransferHandler(newHandler);
+			}
+        });
     }
 
     /** This method is called from within the constructor to
@@ -147,16 +122,16 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 }//GEN-LAST:event_timeMagnificationSliderStateChanged
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
-        
         int returnVal = jFileChooser1.showOpenDialog(this);
           if(returnVal == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jFileChooser1.getSelectedFile();
-			System.out.println("You chose to open this file: " +
-            		 selectedFile.getName());
-            new LogLoadingTask(selectedFile, threadedSystem, threadedSystemViewPanel, zoomFactorSlideUpdater).execute();
-            
+            loadFile(jFileChooser1.getSelectedFile());
           }
 }//GEN-LAST:event_openFileMenuItemActionPerformed
+
+	private void loadFile(File file) {
+		System.out.println("You chose to open this file: " + file.getName());
+		new LogLoadingTask(file, threadedSystem, threadedSystemViewPanel, zoomFactorSlideUpdater).execute();
+	}
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
