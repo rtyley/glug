@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.text.ParseException;
 
-import com.gu.glug.SignificantInterval;
+import com.gu.glug.model.SignificantInterval;
 
 public class LogParsingReader {
 

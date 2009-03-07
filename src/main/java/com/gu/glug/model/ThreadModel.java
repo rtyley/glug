@@ -1,4 +1,4 @@
-package com.gu.glug;
+package com.gu.glug.model;
 
 import java.util.Collection;
 import java.util.HashMap;

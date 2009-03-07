@@ -2,7 +2,7 @@ package com.gu.glug.parser.logmessages;
 
 import static java.awt.Color.RED;
 
-import com.gu.glug.SignificantIntervalOccupier;
+import com.gu.glug.model.SignificantIntervalOccupier;
 
 
 public class CompletedPageRequest implements SignificantIntervalOccupier {

@@ -1,4 +1,4 @@
-package com.gu.glug;
+package com.gu.glug.model;
 
 import com.gu.glug.time.LogInterval;
 

@@ -3,7 +3,6 @@ package com.gu.glug.gui;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;

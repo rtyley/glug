@@ -4,8 +4,8 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import com.gu.glug.SignificantInterval;
-import com.gu.glug.ThreadModel;
+import com.gu.glug.model.SignificantInterval;
+import com.gu.glug.model.ThreadModel;
 import com.gu.glug.parser.logmessages.LogMessageParser;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
 import com.gu.glug.time.LogInstant;

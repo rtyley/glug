@@ -5,7 +5,7 @@ import static java.awt.Color.BLACK;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.gu.glug.SignificantIntervalOccupier;
+import com.gu.glug.model.SignificantIntervalOccupier;
 
 public class CompletedDatabaseQuery implements SignificantIntervalOccupier {
 	

@@ -17,7 +17,7 @@ import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 
-import com.gu.glug.ThreadedSystem;
+import com.gu.glug.model.ThreadedSystem;
 
 /**
  *

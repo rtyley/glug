@@ -1,4 +1,4 @@
-package com.gu.glug;
+package com.gu.glug.model;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;

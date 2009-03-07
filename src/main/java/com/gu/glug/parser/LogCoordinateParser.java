@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat;
 
 import org.joda.time.Instant;
 
-import com.gu.glug.ThreadModel;
-import com.gu.glug.ThreadedSystem;
+import com.gu.glug.model.ThreadModel;
+import com.gu.glug.model.ThreadedSystem;
 
 public class LogCoordinateParser {
 	

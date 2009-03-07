@@ -1,9 +1,9 @@
-package com.gu.glug.gui;
+package com.gu.glug;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-import com.gu.glug.SignificantInterval;
+import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.parser.LogParsingReader;
 import com.gu.glug.time.LogInterval;
 

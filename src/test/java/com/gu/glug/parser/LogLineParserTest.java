@@ -13,9 +13,9 @@ import java.text.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.gu.glug.SignificantInterval;
-import com.gu.glug.SignificantIntervalOccupier;
-import com.gu.glug.ThreadedSystem;
+import com.gu.glug.model.SignificantInterval;
+import com.gu.glug.model.SignificantIntervalOccupier;
+import com.gu.glug.model.ThreadedSystem;
 import com.gu.glug.parser.logmessages.CompletedPageRequest;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
 import com.gu.glug.time.LogInterval;

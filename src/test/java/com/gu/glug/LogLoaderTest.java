@@ -1,4 +1,4 @@
-package com.gu.glug.gui;
+package com.gu.glug;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -13,11 +13,11 @@ import java.util.zip.GZIPInputStream;
 
 import org.junit.Test;
 
-import com.gu.glug.SignificantInterval;
-import com.gu.glug.SignificantIntervalOccupier;
-import com.gu.glug.ThreadModel;
-import com.gu.glug.ThreadedSystem;
-import com.gu.glug.gui.LogLoader.LoadReport;
+import com.gu.glug.LogLoader.LoadReport;
+import com.gu.glug.model.SignificantInterval;
+import com.gu.glug.model.SignificantIntervalOccupier;
+import com.gu.glug.model.ThreadModel;
+import com.gu.glug.model.ThreadedSystem;
 import com.gu.glug.parser.LogCoordinateParser;
 import com.gu.glug.parser.LogLineParser;
 import com.gu.glug.parser.LogParsingReader;

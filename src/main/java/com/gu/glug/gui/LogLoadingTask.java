@@ -10,8 +10,9 @@ import java.util.zip.GZIPInputStream;
 
 import javax.swing.SwingWorker;
 
-import com.gu.glug.ThreadedSystem;
-import com.gu.glug.gui.LogLoader.LoadReport;
+import com.gu.glug.LogLoader;
+import com.gu.glug.LogLoader.LoadReport;
+import com.gu.glug.model.ThreadedSystem;
 import com.gu.glug.parser.LogCoordinateParser;
 import com.gu.glug.parser.LogLineParser;
 import com.gu.glug.parser.LogParsingReader;

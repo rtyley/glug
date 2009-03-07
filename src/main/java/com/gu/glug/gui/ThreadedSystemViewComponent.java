@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.gu.glug.gui;
 
 import static java.lang.Math.ceil;
@@ -13,22 +8,20 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.SortedSet;
 import java.util.Map.Entry;
 
-import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 
-import com.gu.glug.SignificantInterval;
-import com.gu.glug.ThreadModel;
-import com.gu.glug.ThreadedSystem;
+import com.gu.glug.model.SignificantInterval;
+import com.gu.glug.model.ThreadModel;
+import com.gu.glug.model.ThreadedSystem;
 import com.gu.glug.parser.logmessages.IntervalTypeDescriptor;
 import com.gu.glug.time.LogInstant;
 import com.gu.glug.time.LogInterval;

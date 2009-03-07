@@ -4,8 +4,8 @@ package com.gu.glug.parser.logmessages;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.gu.glug.SignificantInterval;
-import com.gu.glug.ThreadModel;
+import com.gu.glug.model.SignificantInterval;
+import com.gu.glug.model.ThreadModel;
 import com.gu.glug.time.LogInstant;
 
 

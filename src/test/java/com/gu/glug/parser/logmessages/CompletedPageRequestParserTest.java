@@ -9,9 +9,9 @@ import java.util.regex.Matcher;
 
 import org.junit.Test;
 
-import com.gu.glug.SignificantInterval;
-import com.gu.glug.SignificantIntervalOccupier;
-import com.gu.glug.ThreadModel;
+import com.gu.glug.model.SignificantInterval;
+import com.gu.glug.model.SignificantIntervalOccupier;
+import com.gu.glug.model.ThreadModel;
 import com.gu.glug.time.LogInstant;
 
 
