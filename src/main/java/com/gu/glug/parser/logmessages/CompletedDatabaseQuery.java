@@ -2,7 +2,6 @@ package com.gu.glug.parser.logmessages;
 
 import static java.awt.Color.BLACK;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 

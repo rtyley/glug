@@ -2,7 +2,6 @@ package com.gu.glug;
 
 import java.util.Collection;
 import java.util.SortedMap;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;

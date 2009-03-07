@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.Map.Entry;
 
-import javax.swing.JComponent;
 import javax.swing.ToolTipManager;
 
 import org.joda.time.Instant;
@@ -37,20 +36,23 @@ import com.gu.glug.time.LogInterval;
  * 
  * @author roberto
  */
-public class ThreadedSystemViewComponent extends JComponent {
+public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private static final long serialVersionUID = 1L;
 	private double millisecondsPerPixel = 0.25d;
 	private ThreadedSystem threadedSystem;
 	private LogInterval intervalCoveredByAllThreads;
 	LogarithmicBoundedRange logarithmicBoundedRange;
+	private final TimelineCursor timelineCursor;
 
-	public ThreadedSystemViewComponent(ThreadedSystem threadedSystem) {
+	public ThreadedSystemViewComponent(ThreadedSystem threadedSystem, TimelineCursor timelineCursor) {
 		this.threadedSystem = threadedSystem;
+		this.timelineCursor = timelineCursor;
 		cacheIntervalCoveredByAllThreads();
 		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
 		makeResponsive(toolTipManager);
 		toolTipManager.registerComponent(this);
+		timelineCursor.install(this);
 	}
 
 	
@@ -90,25 +92,35 @@ public class ThreadedSystemViewComponent extends JComponent {
 		Graphics2D graphics2D = (Graphics2D) g;
 		Rectangle clipBounds = graphics2D.getClipBounds();
 		cacheIntervalCoveredByAllThreads();
-		if (intervalCoveredByAllThreads != null) {
+		if (containsData()) {
 			Interval visibleInterval = visibleIntervalFor(clipBounds);
-			int threadIndex = 0;
-			for (ThreadModel threadModel : threadedSystem.getThreads()) {
-				for (Entry<IntervalTypeDescriptor,Collection<SignificantInterval>> blah : threadModel
-						.getSignificantIntervalsFor(visibleInterval).entrySet()) {
-					g.setColor(blah.getKey().getColour());
-					for (SignificantInterval significantInterval : blah.getValue()) {
-						LogInterval aa = significantInterval.getLogInterval();
-						g.drawLine(graphicsXFor(aa.getStart().getInstant()),
-								-threadIndex,
-								graphicsXFor(aa.getEnd().getInstant()),
-								-threadIndex);						
-					}
-				}
-				--threadIndex;
-			}
+			paintThreadsFor(visibleInterval, g);
+			timelineCursor.paintOn(this, graphics2D);
 		}
+	}
 
+
+	private void paintThreadsFor(Interval visibleInterval, Graphics g) {
+		int threadIndex = 0;
+		for (ThreadModel threadModel : threadedSystem.getThreads()) {
+			for (Entry<IntervalTypeDescriptor,Collection<SignificantInterval>> blah : threadModel
+					.getSignificantIntervalsFor(visibleInterval).entrySet()) {
+				IntervalTypeDescriptor intervalTypeDescriptor = blah.getKey();
+				g.setColor(intervalTypeDescriptor.getColour());
+				
+				Collection<SignificantInterval> sigInts = blah.getValue();
+				int size=sigInts.size();
+				//System.out.println("size="+size);
+				for (SignificantInterval significantInterval : sigInts) {
+					LogInterval aa = significantInterval.getLogInterval();
+					g.drawLine(graphicsXFor(aa.getStart().getInstant()),
+							-threadIndex,
+							graphicsXFor(aa.getEnd().getInstant()),
+							-threadIndex);						
+				}
+			}
+			--threadIndex;
+		}
 	}
 
 	void setMillisecondsPerPixel(double millisecondsPerPixel) {
@@ -182,6 +194,24 @@ public class ThreadedSystemViewComponent extends JComponent {
 		if (e.getID() == ComponentEvent.COMPONENT_RESIZED) {
 			
 		}
+	}
+
+
+	@Override
+	public LogInstant getLogInstantFor(Point point) {
+		return new LogInstant( instantFor(point.x),0);
+	}
+
+
+	@Override
+	public TimelineCursor getTimelineCursor() {
+		return timelineCursor;
+	}
+
+
+	@Override
+	Rectangle getViewFor(LogInstant logInstant) {
+		return new Rectangle(graphicsXFor(logInstant.getInstant()),0,0,getHeight());
 	}
 
 

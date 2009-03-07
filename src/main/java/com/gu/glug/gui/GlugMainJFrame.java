@@ -20,7 +20,6 @@ import java.io.InputStream;
 import javax.swing.JFileChooser;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
-import javax.swing.plaf.SliderUI;
 
 import com.gu.glug.ThreadedSystem;
 
@@ -35,7 +34,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
     /** Creates new form GlugMainJFrame */
     public GlugMainJFrame() {
         initComponents();
-        threadedSystemViewPanel = new ThreadedSystemViewComponent(threadedSystem);
+        threadedSystemViewPanel = new ThreadedSystemViewComponent(threadedSystem, new TimelineCursor());
         //threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
         jScrollPane1.getViewport().add(threadedSystemViewPanel);
         jScrollPane1.validate();

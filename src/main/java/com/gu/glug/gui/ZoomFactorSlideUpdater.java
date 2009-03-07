@@ -3,7 +3,6 @@ package com.gu.glug.gui;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import javax.swing.JSlider;
 import javax.swing.JViewport;
 
 import com.gu.glug.time.LogInterval;
