@@ -1,6 +1,8 @@
 package com.gu.glug.gui;
 
 import static java.lang.Math.ceil;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.lang.Math.round;
 
 import java.awt.Dimension;
@@ -11,6 +13,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.Map.Entry;
 
@@ -19,6 +22,7 @@ import javax.swing.ToolTipManager;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 
+import com.gu.glug.gui.model.LogarithmicBoundedRange;
 import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.model.ThreadModel;
 import com.gu.glug.model.ThreadedSystem;
@@ -33,15 +37,10 @@ import com.gu.glug.parser.logmessages.IntervalTypeDescriptor;
 public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private static final long serialVersionUID = 1L;
-	private double millisecondsPerPixel = 0.25d;
 	private ThreadedSystem threadedSystem;
-	private LogInterval intervalCoveredByAllThreads;
 	LogarithmicBoundedRange logarithmicBoundedRange;
 	private final TimelineCursor timelineCursor;
 
-	public ThreadedSystemViewComponent() {
-		this(new ThreadedSystem(), new TimelineCursor());
-	}
 	
 	public ThreadedSystemViewComponent(ThreadedSystem threadedSystem,
 			TimelineCursor timelineCursor) {
@@ -97,15 +96,23 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		Rectangle clipBounds = graphics2D.getClipBounds();
 		cacheIntervalCoveredByAllThreads();
 		if (containsData()) {
+			List<ThreadModel> threads = threadsFor(clipBounds);
 			Interval visibleInterval = visibleIntervalFor(clipBounds);
-			paintThreadsFor(visibleInterval, g);
+			paint(threads,visibleInterval, g);
 			timelineCursor.paintOn(this, graphics2D);
 		}
 	}
 
-	private void paintThreadsFor(Interval visibleInterval, Graphics g) {
+	private List<ThreadModel> threadsFor(Rectangle clipBounds) {
+		Collection<ThreadModel> fullThreadList = threadedSystem.getThreads();
+		int minThreadIndex=max(clipBounds.y,0);
+		int maxThreadIndex=min(clipBounds.y+clipBounds.height,fullThreadList.size());
+		return new ArrayList<ThreadModel>(fullThreadList).subList(minThreadIndex,maxThreadIndex);
+	}
+
+	private void paint(List<ThreadModel> threads, Interval visibleInterval, Graphics g) {
 		int threadIndex = 0;
-		for (ThreadModel threadModel : threadedSystem.getThreads()) {
+		for (ThreadModel threadModel : threads) {
 			for (Entry<IntervalTypeDescriptor, Collection<SignificantInterval>> blah : threadModel
 					.getSignificantIntervalsFor(visibleInterval).entrySet()) {
 				IntervalTypeDescriptor intervalTypeDescriptor = blah.getKey();
@@ -124,47 +131,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 			}
 			--threadIndex;
 		}
-	}
-
-	void setMillisecondsPerPixel(double millisecondsPerPixel) {
-
-		double oldMillisecondsPerPixel = this.millisecondsPerPixel;
-		
-		this.millisecondsPerPixel = millisecondsPerPixel;
-
-		setSize(getPreferredSize());
-		
-		scrollViewToKeepCursorInSamePosition(oldMillisecondsPerPixel);
-
-		// System.out.println("millisecondsPerPixel = "+millisecondsPerPixel);
-		this.repaint();
-	}
-
-	private void scrollViewToKeepCursorInSamePosition(double oldMillisecondsPerPixel) {
-		LogInstant cursorDot = getTimelineCursor().getDot();
-		if (cursorDot != null) {
-			int originalCursorHorizontalPositionInComponent = graphicsXFor(cursorDot.getRecordedInstant(), oldMillisecondsPerPixel);
-			int updatedCursorHorizontalPositionInComponent = graphicsXFor(cursorDot.getRecordedInstant());
-			int differenceInCursorHorizontalPositionInComponent = updatedCursorHorizontalPositionInComponent - originalCursorHorizontalPositionInComponent;
-			Rectangle visibleRectangle = getVisibleRect();
-			visibleRectangle.translate(differenceInCursorHorizontalPositionInComponent, 0);
-			scrollRectToVisible(visibleRectangle);
-		}
-	}
-
-	private int graphicsXFor(Instant instant) {
-		return graphicsXFor(instant, millisecondsPerPixel);
-	}
-
-	private int graphicsXFor(Instant instant, double specifiedMillisPerPixel) {
-		return (int) round((differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(instant))
-				/ specifiedMillisPerPixel);
-	}
-
-	private long differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(
-			Instant instant) {
-		return instant.getMillis()
-				- intervalCoveredByAllThreads.getStart().getMillis();
 	}
 
 	private Interval visibleIntervalFor(Rectangle clipBounds) {

@@ -5,6 +5,7 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JViewport;
 
+import com.gu.glug.gui.model.LogarithmicBoundedRange;
 import com.gu.glug.model.time.LogInterval;
 
 public class ZoomFactorSlideUpdater {

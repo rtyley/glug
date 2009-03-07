@@ -1,4 +1,4 @@
-package com.gu.glug.gui;
+package com.gu.glug.gui.model;
 
 import static java.lang.Math.exp;
 import static java.lang.Math.log;
