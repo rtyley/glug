@@ -9,8 +9,8 @@ import org.joda.time.Duration;
 
 import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.model.ThreadModel;
-import com.gu.glug.time.LogInstant;
-import com.gu.glug.time.LogInterval;
+import com.gu.glug.model.time.LogInstant;
+import com.gu.glug.model.time.LogInterval;
 
 public class CompletedDatabaseQueryParser implements LogMessageParser {
 

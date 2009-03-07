@@ -13,6 +13,7 @@
 
 	<modules>
 		<module>glug-model</module>
+		<module>glug-gui-components</module>
 		<module>glug-gui</module>
 	</modules>
 	<dependencies>

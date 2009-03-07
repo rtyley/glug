@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.model.ThreadModel;
-import com.gu.glug.time.LogInstant;
+import com.gu.glug.model.time.LogInstant;
 
 
 

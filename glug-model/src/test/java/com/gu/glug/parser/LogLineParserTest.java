@@ -16,9 +16,9 @@ import org.junit.Test;
 import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.model.SignificantIntervalOccupier;
 import com.gu.glug.model.ThreadedSystem;
+import com.gu.glug.model.time.LogInterval;
 import com.gu.glug.parser.logmessages.CompletedPageRequest;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
-import com.gu.glug.time.LogInterval;
 
 public class LogLineParserTest {
 
@@ -38,7 +38,7 @@ public class LogLineParserTest {
 		assertThat(significantInterval.getThread().getName(), equalTo("resin-tcp-connection-respub.gul3.gnl:6802-197"));
 		LogInterval interval = significantInterval.getLogInterval();
 		assertThat(interval.toDurationMillis(),equalTo(5L));
-		assertThat(interval.getStart().getInstant().toDateTime().getYear(),equalTo(2009));
+		assertThat(interval.getStart().getRecordedInstant().toDateTime().getYear(),equalTo(2009));
 		assertThat(significantInterval.getType(),equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/world/rss")));
 	}
 	
@@ -49,7 +49,7 @@ public class LogLineParserTest {
 		assertThat(significantInterval.getThread().getName(), equalTo("resin-tcp-connection-*:8080-631"));
 		LogInterval interval = significantInterval.getLogInterval();
 		assertThat(interval.toDurationMillis(),equalTo(470L));
-		assertThat(interval.getStart().getInstant().toDateTime().getYear(),equalTo(2009));
+		assertThat(interval.getStart().getRecordedInstant().toDateTime().getYear(),equalTo(2009));
 	}
 	
 	@Test

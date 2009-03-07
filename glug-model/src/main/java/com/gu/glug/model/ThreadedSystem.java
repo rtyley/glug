@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import com.gu.glug.time.LogInterval;
+import com.gu.glug.model.time.LogInterval;
 
 public class ThreadedSystem {
 	ConcurrentNavigableMap<String,ThreadModel> map = new ConcurrentSkipListMap<String, ThreadModel>();

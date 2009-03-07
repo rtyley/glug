@@ -6,9 +6,9 @@ import java.util.regex.Matcher;
 
 import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.model.ThreadModel;
+import com.gu.glug.model.time.LogInstant;
 import com.gu.glug.parser.logmessages.LogMessageParser;
 import com.gu.glug.parser.logmessages.LogMessageParserRegistry;
-import com.gu.glug.time.LogInstant;
 
 public class LogLineParser {
 

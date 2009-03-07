@@ -9,8 +9,8 @@ import java.util.Collections;
 import org.joda.time.Duration;
 import org.junit.Test;
 
-import com.gu.glug.time.LogInstant;
-import com.gu.glug.time.LogInterval;
+import com.gu.glug.model.time.LogInstant;
+import com.gu.glug.model.time.LogInterval;
 
 
 public class ThreadModelTest {

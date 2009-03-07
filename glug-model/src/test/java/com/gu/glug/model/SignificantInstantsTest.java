@@ -11,8 +11,8 @@ import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.junit.Test;
 
-import com.gu.glug.time.LogInstant;
-import com.gu.glug.time.LogInterval;
+import com.gu.glug.model.time.LogInstant;
+import com.gu.glug.model.time.LogInterval;
 
 
 public class SignificantInstantsTest {

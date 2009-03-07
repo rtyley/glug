@@ -10,9 +10,9 @@ import java.util.TreeSet;
 
 import org.joda.time.Interval;
 
+import com.gu.glug.model.time.LogInstant;
+import com.gu.glug.model.time.LogInterval;
 import com.gu.glug.parser.logmessages.IntervalTypeDescriptor;
-import com.gu.glug.time.LogInstant;
-import com.gu.glug.time.LogInterval;
 
 public class ThreadModel {
 	

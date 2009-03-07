@@ -10,7 +10,7 @@ import com.gu.glug.model.ThreadedSystem;
 
 public class LogCoordinateParser {
 	
-	private final static SimpleDateFormat gfg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+	private final static SimpleDateFormat logDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
 	public final static int DATETIME_FIELD_LENGTH = "2009-02-25 00:00:00,093".length();
 	public final static int THREAD_NAME_START_INDEX = DATETIME_FIELD_LENGTH+2;
 	
@@ -29,14 +29,13 @@ public class LogCoordinateParser {
 	public Instant getLogLineInstantInMillis(String line) throws ParseException {
 		String logDateTimeText=line.substring(0, DATETIME_FIELD_LENGTH);
 		//long logInstantInMillis = ISODateTimeFormat.dateHourMinuteSecondMillis().parseMillis(logDateTimeText);
-		long logInstantInMillis = gfg.parse(logDateTimeText).getTime();
+		long logInstantInMillis = logDateTimeFormat.parse(logDateTimeText).getTime();
 		return new Instant(logInstantInMillis);
 	}
 
 	public ThreadModel getThreadModel(String line) {
 		int threadNameEndIndex=line.indexOf("] ",THREAD_NAME_START_INDEX);
 		String threadName = line.substring(THREAD_NAME_START_INDEX, threadNameEndIndex);
-		ThreadModel threadModel = threadedSystem.getOrCreateThread(threadName);
-		return threadModel;
+		return threadedSystem.getOrCreateThread(threadName);
 	}
 }

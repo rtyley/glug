@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import org.joda.time.Interval;
 
-import com.gu.glug.time.LogInstant;
-import com.gu.glug.time.LogInterval;
+import com.gu.glug.model.time.LogInstant;
+import com.gu.glug.model.time.LogInterval;
 
 public class SignificantInstants {
 	private ConcurrentNavigableMap<LogInstant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<LogInstant, SignificantInterval>();

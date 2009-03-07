@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.gu</groupId>
-			<artifactId>glug-model</artifactId>
+			<artifactId>glug-gui-components</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

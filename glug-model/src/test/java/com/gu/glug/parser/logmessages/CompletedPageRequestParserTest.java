@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.model.SignificantIntervalOccupier;
 import com.gu.glug.model.ThreadModel;
-import com.gu.glug.time.LogInstant;
+import com.gu.glug.model.time.LogInstant;
 
 
 public class CompletedPageRequestParserTest {

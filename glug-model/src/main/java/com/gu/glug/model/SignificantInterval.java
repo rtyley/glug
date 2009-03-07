@@ -1,6 +1,6 @@
 package com.gu.glug.model;
 
-import com.gu.glug.time.LogInterval;
+import com.gu.glug.model.time.LogInterval;
 
 public class SignificantInterval implements Comparable<SignificantInterval> {
 	private final LogInterval logInterval;
