@@ -68,7 +68,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 			interval = loadReport.getUpdatedInterval().union(interval);
 		}
 		zoomFactorSlideUpdater.updateSliderMax();
-		threadedSystemViewPanel.repaint(interval.toJodaInterval());
+		threadedSystemViewPanel.repaint(interval);
 	}
 
 }

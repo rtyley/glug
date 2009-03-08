@@ -4,6 +4,7 @@ import static java.lang.Math.ceil;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.round;
+import static java.lang.System.currentTimeMillis;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -85,15 +86,14 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private void cacheIntervalCoveredByAllThreads() {
-		intervalCoveredByAllThreads = threadedSystem
-				.getIntervalCoveredByAllThreads();
+		intervalCoveredByAllThreads = threadedSystem.getIntervalCoveredByAllThreads();
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
 		Graphics2D graphics2D = (Graphics2D) g;
 		Rectangle clipBounds = graphics2D.getClipBounds();
+		System.out.println("Clip bounds ="+clipBounds);
 		cacheIntervalCoveredByAllThreads();
 		if (containsData()) {
 			List<ThreadModel> threads = threadsFor(clipBounds);
@@ -104,32 +104,45 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private List<ThreadModel> threadsFor(Rectangle clipBounds) {
-		Collection<ThreadModel> fullThreadList = threadedSystem.getThreads();
-		int minThreadIndex=max(clipBounds.y,0);
+		List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
+		int minThreadIndex=min(max(clipBounds.y,0),fullThreadList.size());
 		int maxThreadIndex=min(clipBounds.y+clipBounds.height,fullThreadList.size());
-		return new ArrayList<ThreadModel>(fullThreadList).subList(minThreadIndex,maxThreadIndex);
+		return fullThreadList.subList(minThreadIndex,maxThreadIndex);
 	}
 
 	private void paint(List<ThreadModel> threads, Interval visibleInterval, Graphics g) {
-		int threadIndex = 0;
-		for (ThreadModel threadModel : threads) {
-			for (Entry<IntervalTypeDescriptor, Collection<SignificantInterval>> blah : threadModel
-					.getSignificantIntervalsFor(visibleInterval).entrySet()) {
-				IntervalTypeDescriptor intervalTypeDescriptor = blah.getKey();
-				g.setColor(intervalTypeDescriptor.getColour());
-
-				Collection<SignificantInterval> sigInts = blah.getValue();
-				int size = sigInts.size();
-				// System.out.println("size="+size);
-				for (SignificantInterval significantInterval : sigInts) {
-					LogInterval aa = significantInterval.getLogInterval();
-					g.drawLine(graphicsXFor(aa.getStart().getRecordedInstant()),
-							-threadIndex,
-							graphicsXFor(aa.getEnd().getRecordedInstant()),
-							-threadIndex);
-				}
+		System.out.println("Asked to paint "+threads.size()+" "+visibleInterval);
+		long startRenderTime = currentTimeMillis();
+		for (int threadIndex = 0 ; threadIndex<threads.size();++threadIndex) {
+			ThreadModel threadModel = threads.get(threadIndex);
+			paintThread(threadModel, threadIndex, visibleInterval, g);
+			
+			long expiredDuration = currentTimeMillis()-startRenderTime;
+			if (expiredDuration>100) {
+				System.out.println("quiting with"+expiredDuration);
+				//repaint(logInterval)
+				return;
 			}
-			--threadIndex;
+		}
+		System.out.println("duration =" + (currentTimeMillis()-startRenderTime));
+	}
+
+	private void paintThread(ThreadModel threadModel, int threadIndex, Interval visibleInterval, Graphics g) {
+		for (Entry<IntervalTypeDescriptor, Collection<SignificantInterval>> blah : threadModel
+				.getSignificantIntervalsFor(visibleInterval).entrySet()) {
+			IntervalTypeDescriptor intervalTypeDescriptor = blah.getKey();
+			g.setColor(intervalTypeDescriptor.getColour());
+
+			Collection<SignificantInterval> sigInts = blah.getValue();
+			int size = sigInts.size();
+			// System.out.println("size="+size);
+			for (SignificantInterval significantInterval : sigInts) {
+				LogInterval aa = significantInterval.getLogInterval();
+				g.drawLine(graphicsXFor(aa.getStart().getRecordedInstant()),
+						threadIndex,
+						graphicsXFor(aa.getEnd().getRecordedInstant()),
+						threadIndex);
+			}
 		}
 	}
 
@@ -147,11 +160,19 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 				round(graphicsX * millisecondsPerPixel));
 	}
 
-	public void repaint(Interval interval) {
+	public void repaint(LogInterval logInterval) {
+		System.out.println("***Want to repaint "+logInterval);
 		cacheIntervalCoveredByAllThreads();
-		repaint(graphicsXFor(interval.getStart().toInstant()) - 1, 0,
-				graphicsXFor(interval.getEnd().toInstant()) + 1, threadedSystem
-						.getNumThreads());
+		repaint(boundsFor(logInterval, 0, threadedSystem.getThreads().size()));
+//		repaint(graphicsXFor(interval.getStart().toInstant()) - 1, 0,
+//				graphicsXFor(interval.getEnd().toInstant()) + 1, threadedSystem
+//						.getNumThreads());
+	}
+
+	private Rectangle boundsFor(LogInterval logInterval, int threadSetStartIndex, int threadSetEndIndex) {
+		int x=graphicsXFor(logInterval.getStart().getRecordedInstant());
+		int width=graphicsXFor(logInterval.getEnd().getRecordedInstant()) - x;
+		return new Rectangle(x,threadSetStartIndex,width,threadSetEndIndex);
 	}
 
 	@Override
