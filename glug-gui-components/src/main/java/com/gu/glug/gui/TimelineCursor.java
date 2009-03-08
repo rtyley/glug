@@ -75,6 +75,7 @@ public class TimelineCursor {
 	private void changeCaretPosition(LogInstant newDot) {
 		// notify listeners that the cursor moved - note they are responsible for invalidating the old areas of the component, etc 
 		CursorPositionChanged cursorPositionChanged = new CursorPositionChanged(this.dot);
+		System.out.println("Cursor move "+this.dot + " "+ newDot);
 		this.dot = newDot;
 		fireStateChanged(cursorPositionChanged);
 	}
@@ -91,7 +92,7 @@ public class TimelineCursor {
 	}
 
 	public Rectangle getBoundsForCursorAt(LogInstant logInstant, TimelineComponent timelineComponent) {
-		Rectangle bounds = timelineComponent.getViewFor(dot);
+		Rectangle bounds = timelineComponent.getViewFor(logInstant);
 		bounds.grow(1, 1);
 		return bounds;
 	}

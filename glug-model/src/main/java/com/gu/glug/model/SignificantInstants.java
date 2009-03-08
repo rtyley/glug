@@ -2,11 +2,10 @@ package com.gu.glug.model;
 
 import java.util.Collection;
 import java.util.SortedMap;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-
-import org.joda.time.Interval;
 
 import com.gu.glug.model.time.LogInstant;
 import com.gu.glug.model.time.LogInterval;
@@ -23,10 +22,8 @@ public class SignificantInstants {
 		return sigInt.getLogInterval().contains(instant) ? sigInt : null;
 	}
 	
-	Collection<SignificantInterval> getSignificantIntervalsDuring(Interval interval) {
-		LogInterval logInterval = new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),0));
-		// return new TreeSet<SignificantInterval>(subMapFor(logInterval).values()); // Make SignificantInterval implement Comparable!
-		return subMapFor(logInterval).values(); // Make SignificantInterval implement Comparable!
+	Collection<SignificantInterval> getSignificantIntervalsDuring(LogInterval logInterval) {
+		return new TreeSet<SignificantInterval>(subMapFor(logInterval).values()); // Make SignificantInterval implement Comparable!
 	}
 	
 	public void add(SignificantInterval significantInterval) {
@@ -43,11 +40,14 @@ public class SignificantInstants {
 	}
 
 	private boolean containsSignificantInstantsDuring(LogInterval interval) {
-		return !subMapFor(interval).isEmpty();
+		return !significantInstants.subMap(interval.getStart(),interval.getEnd()).isEmpty();
 	}
 	
 	private SortedMap<LogInstant, SignificantInterval> subMapFor(LogInterval interval) {
-		return significantInstants.subMap(interval.getStart(), interval.getEnd());
+		LogInstant start = significantInstants.floorKey(interval.getStart());
+		LogInstant end = significantInstants.ceilingKey(interval.getEnd());
+		
+		return significantInstants.subMap(start==null?interval.getStart():start, end==null?interval.getEnd():end);
 	}
 
 	public LogInterval getLogInterval() {

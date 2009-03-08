@@ -21,7 +21,7 @@ public class TimelineCursorMouseInputListener extends MouseInputAdapter {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (isLeftMouseButton(e)) {
+		if (willAcceptEvent(e)) {
 			if (shiftPressedFor(e)) {
 				moveCursorToLocationOf(e);
 			} else {
@@ -32,11 +32,14 @@ public class TimelineCursorMouseInputListener extends MouseInputAdapter {
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (isLeftMouseButton(e)) {
+		if (willAcceptEvent(e)) {
 			moveCursorToLocationOf(e);
 		}
 	}
 
+	private boolean willAcceptEvent(MouseEvent e) {
+		return isLeftMouseButton(e) && timelineComponent.containsData();
+	}
 	private void setCursorToLocationOf(MouseEvent e) {
 		cursor.setDot(logInstantFor(e));
 	}

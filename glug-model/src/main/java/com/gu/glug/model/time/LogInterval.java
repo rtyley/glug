@@ -133,6 +133,23 @@ public class LogInterval implements Comparable<LogInterval> {
 		return end.compareTo(otherLogInterval.end);
 	}
 
-	
+	public LogInterval overlap(LogInterval otherLogInterval) {
+        if (!overlaps(otherLogInterval)) {
+            return null;
+        }
+        if (contains(otherLogInterval)) {
+        	return otherLogInterval;
+        }
+        if (otherLogInterval.contains(this)) {
+        	return this;
+        }
+        LogInstant overlapStart = start.isAfter(otherLogInterval.start)?start:otherLogInterval.start;
+        LogInstant overlapEnd   = end.isBefore(otherLogInterval.end)?end:otherLogInterval.end;
+        return new LogInterval(overlapStart,overlapEnd);
+	}
+
+	private boolean overlaps(LogInterval otherLogInterval) {
+		return start.isBefore(otherLogInterval.end) && otherLogInterval.start.isBefore(end);
+	}
 	
 }

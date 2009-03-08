@@ -7,12 +7,10 @@ import static org.joda.time.Period.hours;
 import static org.joda.time.Period.millis;
 import static org.joda.time.Period.minutes;
 import static org.joda.time.Period.seconds;
-import static org.joda.time.Period.weeks;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;

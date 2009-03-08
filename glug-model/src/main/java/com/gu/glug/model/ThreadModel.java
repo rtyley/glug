@@ -8,8 +8,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.joda.time.Interval;
-
 import com.gu.glug.model.time.LogInstant;
 import com.gu.glug.model.time.LogInterval;
 import com.gu.glug.parser.logmessages.IntervalTypeDescriptor;
@@ -41,10 +39,10 @@ public class ThreadModel {
 		return interval;
 	}
 
-	public SortedMap<IntervalTypeDescriptor,Collection<SignificantInterval>> getSignificantIntervalsFor(Interval interval) {
+	public SortedMap<IntervalTypeDescriptor,Collection<SignificantInterval>> getSignificantIntervalsFor(LogInterval logInterval) {
 		SortedMap<IntervalTypeDescriptor,Collection<SignificantInterval>> significantIntervals = new TreeMap<IntervalTypeDescriptor,Collection<SignificantInterval>>();
 		for (Map.Entry<IntervalTypeDescriptor, SignificantInstants> entry : map.entrySet()) {
-			Collection<SignificantInterval> significantIntervalsDuringInterval = entry.getValue().getSignificantIntervalsDuring(interval);
+			Collection<SignificantInterval> significantIntervalsDuringInterval = entry.getValue().getSignificantIntervalsDuring(logInterval);
 			significantIntervals.put(entry.getKey(), significantIntervalsDuringInterval);
 		}
 		return significantIntervals;

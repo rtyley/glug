@@ -33,7 +33,10 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 		if (source instanceof TimelineCursor.CursorPositionChanged)
 		{
 			TimelineCursor.CursorPositionChanged cursorPositionChanged = (TimelineCursor.CursorPositionChanged) source;
-			repaint(getTimelineCursor().getBoundsForCursorAt(cursorPositionChanged.getOldPosition(), this));
+			LogInstant oldPosition = cursorPositionChanged.getOldPosition();
+			if (oldPosition!=null) {
+				repaint(getTimelineCursor().getBoundsForCursorAt(oldPosition, this));
+			}
 			repaint(getTimelineCursor().getBoundsForCursorAt(getTimelineCursor().getDot(), this));
 		}
 	}
@@ -76,5 +79,9 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 	
 		// System.out.println("millisecondsPerPixel = "+millisecondsPerPixel);
 		this.repaint();
+	}
+
+	public boolean containsData() {
+		return intervalCoveredByAllThreads != null;
 	}
 }
