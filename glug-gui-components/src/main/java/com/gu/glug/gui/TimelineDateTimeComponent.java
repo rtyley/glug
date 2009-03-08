@@ -1,74 +1,55 @@
 package com.gu.glug.gui;
 
+import static com.gu.glug.gui.TickInterval.tick;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
 import static java.lang.Math.round;
-import static org.joda.time.Period.days;
-import static org.joda.time.Period.hours;
-import static org.joda.time.Period.millis;
-import static org.joda.time.Period.minutes;
-import static org.joda.time.Period.seconds;
+import static java.lang.Math.sqrt;
+import static org.joda.time.DateTimeFieldType.dayOfMonth;
+import static org.joda.time.DateTimeFieldType.hourOfDay;
+import static org.joda.time.DateTimeFieldType.millisOfSecond;
+import static org.joda.time.DateTimeFieldType.minuteOfHour;
+import static org.joda.time.DateTimeFieldType.secondOfMinute;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.Iterator;
 import java.util.NavigableMap;
 
 import javax.swing.JComponent;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
 import org.joda.time.Duration;
-import org.joda.time.DurationFieldType;
 import org.joda.time.Interval;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
 
 public class TimelineDateTimeComponent extends JComponent {
 	
-	private static PeriodSet PERIODS =  new PeriodSet(
-				days(1),
-				hours(4),hours(1),
-				minutes(10),minutes(5),minutes(1),
-				seconds(10),seconds(5),seconds(1),
-				millis(100),millis(10),millis(1));
+	int minTickPixelSpacing = 2;
+	int maxTickPixelSpacing = 160;
 
-	/*
-2008	2009	2010	-- 1 year
-
-2009-02	2009-03	2009-04	-- 1 month
-
-2009-02-25	2009-02-26	2009-02-27	-- 1 day
-
-2009-02-25 08:00	2009-02-25 12:00	2009-02-25 16:00	2009-02-25 20:00	-- 4 hours
-
-16:00	17:00	18:00	19:00	-- 1 hour
-
-16:00	16:10	16:20	16:30	-- 10 minutes
-
-16:00	16:05	16:10	16:15	-- 5 minutes
-
-16:00	16:01	16:02	16:03	-- 1 minute
-
-16:44:00	16:44:10	16:45:20	-- 10 seconds
-
-16:44:35	16:44:40	16:44:45	-- 5 seconds
-
-16:44:37	16:44:38	16:44:39	-- 1 second
-
-16:12:01.200	16:12:01.300	16:12:01.400	-- 100 ms
-
-16:12:01.200	16:12:01.210	16:12:01.220	-- 10 ms
-
-16:12:01.200	16:12:01.201	16:12:01.202	-- 1 ms
-*/	
+	private static TickIntervalSet tickIntervalSet = new TickIntervalSet(
+			tick(1,dayOfMonth()),
+			tick(4,hourOfDay()), tick(1,hourOfDay()),
+			tick(10,minuteOfHour()),   tick(5,minuteOfHour()),   tick(1,minuteOfHour()),
+			tick(10,secondOfMinute()), tick(5,secondOfMinute()), tick(1,secondOfMinute()),
+			tick(100,millisOfSecond()),tick(10,millisOfSecond()),tick(1,millisOfSecond()));
+	
 	private static final long serialVersionUID = 1L;
 	
-	private static final PeriodType periodUnits = PeriodType.standard(); // Ticks are placed at the units used by this period
-	int approxPixelsDesiredBetweenMinorTicks = 16;
-
 	private final UITimeScale timeScale;
 
 	public TimelineDateTimeComponent(UITimeScale timeScale) {
 		this.timeScale = timeScale;
+		setSize(getPreferredSize());
+		setBackground(WHITE);
+	}
+	
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(timeScale.fullModelToViewLength(), 32);
 	}
 	
 	@Override
@@ -76,50 +57,33 @@ public class TimelineDateTimeComponent extends JComponent {
 		super.paintComponent(g);
 		Graphics2D graphics2D = (Graphics2D) g;
 		Rectangle clipBounds = graphics2D.getClipBounds();
-		
-		NavigableMap<Duration, Period> periodRange = getPeriodRange();
-		
-		
-		Interval visibleInterval =null;
-		
-		DateTime startDateTime = visibleInterval.getStart();
-
-		
-		int pixelsBetweenTicks = 16;
-		int tickHeight = getTickHeightForTicksSpaced(pixelsBetweenTicks);
-	}
-
-	private NavigableMap<Duration, Period> getPeriodRange() {
-		Duration approxGoodMinorTickDuration = new Duration(round(timeScale.getMillisecondsPerPixel()*8));
-		Duration approxGoodMajorTickDuration = new Duration(round(timeScale.getMillisecondsPerPixel()*160));
-		
-		NavigableMap<Duration, Period> periodRange = PERIODS.rangeFor(approxGoodMinorTickDuration,approxGoodMajorTickDuration);
-		return periodRange;
-	}
-
-	int getTickHeightForTicksSpaced(int pixelsBetweenTicks) {
-		// TODO Auto-generated method stub
-		//periods.floor(e)
-		return 0;
-	}
-
-	public Period getPeriodOfIntevalBetweenMinorTicks() {
-		DurationFieldType smallestEmptyField = getDurationFieldTypeOfIntervalBetweenMinorTicks();
-		Period periodForMinorTicks = new Period(Duration.ZERO,periodUnits).withField(smallestEmptyField, 1);
-		return periodForMinorTicks;
-	}
-
-	private DurationFieldType getDurationFieldTypeOfIntervalBetweenMinorTicks() {
-		Period period = new Period(round(timeScale.getMillisecondsPerPixel()*approxPixelsDesiredBetweenMinorTicks),periodUnits);
-		period.toStandardSeconds();
-		
-		DurationFieldType smallestEmptyField = null;
-		for (int fieldIndex = 0; fieldIndex<periodUnits.size() && period.getValue(fieldIndex)==0; ++fieldIndex) {
-			smallestEmptyField = periodUnits.getFieldType(fieldIndex);
+		graphics2D.setColor(getBackground());
+		graphics2D.fill(clipBounds);
+		NavigableMap<Duration, TickInterval> periodRange = tickIntervalsAtCurrentScale();
+		int componentHeight = getHeight();
+		graphics2D.setColor(BLACK);
+		Interval visibleInterval = timeScale.viewToModel(clipBounds);
+		int tickHeight = 1;
+		for (TickInterval tickInterval : periodRange.values()) {
+			int pixelsForTickDuration = timeScale.modelDurationToViewPixels(tickInterval.getDuration());
+			float proportionOfRange = (pixelsForTickDuration - minTickPixelSpacing)/((float)(maxTickPixelSpacing - minTickPixelSpacing));
+			tickHeight = (int)round(10 * proportionOfRange);
+			Iterator<DateTime> tickIterator = tickInterval.ticksFor(visibleInterval);
+			while (tickIterator.hasNext()) {
+				DateTime tickDateTime = tickIterator.next();
+				int graphicsX = timeScale.modelToView(tickDateTime.toInstant());
+				graphics2D.drawLine(graphicsX, componentHeight, graphicsX, componentHeight-tickHeight);
+			}
+			//tickHeight+=2;
 		}
-		return smallestEmptyField;
 	}
-	
-	
+
+	private NavigableMap<Duration, TickInterval> tickIntervalsAtCurrentScale() {
+		
+		Duration approxGoodMinorTickDuration = timeScale.viewPixelsToModelDuration(minTickPixelSpacing);
+		Duration approxGoodMajorTickDuration = timeScale.viewPixelsToModelDuration(maxTickPixelSpacing);
+		
+		return tickIntervalSet.rangeFor(approxGoodMinorTickDuration,approxGoodMajorTickDuration);
+	}
 	
 }

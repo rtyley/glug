@@ -11,11 +11,17 @@
 
 package com.gu.glug.gui;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
+
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
 
 import com.gu.glug.gui.model.LogarithmicBoundedRange;
 import com.gu.glug.model.ThreadedSystem;
@@ -26,6 +32,7 @@ import com.gu.glug.model.ThreadedSystem;
  */
 public class GlugMainJFrame extends javax.swing.JFrame {
 	final ThreadedSystem threadedSystem = new ThreadedSystem();
+	UITimeScale uiTimeScale = new UITimeScale();
 	
 	final ThreadedSystemViewComponent threadedSystemViewPanel;
     /** Creates new form GlugMainJFrame */
@@ -33,9 +40,20 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 	public GlugMainJFrame() {
         initComponents();
         threadedSystemViewPanel = new ThreadedSystemViewComponent(threadedSystem, new TimelineCursor());
+        
         //threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
         timelineScrollPane.getViewport().add(threadedSystemViewPanel);
+        
+        uiTimeScale.setFullInterval(new Interval(new Instant(), new Duration(1000000)));
+        uiTimeScale.setMillisecondsPerPixel(10);
+		timelineDateTimeComponent = new TimelineDateTimeComponent(uiTimeScale);
+		timelineScrollPane.setColumnHeaderView(timelineDateTimeComponent);
+        
+        
         timelineScrollPane.validate();
+        
+        
+        
         logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
         zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(timelineScrollPane.getViewport(),threadedSystemViewPanel, logarithmicBoundedRange);
         
@@ -120,6 +138,8 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 
     private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_timeMagnificationSliderStateChanged
         threadedSystemViewPanel.setMillisecondsPerPixel(logarithmicBoundedRange.getCurrentMillisecondsPerPixel());
+        uiTimeScale.setMillisecondsPerPixel(logarithmicBoundedRange.getCurrentMillisecondsPerPixel());
+        timelineDateTimeComponent.repaint();
 }//GEN-LAST:event_timeMagnificationSliderStateChanged
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
@@ -131,7 +151,11 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 
 	private void loadFile(File file) {
 		System.out.println("You chose to open this file: " + file.getName());
-		new LogLoadingTask(file, threadedSystem, threadedSystemViewPanel, zoomFactorSlideUpdater).execute();
+		LogLoadingTask logLoadingTask = new LogLoadingTask(file, threadedSystem, threadedSystemViewPanel, zoomFactorSlideUpdater);
+//		logLoadingTask.addPropertyChangeListener(new PropertyChangeListener() {
+//			
+//		})
+		logLoadingTask.execute();
 	}
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
@@ -163,5 +187,6 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 	private LogarithmicBoundedRange logarithmicBoundedRange;
 
 	private ZoomFactorSlideUpdater zoomFactorSlideUpdater;
+	private TimelineDateTimeComponent timelineDateTimeComponent;
 
 }
