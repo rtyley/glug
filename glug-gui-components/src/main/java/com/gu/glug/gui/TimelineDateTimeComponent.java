@@ -1,7 +1,6 @@
 package com.gu.glug.gui;
 
 import static java.lang.Math.round;
-import static java.util.Arrays.asList;
 import static org.joda.time.Period.days;
 import static org.joda.time.Period.hours;
 import static org.joda.time.Period.millis;
@@ -11,32 +10,26 @@ import static org.joda.time.Period.seconds;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.List;
-import java.util.NavigableSet;
-import java.util.TreeSet;
+import java.util.NavigableMap;
 
 import javax.swing.JComponent;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
 import org.joda.time.Duration;
 import org.joda.time.DurationFieldType;
+import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
 
 public class TimelineDateTimeComponent extends JComponent {
 	
-	NavigableSet<Period> periods = getPeriods();
-	
-	private static NavigableSet<Period> getPeriods() {
-		List<Period> periodList = asList(
+	private static PeriodSet PERIODS =  new PeriodSet(
 				days(1),
 				hours(4),hours(1),
 				minutes(10),minutes(5),minutes(1),
 				seconds(10),seconds(5),seconds(1),
-				millis(100),millis(10),millis(1)
-		);
-		TreeSet<Period> periodSet = new TreeSet<Period>();
-		return periodSet;
-	}
+				millis(100),millis(10),millis(1));
 
 	/*
 2008	2009	2010	-- 1 year
@@ -84,10 +77,24 @@ public class TimelineDateTimeComponent extends JComponent {
 		Graphics2D graphics2D = (Graphics2D) g;
 		Rectangle clipBounds = graphics2D.getClipBounds();
 		
-		double approxGoodTimeSeparationForMinorTicksInMillis = timeScale.getMillisecondsPerPixel();
+		NavigableMap<Duration, Period> periodRange = getPeriodRange();
+		
+		
+		Interval visibleInterval =null;
+		
+		DateTime startDateTime = visibleInterval.getStart();
+
 		
 		int pixelsBetweenTicks = 16;
 		int tickHeight = getTickHeightForTicksSpaced(pixelsBetweenTicks);
+	}
+
+	private NavigableMap<Duration, Period> getPeriodRange() {
+		Duration approxGoodMinorTickDuration = new Duration(round(timeScale.getMillisecondsPerPixel()*8));
+		Duration approxGoodMajorTickDuration = new Duration(round(timeScale.getMillisecondsPerPixel()*160));
+		
+		NavigableMap<Duration, Period> periodRange = PERIODS.rangeFor(approxGoodMinorTickDuration,approxGoodMajorTickDuration);
+		return periodRange;
 	}
 
 	int getTickHeightForTicksSpaced(int pixelsBetweenTicks) {

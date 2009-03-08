@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 public class FineCrosshairMouseCursorFactory {
 	public Cursor createFineCrosshairMouseCursor() {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		int max = toolkit.getMaximumCursorColors();
 		Dimension bestCursorSize = toolkit.getBestCursorSize(24, 24);
 		BufferedImage cursorImage = new BufferedImage(bestCursorSize.width,bestCursorSize.height, BufferedImage.TYPE_INT_ARGB);
 		Point hotSpot = new Point(bestCursorSize.width/2,bestCursorSize.height/2);
