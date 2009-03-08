@@ -19,6 +19,11 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 	private static final long serialVersionUID = 1L;
 	protected double millisecondsPerPixel = 0.25d;
 	protected LogInterval intervalCoveredByAllThreads;
+	
+	public TimelineComponent() {
+		// setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
+	}
 
 	abstract TimelineCursor getTimelineCursor();
 
