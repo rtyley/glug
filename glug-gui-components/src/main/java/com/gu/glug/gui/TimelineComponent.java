@@ -35,7 +35,7 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 			TimelineCursor.CursorPositionChanged cursorPositionChanged = (TimelineCursor.CursorPositionChanged) source;
 			LogInstant oldPosition = cursorPositionChanged.getOldPosition();
 			if (oldPosition!=null) {
-				repaint(getTimelineCursor().getBoundsForCursorAt(oldPosition, this));
+				paintImmediately(getTimelineCursor().getBoundsForCursorAt(oldPosition, this));
 			}
 			repaint(getTimelineCursor().getBoundsForCursorAt(getTimelineCursor().getDot(), this));
 		}

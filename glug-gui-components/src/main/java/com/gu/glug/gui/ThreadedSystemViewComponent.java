@@ -99,28 +99,28 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private int maxThreadIndexFor(Rectangle clipBounds, List<ThreadModel> fullThreadList) {
-		return min(clipBounds.y+clipBounds.height,fullThreadList.size());
+		return min(clipBounds.y+clipBounds.height,fullThreadList.size()-1);
 	}
 
 	private int minThreadIndexFor(Rectangle clipBounds, List<ThreadModel> fullThreadList) {
-		return min(max(clipBounds.y,0),fullThreadList.size());
+		return min(max(clipBounds.y,0),fullThreadList.size()-1);
 	}
 
 	private void paint(List<ThreadModel> threads, int minThreadIndex, int maxThreadIndex, LogInterval visibleInterval, Graphics2D g) {
-		System.out.println("Asked to paint "+threads.size()+" "+visibleInterval);
+		//System.out.println("Asked to paint "+threads.size()+" "+visibleInterval);
 		long startRenderTime = currentTimeMillis();
-		for (int threadIndex = minThreadIndex ; threadIndex<maxThreadIndex;++threadIndex) {
+		for (int threadIndex = minThreadIndex ; threadIndex<=maxThreadIndex;++threadIndex) {
 			ThreadModel threadModel = threads.get(threadIndex);
 			paintThread(threadModel, threadIndex, visibleInterval, g);
 			
 			long expiredDuration = currentTimeMillis()-startRenderTime;
 			if (expiredDuration>100) {
 				System.out.println("quitting with"+expiredDuration);
-				//repaint(logInterval)
+				repaint(visibleInterval, threadIndex+1, maxThreadIndex);
 				return;
 			}
 		}
-		System.out.println("duration =" + (currentTimeMillis()-startRenderTime));
+		//System.out.println("duration =" + (currentTimeMillis()-startRenderTime));
 	}
 
 	private void paintThread(ThreadModel threadModel, int threadIndex, LogInterval visibleInterval, Graphics2D g) {
@@ -159,12 +159,13 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	public void repaint(LogInterval logInterval) {
-		System.out.println("***Want to repaint "+logInterval);
+		//System.out.println("***Want to repaint "+logInterval);
 		cacheIntervalCoveredByAllThreads();
-		repaint(boundsFor(logInterval, 0, threadedSystem.getThreads().size()));
-//		repaint(graphicsXFor(interval.getStart().toInstant()) - 1, 0,
-//				graphicsXFor(interval.getEnd().toInstant()) + 1, threadedSystem
-//						.getNumThreads());
+		repaint(boundsFor(logInterval, 0, threadedSystem.getThreads().size()-1));
+	}
+	
+	private void repaint(LogInterval logInterval, int minThreadIndex, int maxThreadIndex) {
+		repaint(boundsFor(logInterval, minThreadIndex, maxThreadIndex));
 	}
 
 	private Rectangle boundsFor(LogInterval logInterval, int threadSetStartIndex, int threadSetEndIndex) {

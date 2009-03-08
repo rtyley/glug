@@ -4,6 +4,7 @@ import static java.awt.event.ActionEvent.SHIFT_MASK;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 
 import javax.swing.event.MouseInputAdapter;
 
