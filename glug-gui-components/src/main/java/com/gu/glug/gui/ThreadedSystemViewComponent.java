@@ -88,33 +88,34 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	public void paintComponent(Graphics g) {
 		Graphics2D graphics2D = (Graphics2D) g;
 		Rectangle clipBounds = graphics2D.getClipBounds();
-		System.out.println("Clip bounds ="+clipBounds);
+		//System.out.println("Clip bounds ="+clipBounds);
 		cacheIntervalCoveredByAllThreads();
 		if (containsData()) {
-			List<ThreadModel> threads = threadsFor(clipBounds);
 			LogInterval visibleInterval = visibleIntervalFor(clipBounds);
-			paint(threads,visibleInterval, graphics2D);
+			List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
+			paint(fullThreadList, minThreadIndexFor(clipBounds, fullThreadList), maxThreadIndexFor(clipBounds, fullThreadList), visibleInterval, graphics2D);
 			timelineCursor.paintOn(this, graphics2D);
 		}
 	}
 
-	private List<ThreadModel> threadsFor(Rectangle clipBounds) {
-		List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
-		int minThreadIndex=min(max(clipBounds.y,0),fullThreadList.size());
-		int maxThreadIndex=min(clipBounds.y+clipBounds.height,fullThreadList.size());
-		return fullThreadList.subList(minThreadIndex,maxThreadIndex);
+	private int maxThreadIndexFor(Rectangle clipBounds, List<ThreadModel> fullThreadList) {
+		return min(clipBounds.y+clipBounds.height,fullThreadList.size());
 	}
 
-	private void paint(List<ThreadModel> threads, LogInterval visibleInterval, Graphics2D g) {
+	private int minThreadIndexFor(Rectangle clipBounds, List<ThreadModel> fullThreadList) {
+		return min(max(clipBounds.y,0),fullThreadList.size());
+	}
+
+	private void paint(List<ThreadModel> threads, int minThreadIndex, int maxThreadIndex, LogInterval visibleInterval, Graphics2D g) {
 		System.out.println("Asked to paint "+threads.size()+" "+visibleInterval);
 		long startRenderTime = currentTimeMillis();
-		for (int threadIndex = 0 ; threadIndex<threads.size();++threadIndex) {
+		for (int threadIndex = minThreadIndex ; threadIndex<maxThreadIndex;++threadIndex) {
 			ThreadModel threadModel = threads.get(threadIndex);
 			paintThread(threadModel, threadIndex, visibleInterval, g);
 			
 			long expiredDuration = currentTimeMillis()-startRenderTime;
 			if (expiredDuration>100) {
-				System.out.println("quiting with"+expiredDuration);
+				System.out.println("quitting with"+expiredDuration);
 				//repaint(logInterval)
 				return;
 			}
@@ -123,7 +124,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private void paintThread(ThreadModel threadModel, int threadIndex, LogInterval visibleInterval, Graphics2D g) {
-		Rectangle clipBounds = g.getClipBounds();
 		for (Entry<IntervalTypeDescriptor, Collection<SignificantInterval>> blah : threadModel
 				.getSignificantIntervalsFor(visibleInterval).entrySet()) {
 			IntervalTypeDescriptor intervalTypeDescriptor = blah.getKey();
@@ -138,8 +138,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 				if (visibleIntervalOfLine!=null) {
 					int startX = graphicsXFor(visibleIntervalOfLine.getStart().getRecordedInstant());
 					int endX = graphicsXFor(visibleIntervalOfLine.getEnd().getRecordedInstant());
-	//				startX = max(startX, clipBounds.x);
-	//				endX = min(endX,clipBounds.x+clipBounds.width);
 					g.drawLine(startX,threadIndex,endX,threadIndex);
 				}
 			}
