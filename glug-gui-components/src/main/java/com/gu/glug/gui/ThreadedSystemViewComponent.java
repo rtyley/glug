@@ -1,9 +1,7 @@
 package com.gu.glug.gui;
 
-import static java.lang.Math.ceil;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static java.lang.Math.round;
 import static java.lang.System.currentTimeMillis;
 
 import java.awt.Dimension;
@@ -22,7 +20,6 @@ import javax.swing.ToolTipManager;
 
 import org.joda.time.Interval;
 
-import com.gu.glug.gui.model.LogarithmicBoundedRange;
 import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.model.ThreadModel;
 import com.gu.glug.model.ThreadedSystem;
@@ -37,8 +34,8 @@ import com.gu.glug.parser.logmessages.IntervalTypeDescriptor;
 public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private static final long serialVersionUID = 1L;
+	
 	private ThreadedSystem threadedSystem;
-	LogarithmicBoundedRange logarithmicBoundedRange;
 	private final TimelineCursor timelineCursor;
 
 	
@@ -49,7 +46,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
 		this.threadedSystem = threadedSystem;
 		this.timelineCursor = timelineCursor;
-		cacheIntervalCoveredByAllThreads();
 		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
 		makeResponsive(toolTipManager);
 		toolTipManager.registerComponent(this);
@@ -71,35 +67,12 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		return new Dimension(uiTimeScale.fullModelToViewLength(), threadedSystem.getNumThreads());
 	}
 
-
-
-	@Override
-	LogInterval getEntireInterval() {
-		return getIntervalCoveredByAllThreads(true);
-	}
-
-	public LogInterval getIntervalCoveredByAllThreads(boolean update) {
-		if (update) {
-			cacheIntervalCoveredByAllThreads();
-		}
-		return intervalCoveredByAllThreads;
-	}
-
-	private void cacheIntervalCoveredByAllThreads() {
-		intervalCoveredByAllThreads = threadedSystem.getIntervalCoveredByAllThreads();
-		if (intervalCoveredByAllThreads!=null) {
-			uiTimeScale.setFullInterval(intervalCoveredByAllThreads.toJodaInterval());
-		}
-	}
-
 	@Override
 	public void paintComponent(Graphics g) {
 		Graphics2D graphics2D = (Graphics2D) g;
 		Rectangle clipBounds = graphics2D.getClipBounds();
 		//System.out.println("Clip bounds ="+clipBounds);
-		cacheIntervalCoveredByAllThreads();
 		if (containsData()) {
-			uiTimeScale.viewToModel(clipBounds);
 			LogInterval visibleInterval = visibleIntervalFor(clipBounds);
 			List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
 			paint(fullThreadList, minThreadIndexFor(clipBounds, fullThreadList), maxThreadIndexFor(clipBounds, fullThreadList), visibleInterval, graphics2D);
@@ -164,7 +137,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	public void repaint(LogInterval logInterval) {
 		//System.out.println("***Want to repaint "+logInterval);
-		cacheIntervalCoveredByAllThreads();
 		repaint(boundsFor(logInterval, 0, threadedSystem.getThreads().size()-1));
 	}
 	
@@ -220,6 +192,11 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	Rectangle getViewFor(LogInstant logInstant) {
 		return new Rectangle(graphicsXFor(logInstant.getRecordedInstant()), 0, 0,
 				getHeight());
+	}
+
+	@Override
+	public boolean containsData() {
+		return threadedSystem.getNumThreads()>0;
 	}
 
 }

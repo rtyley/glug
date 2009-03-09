@@ -3,30 +3,52 @@ package com.gu.glug.gui;
 import static java.lang.Math.round;
 
 import java.awt.Rectangle;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 
-import com.gu.glug.model.time.LogInterval;
-
 
 public class UITimeScale {
+	
+	private List<PropertyChangeListener> changeListeners = new ArrayList<PropertyChangeListener>();
 	
 	private Interval fullInterval;
 	
 	private double millisecondsPerPixel;
+	
+	public void addChangeListener(PropertyChangeListener changeListener) {
+		changeListeners.add(changeListener);
+	}
 
+	protected void fireStateChanged(PropertyChangeEvent propertyChangeEvent) {
+		for (PropertyChangeListener changeListener : changeListeners) {
+			changeListener.propertyChange(propertyChangeEvent);
+		}
+	}
+	
 	public double getMillisecondsPerPixel() {
 		return millisecondsPerPixel;
 	}
 	
 	public void setFullInterval(Interval fullInterval) {
-		this.fullInterval = fullInterval;
+		if (!fullInterval.equals(this.fullInterval)) {
+			PropertyChangeEvent event = new PropertyChangeEvent(this,"fullInterval",this.fullInterval,fullInterval);
+			this.fullInterval = fullInterval;
+			fireStateChanged(event);
+		}
 	}
 	
 	public void setMillisecondsPerPixel(double millisecondsPerPixel) {
-		this.millisecondsPerPixel = millisecondsPerPixel;
+		if (this.millisecondsPerPixel!=millisecondsPerPixel) {
+			PropertyChangeEvent event = new PropertyChangeEvent(this,"millisecondsPerPixel",this.millisecondsPerPixel,millisecondsPerPixel);
+			this.millisecondsPerPixel = millisecondsPerPixel;
+			fireStateChanged(event);
+		}
 	}
 
 	public int fullModelToViewLength() {

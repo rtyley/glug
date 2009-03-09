@@ -23,6 +23,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.font.TextLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -41,7 +43,6 @@ public class TimelineDateTimeComponent extends JComponent {
 	
 	int minTickPixelSpacing = 3;
 	int maxTickPixelSpacing = 160;
-	//"yyyy-MM-dd HH:mm:ss,SSS"
 	private static TickIntervalSet tickIntervalSet = new TickIntervalSet(
 			tick(1,dayOfMonth(),forPattern("yyyy-MM-dd")),
 			tick(4,hourOfDay(),forPattern("yyyy-MM-dd HH:mm")), tick(1,hourOfDay(),forPattern("HH:mm")),
@@ -55,10 +56,19 @@ public class TimelineDateTimeComponent extends JComponent {
 
 	public TimelineDateTimeComponent(UITimeScale timeScale) {
 		this.timeScale = timeScale;
-		setSize(getPreferredSize());
+		//setSize(getPreferredSize());
 		setDoubleBuffered(true);
 		setBackground(WHITE);
 		setOpaque(true);
+		timeScale.addChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				//setSize(getPreferredSize());
+				if (evt.getPropertyName().equals("millisecondsPerPixel")) {
+					repaint();
+				}
+			}
+		});
 	}
 	
 	@Override

@@ -2,6 +2,8 @@ package com.gu.glug.gui;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
@@ -10,16 +12,24 @@ import javax.swing.event.ChangeListener;
 import org.joda.time.Instant;
 
 import com.gu.glug.model.time.LogInstant;
-import com.gu.glug.model.time.LogInterval;
 
 public abstract class TimelineComponent extends JComponent implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
-	protected LogInterval intervalCoveredByAllThreads;
 	protected final UITimeScale uiTimeScale;
 
 	public TimelineComponent(UITimeScale uiTimeScale) {
 		this.uiTimeScale = uiTimeScale;
+		uiTimeScale.addChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				setSize(getPreferredSize());
+				if (evt.getPropertyName().equals("millisecondsPerPixel")) {
+					scrollViewToKeepCursorInSamePosition((Double)evt.getOldValue());
+					repaint();
+				}
+			}
+		});
 	}
 	
 	abstract TimelineCursor getTimelineCursor();
@@ -27,8 +37,6 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 	abstract LogInstant getLogInstantFor(Point point);
 	
 	abstract Rectangle getViewFor(LogInstant logInstant);
-	
-	abstract LogInterval getEntireInterval();
 	
 	public void stateChanged(ChangeEvent e) {
 		Object source = e.getSource();
@@ -64,21 +72,6 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 		return uiTimeScale.modelToView(instant, specifiedMillisPerPixel);
 	}
 
-	protected void setMillisecondsPerPixel(double millisecondsPerPixel) {
-		double oldMillisecondsPerPixel = uiTimeScale.getMillisecondsPerPixel();
-		uiTimeScale.setMillisecondsPerPixel(millisecondsPerPixel);
-		timeScaleZoomChanged(oldMillisecondsPerPixel);
-	}
+	public abstract boolean containsData();
 
-	private void timeScaleZoomChanged(double oldMillisecondsPerPixel) {
-		setSize(getPreferredSize());
-		
-		scrollViewToKeepCursorInSamePosition(oldMillisecondsPerPixel);
-	
-		this.repaint();
-	}
-
-	public boolean containsData() {
-		return intervalCoveredByAllThreads != null;
-	}
 }

@@ -7,8 +7,6 @@ import javax.swing.JViewport;
 
 import org.joda.time.Interval;
 
-import org.joda.time.Interval;
-
 import com.gu.glug.gui.model.LogarithmicBoundedRange;
 
 public class ZoomFactorSlideUpdater {

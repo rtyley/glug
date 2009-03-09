@@ -13,16 +13,11 @@ package com.gu.glug.gui;
 
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
@@ -141,9 +136,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_timeMagnificationSliderStateChanged
-        threadedSystemViewPanel.setMillisecondsPerPixel(logarithmicBoundedRange.getCurrentMillisecondsPerPixel());
         uiTimeScale.setMillisecondsPerPixel(logarithmicBoundedRange.getCurrentMillisecondsPerPixel());
-        timelineDateTimeComponent.repaint();
 }//GEN-LAST:event_timeMagnificationSliderStateChanged
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
@@ -155,7 +148,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 
 	private void loadFile(File file) {
 		System.out.println("You chose to open this file: " + file.getName());
-		LogLoadingTask logLoadingTask = new LogLoadingTask(file, threadedSystem, threadedSystemViewPanel, zoomFactorSlideUpdater);
+		LogLoadingTask logLoadingTask = new LogLoadingTask(file, threadedSystem, uiTimeScale, zoomFactorSlideUpdater);
 //		logLoadingTask.addPropertyChangeListener(new PropertyChangeListener() {
 //			
 //		})
