@@ -20,19 +20,19 @@ public class TickIntervalTest {
 	
 	@Test
 	public void shouldClearTheMinorFieldsOfDateTime() {
-		TickInterval fourHourTickInterval = new TickInterval(hourOfDay(),4);
+		TickInterval fourHourTickInterval = new TickInterval(hourOfDay(),4,null);
 		assertThat(fourHourTickInterval.floor(new DateTime(2009,11,29,19,35,55,789)), equalTo(new DateTime(2009,11,29,16,0,0,0)));
 	}
 	
 	@Test
 	public void shouldClearTheHoursMinuteSecondsMillisOfDateTime() {
-		TickInterval oneDayTickInterval = new TickInterval(dayOfMonth(),1);
+		TickInterval oneDayTickInterval = new TickInterval(dayOfMonth(),1,null);
 		assertThat(oneDayTickInterval.floor(new DateTime(2009,11,29,19,35,55,789)), equalTo(new DateTime(2009,11,29,0,0,0,0)));
 	}
 	
 	@Test
 	public void shouldIterateOverTheTickPointsForASpecifiedInterval() {
-		TickInterval oneDayTickInterval = new TickInterval(dayOfMonth(),1);
+		TickInterval oneDayTickInterval = new TickInterval(dayOfMonth(),1,null);
 		Iterator<DateTime> iterator=oneDayTickInterval.ticksFor(new Interval(new DateTime(2009,11,25,19,10,3,789),new DateTime(2009,11,27,19,35,55,789)));
 		assertThat(list(iterator),equalTo(asList(
 				new DateTime(2009,11,25,0,0,0,0),

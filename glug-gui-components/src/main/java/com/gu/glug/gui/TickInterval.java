@@ -9,16 +9,19 @@ import org.joda.time.Interval;
 import org.joda.time.MutableDateTime;
 import org.joda.time.Period;
 import org.joda.time.MutableDateTime.Property;
+import org.joda.time.format.DateTimeFormatter;
 
 public class TickInterval {
 
 	private final DateTimeFieldType dateTimeFieldType;
 	private final int value;
 	private final Duration duration;
+	private final DateTimeFormatter dateTimeFormatter;
 
-	public TickInterval(DateTimeFieldType dateTimeFieldType, int value) {
+	public TickInterval(DateTimeFieldType dateTimeFieldType, int value, DateTimeFormatter dateTimeFormatter) {
 		this.dateTimeFieldType = dateTimeFieldType;
 		this.value = value;
+		this.dateTimeFormatter = dateTimeFormatter;
 		this.duration = new Period().withField(dateTimeFieldType.getDurationType(), value).toStandardDuration();
 	}
 	
@@ -28,6 +31,10 @@ public class TickInterval {
 	
 	public Duration getDuration() {
 		return duration;
+	}
+	
+	public String format(DateTime dateTime) {
+		return dateTime.toString(dateTimeFormatter);
 	}
 
 	public DateTime floor(DateTime dateTime) {
@@ -67,8 +74,8 @@ public class TickInterval {
 		return true;
 	}
 
-	public static TickInterval tick(int value, DateTimeFieldType dateTimeFieldType) {
-		return new TickInterval(dateTimeFieldType, value);
+	public static TickInterval tick(int value, DateTimeFieldType dateTimeFieldType, DateTimeFormatter dateTimeFormatter) {
+		return new TickInterval(dateTimeFieldType, value, dateTimeFormatter);
 	}
 
 	public Iterator<DateTime> ticksFor(final Interval interval) {
