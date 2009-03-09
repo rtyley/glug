@@ -49,6 +49,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		makeResponsive(toolTipManager);
 		toolTipManager.registerComponent(this);
 		timelineCursor.install(this);
+		//setDoubleBuffered(true); // benefit?
 	}
 
 	private void makeResponsive(ToolTipManager toolTipManager) {

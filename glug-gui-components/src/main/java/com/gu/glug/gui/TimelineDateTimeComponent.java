@@ -49,37 +49,6 @@ public class TimelineDateTimeComponent extends JComponent {
 			tick(10,secondOfMinute(),forPattern("HH:mm:ss")), tick(5,secondOfMinute(),forPattern("HH:mm:ss")), tick(1,secondOfMinute(),forPattern("HH:mm:ss")),
 			tick(100,millisOfSecond(),forPattern("HH:mm:ss.S")),tick(10,millisOfSecond(),forPattern("HH:mm:ss.SS")),tick(1,millisOfSecond(),forPattern("HH:mm:ss.SSS")));
 	
-	/*
-2008	2009	2010	-- 1 year
-
-2009-02	2009-03	2009-04	-- 1 month
-
-2009-02-25	2009-02-26	2009-02-27	-- 1 day
-
-2009-02-25 08:00	2009-02-25 12:00	2009-02-25 16:00	2009-02-25 20:00	-- 4 hours
-
-16:00	17:00	18:00	19:00	-- 1 hour
-
-16:00	16:10	16:20	16:30	-- 10 minutes
-
-16:00	16:05	16:10	16:15	-- 5 minutes
-
-16:00	16:01	16:02	16:03	-- 1 minute
-
-16:44:00	16:44:10	16:45:20	-- 10 seconds
-
-16:44:35	16:44:40	16:44:45	-- 5 seconds
-
-16:44:37	16:44:38	16:44:39	-- 1 second
-
-16:12:01.200	16:12:01.300	16:12:01.400	-- 100 ms
-
-16:12:01.200	16:12:01.210	16:12:01.220	-- 10 ms
-
-16:12:01.200	16:12:01.201	16:12:01.202	-- 1 ms
- 
-	 */
-	
 	private static final long serialVersionUID = 1L;
 	
 	private final UITimeScale timeScale;
@@ -87,6 +56,7 @@ public class TimelineDateTimeComponent extends JComponent {
 	public TimelineDateTimeComponent(UITimeScale timeScale) {
 		this.timeScale = timeScale;
 		setSize(getPreferredSize());
+		setDoubleBuffered(true);
 		setBackground(WHITE);
 	}
 	
@@ -135,7 +105,7 @@ public class TimelineDateTimeComponent extends JComponent {
 			DateTime tickDateTime = entry.getKey();
 			int graphicsX = timeScale.modelToView(tickDateTime.toInstant());
 			graphics2D.drawLine(graphicsX, bottom, graphicsX, bottom-tickHeight);
-			if (proportionOfRange>0.35) {
+			if (proportionOfRange>0.3) {
 				Font tickFont = baseFont.deriveFont((float)tickHeight-1);
 				String myString=tickInterval.format(tickDateTime);
 				graphics2D.setFont(tickFont);

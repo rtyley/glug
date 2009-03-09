@@ -29,7 +29,7 @@ public class ZoomFactorSlideUpdater {
 	}
 	
 	private void updateSliderBounds() {
-		logarithmicBoundedRange.setMinMillisecondsPerPixel(0.25);
+		logarithmicBoundedRange.setMinMillisecondsPerPixel(0.1);
 		updateSliderMax();
 	}
 
