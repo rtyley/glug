@@ -38,4 +38,8 @@ public class LogCoordinateParser {
 		String threadName = line.substring(THREAD_NAME_START_INDEX, threadNameEndIndex);
 		return threadedSystem.getOrCreateThread(threadName);
 	}
+
+	public boolean coordinateTextIsInvalid(String line) {
+		return line.charAt(DATETIME_FIELD_LENGTH)!=' ';
+	}
 }

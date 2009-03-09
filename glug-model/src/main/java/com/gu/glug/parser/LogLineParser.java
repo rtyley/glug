@@ -40,12 +40,16 @@ public class LogLineParser {
 		if (messageSplitIndex==-1) {
 			return null;
 		}
+		if (logCoordinateParser.coordinateTextIsInvalid(line)) {
+			return null;
+		}
 		
 		String loggerName = logCoordinateParser.getLoggerName(line, messageSplitIndex);
 		
 		List<LogMessageParser> messageParsersForLoggerName = messageParserRegistry.getMessageParsersFor(loggerName);
 		
 		if (messageParsersForLoggerName!=null) {
+			
 			String logMessage=line.substring(messageSplitIndex+3);
 			for (LogMessageParser messageParser : messageParsersForLoggerName) {
 				Matcher matcher = messageParser.getPattern().matcher(logMessage);

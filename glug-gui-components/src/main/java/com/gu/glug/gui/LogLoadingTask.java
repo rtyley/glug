@@ -1,5 +1,7 @@
 package com.gu.glug.gui;
 
+import static java.lang.System.currentTimeMillis;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,6 +13,10 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import javax.swing.SwingWorker;
+
+import org.joda.time.format.ISOPeriodFormat;
+import org.joda.time.format.PeriodFormat;
+import org.joda.time.format.PeriodFormatter;
 
 import com.gu.glug.model.ThreadedSystem;
 import com.gu.glug.model.time.LogInterval;
@@ -38,6 +44,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 	@Override
 	public ThreadedSystem doInBackground() {
 		System.out.print("Processing "+logFile);
+		long startLoadTime=currentTimeMillis();
 		LineNumberReader reader;
 		try {
 			reader = new LineNumberReader(new InputStreamReader(streamForFile()));
@@ -48,17 +55,19 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 		
 		LogLoader logLoader = new LogLoader(new LogParsingReader(reader,new LogLineParser(new LogCoordinateParser(threadedSystem),LogMessageParserRegistry.EXAMPLE )));
 		System.out.print("woo");
-		LoadReport loadReport;
+		LoadReport loadReport;LogInterval loadedLogInterval=null;
 		try {
-			while (!isCancelled() && !(loadReport=logLoader.loadLines(20000)).endOfStreamReached()) {
+			while (!isCancelled() && !(loadReport=logLoader.loadLines(50000)).endOfStreamReached()) {
 				publish(loadReport);
+				loadedLogInterval=loadReport.getUpdatedInterval().union(loadedLogInterval);
 				//System.out.print(".");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-		System.out.println("Finished loading");
+		long durationLoadTime=currentTimeMillis()-startLoadTime;
+		System.out.println("Finished loading "+loadedLogInterval+" ("+loadedLogInterval.toJodaInterval().toDuration().toPeriod().toString(PeriodFormat.getDefault())+") in "+durationLoadTime+" ms");
 		return threadedSystem;
 	}
 

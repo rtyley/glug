@@ -1,12 +1,14 @@
 package com.gu.glug.parser;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
 
@@ -59,6 +61,20 @@ public class LogLineParserTest {
 		logLineParser = new LogLineParser(logCoordinateParser,null);
 		logLineParser.parse("a log line that is full of junk", 1001);
 		logLineParser.parse("a line that is too short - the dash normally comes much later", 1002);
+		
+		verify(logCoordinateParser,never()).getLoggerName(anyString(), anyInt());
+	}
+	
+	@Test
+	public void shouldReturnNullAndNotEvenParseLoggerNameIfLogCoordinateTextIsInvalid() throws ParseException {
+		LogCoordinateParser logCoordinateParser = mock(LogCoordinateParser.class);
+		
+		when(logCoordinateParser.coordinateTextIsInvalid(anyString())).thenReturn(true);
+		
+		logLineParser = new LogLineParser(logCoordinateParser,mock(LogMessageParserRegistry.class));
+		String foreshortenedLogLine = "009-02-10 12:01:45,594 [resin-tcp-connection-*:8080-191] INFO  com.gu.r2.common.diagnostic.database.PreparedStatementProxy - Query \"load collection com.gu.r2.common.model.page.LivePage.contentPlacements\" (component: sublinks) completed in 11 ms";
+		
+		assertThat(logLineParser.parse(foreshortenedLogLine, 1001),nullValue());
 		
 		verify(logCoordinateParser,never()).getLoggerName(anyString(), anyInt());
 	}
