@@ -22,6 +22,10 @@ public class TickInterval {
 		this.duration = new Period().withField(dateTimeFieldType.getDurationType(), value).toStandardDuration();
 	}
 	
+	public int getValue() {
+		return value;
+	}
+	
 	public Duration getDuration() {
 		return duration;
 	}
@@ -65,5 +69,7 @@ public class TickInterval {
 			}
 		};
 	}
+
+
 
 }

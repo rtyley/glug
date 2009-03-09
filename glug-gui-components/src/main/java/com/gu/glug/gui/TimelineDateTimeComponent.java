@@ -3,6 +3,10 @@ package com.gu.glug.gui;
 import static com.gu.glug.gui.TickInterval.tick;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.WHITE;
+import static java.lang.Math.exp;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.Math.pow;
 import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 import static org.joda.time.DateTimeFieldType.dayOfMonth;
@@ -27,7 +31,7 @@ import org.joda.time.Interval;
 
 public class TimelineDateTimeComponent extends JComponent {
 	
-	int minTickPixelSpacing = 2;
+	int minTickPixelSpacing = 3;
 	int maxTickPixelSpacing = 160;
 
 	private static TickIntervalSet tickIntervalSet = new TickIntervalSet(
@@ -60,19 +64,25 @@ public class TimelineDateTimeComponent extends JComponent {
 		graphics2D.setColor(getBackground());
 		graphics2D.fill(clipBounds);
 		NavigableMap<Duration, TickInterval> periodRange = tickIntervalsAtCurrentScale();
-		int componentHeight = getHeight();
+		int bottom = getHeight()-1;
 		graphics2D.setColor(BLACK);
 		Interval visibleInterval = timeScale.viewToModel(clipBounds);
 		int tickHeight = 1;
 		for (TickInterval tickInterval : periodRange.values()) {
 			int pixelsForTickDuration = timeScale.modelDurationToViewPixels(tickInterval.getDuration());
-			float proportionOfRange = (pixelsForTickDuration - minTickPixelSpacing)/((float)(maxTickPixelSpacing - minTickPixelSpacing));
-			tickHeight = (int)round(10 * proportionOfRange);
+			float neif =(pixelsForTickDuration - minTickPixelSpacing)/((float)(maxTickPixelSpacing - minTickPixelSpacing));
+			float proportionOfRange = max(0,min(1,neif));
+			if (tickInterval.getValue()==1) {
+				proportionOfRange=(float) pow(proportionOfRange, 0.7);
+			}
+			int col=round(255*(1f-proportionOfRange));
+			g.setColor(new Color(col,col,col));
+			tickHeight = (int) round(16f*exp(proportionOfRange-1));
 			Iterator<DateTime> tickIterator = tickInterval.ticksFor(visibleInterval);
 			while (tickIterator.hasNext()) {
 				DateTime tickDateTime = tickIterator.next();
 				int graphicsX = timeScale.modelToView(tickDateTime.toInstant());
-				graphics2D.drawLine(graphicsX, componentHeight, graphicsX, componentHeight-tickHeight);
+				graphics2D.drawLine(graphicsX, bottom, graphicsX, bottom-tickHeight);
 			}
 			//tickHeight+=2;
 		}
