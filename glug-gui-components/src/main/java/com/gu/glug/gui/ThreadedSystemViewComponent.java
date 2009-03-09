@@ -20,6 +20,8 @@ import java.util.Map.Entry;
 
 import javax.swing.ToolTipManager;
 
+import org.joda.time.Interval;
+
 import com.gu.glug.gui.model.LogarithmicBoundedRange;
 import com.gu.glug.model.SignificantInterval;
 import com.gu.glug.model.ThreadModel;
@@ -40,8 +42,11 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	private final TimelineCursor timelineCursor;
 
 	
-	public ThreadedSystemViewComponent(ThreadedSystem threadedSystem,
+	public ThreadedSystemViewComponent(UITimeScale timeScale, ThreadedSystem threadedSystem,
 			TimelineCursor timelineCursor) {
+		super(timeScale);
+		
+		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
 		this.threadedSystem = threadedSystem;
 		this.timelineCursor = timelineCursor;
 		cacheIntervalCoveredByAllThreads();
@@ -63,8 +68,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		if (!containsData()) {
 			return super.getPreferredSize();
 		}
-		int requiredWidth = (int) ceil(getDrawDistanceFor(intervalCoveredByAllThreads));
-		return new Dimension(requiredWidth, threadedSystem.getNumThreads());
+		return new Dimension(uiTimeScale.fullModelToViewLength(), threadedSystem.getNumThreads());
 	}
 
 
@@ -83,6 +87,9 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private void cacheIntervalCoveredByAllThreads() {
 		intervalCoveredByAllThreads = threadedSystem.getIntervalCoveredByAllThreads();
+		if (intervalCoveredByAllThreads!=null) {
+			uiTimeScale.setFullInterval(intervalCoveredByAllThreads.toJodaInterval());
+		}
 	}
 
 	@Override
@@ -92,6 +99,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		//System.out.println("Clip bounds ="+clipBounds);
 		cacheIntervalCoveredByAllThreads();
 		if (containsData()) {
+			uiTimeScale.viewToModel(clipBounds);
 			LogInterval visibleInterval = visibleIntervalFor(clipBounds);
 			List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
 			paint(fullThreadList, minThreadIndexFor(clipBounds, fullThreadList), maxThreadIndexFor(clipBounds, fullThreadList), visibleInterval, graphics2D);
@@ -146,17 +154,12 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private LogInterval visibleIntervalFor(Rectangle clipBounds) {
-		return new LogInterval(instantFor(clipBounds.getMinX()),
-				instantFor(clipBounds.getMaxX()));
+		Interval interval = uiTimeScale.viewToModel(clipBounds);
+		return new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),Integer.MAX_VALUE));
 	}
 
-	private double getDrawDistanceFor(LogInterval interval) {
-		return interval.toDurationMillis() / millisecondsPerPixel;
-	}
-
-	private LogInstant instantFor(double graphicsX) {
-		return new LogInstant( intervalCoveredByAllThreads.getStart().getRecordedInstant().plus(
-				round(graphicsX * millisecondsPerPixel)),0);
+	private LogInstant instantFor(int graphicsX) {
+		return new LogInstant( uiTimeScale.viewToModel(graphicsX),0);
 	}
 
 	public void repaint(LogInterval logInterval) {

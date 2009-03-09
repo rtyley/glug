@@ -8,6 +8,8 @@ import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 
+import com.gu.glug.model.time.LogInterval;
+
 
 public class UITimeScale {
 	
@@ -32,7 +34,11 @@ public class UITimeScale {
 	}
 	
 	public int modelToView(Instant instant) {
-		return (int) round(((instant.getMillis() - fullInterval.getStartMillis())/millisecondsPerPixel));
+		return modelToView(instant,millisecondsPerPixel);
+	}
+	
+	public int modelToView(Instant instant, double specifiedMillisPerPixel) {
+		return (int) round(((instant.getMillis() - fullInterval.getStartMillis())/specifiedMillisPerPixel));
 	}
 
 	public Instant viewToModel(int viewX) {
@@ -50,4 +56,10 @@ public class UITimeScale {
 	public int modelDurationToViewPixels(Duration duration) {
 		return (int) round(duration.getMillis()/millisecondsPerPixel);
 	}
+
+	public Interval getFullInterval() {
+		return fullInterval;
+	}
+
+
 }

@@ -1,7 +1,5 @@
 package com.gu.glug.gui;
 
-import static java.lang.Math.round;
-
 import java.awt.Point;
 import java.awt.Rectangle;
 
@@ -17,14 +15,13 @@ import com.gu.glug.model.time.LogInterval;
 public abstract class TimelineComponent extends JComponent implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
-	protected double millisecondsPerPixel = 0.25d;
 	protected LogInterval intervalCoveredByAllThreads;
-	
-	public TimelineComponent() {
-		// setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
-	}
+	protected final UITimeScale uiTimeScale;
 
+	public TimelineComponent(UITimeScale uiTimeScale) {
+		this.uiTimeScale = uiTimeScale;
+	}
+	
 	abstract TimelineCursor getTimelineCursor();
 
 	abstract LogInstant getLogInstantFor(Point point);
@@ -60,29 +57,24 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 	}
 
 	protected int graphicsXFor(Instant instant) {
-		return graphicsXFor(instant, millisecondsPerPixel);
+		return uiTimeScale.modelToView(instant);
 	}
 
 	private int graphicsXFor(Instant instant, double specifiedMillisPerPixel) {
-		return (int) round((differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(instant))
-				/ specifiedMillisPerPixel);
-	}
-
-	private long differenceInMillisFromStartOfIntervalCoveredByAllThreadsFor(Instant instant) {
-		return instant.getMillis()	- intervalCoveredByAllThreads.getStart().getMillis();
+		return uiTimeScale.modelToView(instant, specifiedMillisPerPixel);
 	}
 
 	protected void setMillisecondsPerPixel(double millisecondsPerPixel) {
-	
-		double oldMillisecondsPerPixel = this.millisecondsPerPixel;
-		
-		this.millisecondsPerPixel = millisecondsPerPixel;
-	
+		double oldMillisecondsPerPixel = uiTimeScale.getMillisecondsPerPixel();
+		uiTimeScale.setMillisecondsPerPixel(millisecondsPerPixel);
+		timeScaleZoomChanged(oldMillisecondsPerPixel);
+	}
+
+	private void timeScaleZoomChanged(double oldMillisecondsPerPixel) {
 		setSize(getPreferredSize());
 		
 		scrollViewToKeepCursorInSamePosition(oldMillisecondsPerPixel);
 	
-		// System.out.println("millisecondsPerPixel = "+millisecondsPerPixel);
 		this.repaint();
 	}
 

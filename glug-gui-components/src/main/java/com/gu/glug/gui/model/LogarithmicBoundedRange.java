@@ -1,5 +1,6 @@
 package com.gu.glug.gui.model;
 
+import static java.lang.Math.ceil;
 import static java.lang.Math.exp;
 import static java.lang.Math.log;
 import static java.lang.Math.round;
@@ -16,7 +17,7 @@ public class LogarithmicBoundedRange {
 	}
 
 	public void setMaxMillisecondsPerPixel(double millisecondsPerPixel) {
-		linearBoundedRangeModel.setMaximum(linearScaleValueFor(millisecondsPerPixel));
+		linearBoundedRangeModel.setMaximum((int) ceil(linearScaleDoubleValueFor(millisecondsPerPixel)));
 	}
 	
 	public void setMinMillisecondsPerPixel(double millisecondsPerPixel) {
@@ -32,7 +33,11 @@ public class LogarithmicBoundedRange {
 	}
 	
 	private int linearScaleValueFor(double millisecondsPerPixel) {
-		return (int) round(log(millisecondsPerPixel) * multFactor);
+		return (int) round(linearScaleDoubleValueFor(millisecondsPerPixel));
+	}
+
+	private double linearScaleDoubleValueFor(double millisecondsPerPixel) {
+		return round(log(millisecondsPerPixel) * multFactor);
 	}
 	
 	private double millisecondsPerPixelFor(int linearScaleValue) {

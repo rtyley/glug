@@ -5,17 +5,20 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JViewport;
 
+import org.joda.time.Interval;
+
+import org.joda.time.Interval;
+
 import com.gu.glug.gui.model.LogarithmicBoundedRange;
-import com.gu.glug.model.time.LogInterval;
 
 public class ZoomFactorSlideUpdater {
 	private final LogarithmicBoundedRange logarithmicBoundedRange;
-	private final TimelineComponent timelineComponent;
 	private final JViewport viewport;
+	private final UITimeScale timeScale;
 
-	public ZoomFactorSlideUpdater(JViewport viewport, TimelineComponent timelineComponent, LogarithmicBoundedRange logarithmicBoundedRange) {
+	public ZoomFactorSlideUpdater(UITimeScale timeScale, LogarithmicBoundedRange logarithmicBoundedRange, JViewport viewport) {
 		this.viewport = viewport;
-		this.timelineComponent = timelineComponent;
+		this.timeScale = timeScale;
 		this.logarithmicBoundedRange = logarithmicBoundedRange;
 		
 		updateSliderBounds();
@@ -34,13 +37,14 @@ public class ZoomFactorSlideUpdater {
 	}
 
 	public void updateSliderMax() {
-		LogInterval intervalCoveredByAllThreads = timelineComponent.getEntireInterval();
-		if (intervalCoveredByAllThreads!=null) {
-			int width = viewport.getExtentSize().width;
-			long millis=intervalCoveredByAllThreads.toDurationMillis();
-			double millisPerPixelRequiredToShowEntireInterval = ((double)millis) / width;
-			logarithmicBoundedRange.setMaxMillisecondsPerPixel(millisPerPixelRequiredToShowEntireInterval);
+		Interval fullInterval = timeScale.getFullInterval();
+		if (fullInterval!=null) {
+			logarithmicBoundedRange.setMaxMillisecondsPerPixel(millisPerPixelRequredToShowEntireIntervalInViewPort(fullInterval));
 		}
+	}
+
+	private double millisPerPixelRequredToShowEntireIntervalInViewPort(Interval interval) {
+		return ((double) interval.toDurationMillis()) / viewport.getExtentSize().width;
 	}
 	
 }

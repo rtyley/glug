@@ -13,6 +13,8 @@ package com.gu.glug.gui;
 
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
@@ -41,7 +43,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
     @SuppressWarnings("serial")
 	public GlugMainJFrame() {
         initComponents();
-        threadedSystemViewPanel = new ThreadedSystemViewComponent(threadedSystem, new TimelineCursor());
+        threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadedSystem, new TimelineCursor());
         
         //threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
         timelineScrollPane.getViewport().add(threadedSystemViewPanel);
@@ -57,7 +59,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
         
         
         logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
-        zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(timelineScrollPane.getViewport(),threadedSystemViewPanel, logarithmicBoundedRange);
+        zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(uiTimeScale, logarithmicBoundedRange, timelineScrollPane.getViewport());
         
         setTransferHandler(new FileImportDragAndDropTransferHandler() {
 			@Override
