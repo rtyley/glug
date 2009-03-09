@@ -58,6 +58,7 @@ public class TimelineDateTimeComponent extends JComponent {
 		setSize(getPreferredSize());
 		setDoubleBuffered(true);
 		setBackground(WHITE);
+		setOpaque(true);
 	}
 	
 	@Override

@@ -11,6 +11,8 @@
 
 package com.gu.glug.gui;
 
+import static javax.swing.JFileChooser.APPROVE_OPTION;
+
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
@@ -144,7 +146,7 @@ public class GlugMainJFrame extends javax.swing.JFrame {
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
         int returnVal = jFileChooser1.showOpenDialog(this);
-          if(returnVal == JFileChooser.APPROVE_OPTION) {
+          if(returnVal == APPROVE_OPTION) {
             loadFile(jFileChooser1.getSelectedFile());
           }
 }//GEN-LAST:event_openFileMenuItemActionPerformed
