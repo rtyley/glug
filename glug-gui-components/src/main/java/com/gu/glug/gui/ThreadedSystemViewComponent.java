@@ -1,9 +1,11 @@
 package com.gu.glug.gui;
 
+import static java.lang.Integer.toHexString;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.System.currentTimeMillis;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.Map.Entry;
 
@@ -21,6 +24,7 @@ import javax.swing.ToolTipManager;
 import org.joda.time.Interval;
 
 import com.gu.glug.model.SignificantInterval;
+import com.gu.glug.model.SignificantIntervalOccupier;
 import com.gu.glug.model.ThreadModel;
 import com.gu.glug.model.ThreadedSystem;
 import com.gu.glug.model.time.LogInstant;
@@ -165,11 +169,26 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 			return null;
 		}
 		LogInstant instant = instantFor(event.getX());
-		SortedSet<SignificantInterval> significantIntervalsForInstant = thread.getSignificantIntervalsFor(instant);
+		SortedMap<IntervalTypeDescriptor, SignificantInterval> significantIntervalsForInstant = thread.getSignificantIntervalsFor(instant);
 		if (significantIntervalsForInstant.isEmpty()) {
 			return null;
 		}
-		return "<html>" + significantIntervalsForInstant.toString() + "</html>";
+		StringBuilder sb =new StringBuilder("<html>At "+instant.getRecordedInstant()+":<ul>");
+		for (SignificantInterval significantInterval:significantIntervalsForInstant.values()) {
+			SignificantIntervalOccupier type = significantInterval.getType();
+			IntervalTypeDescriptor intervalTypeDescriptor = type.getIntervalTypeDescriptor();
+			Color colour = intervalTypeDescriptor.getColour();
+			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+type);
+		}
+		return sb.append("</ul></html>").toString();
+	}
+
+	String hexFor(Color colour) {
+		int red = colour.getRed();
+		int green = colour.getGreen();
+		int blue = colour.getBlue();
+		int hex = (red<<16) + (green<<8) + blue;
+		return toHexString(hex);
 	}
 
 	private ThreadModel threadFor(Point point) {
@@ -201,7 +220,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	@Override
 	public boolean containsData() {
-		return threadedSystem.getNumThreads()>0;
+		return !threadedSystem.getThreads().isEmpty();
 	}
 
 }

@@ -7,7 +7,7 @@ import com.gu.glug.model.SignificantIntervalOccupier;
 
 public class CompletedPageRequest implements SignificantIntervalOccupier {
 
-	public static final IntervalTypeDescriptor INTERVAL_TYPE_DESCRIPTOR = new IntervalTypeDescriptor(1,RED);
+	public static final IntervalTypeDescriptor INTERVAL_TYPE_DESCRIPTOR = new IntervalTypeDescriptor(1,RED,"Page Request");
 	
 	private final String pagePath;
 
@@ -52,7 +52,7 @@ public class CompletedPageRequest implements SignificantIntervalOccupier {
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()+"["+pagePath+"]";
+		return pagePath;
 	}
 	
 }

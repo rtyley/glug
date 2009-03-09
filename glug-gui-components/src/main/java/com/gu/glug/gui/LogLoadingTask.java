@@ -14,9 +14,7 @@ import java.util.zip.GZIPInputStream;
 
 import javax.swing.SwingWorker;
 
-import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.PeriodFormat;
-import org.joda.time.format.PeriodFormatter;
 
 import com.gu.glug.model.ThreadedSystem;
 import com.gu.glug.model.time.LogInterval;
@@ -43,7 +41,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 
 	@Override
 	public ThreadedSystem doInBackground() {
-		System.out.print("Processing "+logFile);
+		System.out.println("Processing "+logFile);
 		long startLoadTime=currentTimeMillis();
 		LineNumberReader reader;
 		try {

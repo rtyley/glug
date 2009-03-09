@@ -4,9 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import com.gu.glug.model.time.LogInstant;
 import com.gu.glug.model.time.LogInterval;
@@ -52,12 +50,12 @@ public class ThreadModel {
 		return name;
 	}
 
-	public SortedSet<SignificantInterval> getSignificantIntervalsFor(LogInstant instant) {
-		SortedSet<SignificantInterval> significantIntervals = new TreeSet<SignificantInterval>();
+	public SortedMap<IntervalTypeDescriptor, SignificantInterval> getSignificantIntervalsFor(LogInstant instant) {
+		SortedMap<IntervalTypeDescriptor, SignificantInterval> significantIntervals = new TreeMap<IntervalTypeDescriptor,SignificantInterval>();
 		for (SignificantInstants significantInstants : map.values()) {
 			SignificantInterval significantIntervalAtInstant = significantInstants.getSignificantIntervalAt(instant);
 			if (significantIntervalAtInstant!=null) {
-				significantIntervals.add(significantIntervalAtInstant);
+				significantIntervals.put(significantIntervalAtInstant.getType().getIntervalTypeDescriptor(),significantIntervalAtInstant);
 			}
 		}
 		return significantIntervals;

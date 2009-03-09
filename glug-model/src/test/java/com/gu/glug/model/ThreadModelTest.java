@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.gu.glug.model.time.LogInstant;
 import com.gu.glug.model.time.LogInterval;
+import com.gu.glug.parser.logmessages.IntervalTypeDescriptor;
 
 
 public class ThreadModelTest {
@@ -24,7 +25,7 @@ public class ThreadModelTest {
 		
 		LogInstant instantWhereNoDamnThingWasHappening = new LogInstant(5000,5);
 		
-		assertThat(thread.getSignificantIntervalsFor(instantWhereNoDamnThingWasHappening), equalTo(Collections.<SignificantInterval>emptySet()));
+		assertThat(thread.getSignificantIntervalsFor(instantWhereNoDamnThingWasHappening), equalTo(Collections.<IntervalTypeDescriptor,SignificantInterval>emptyMap()));
 	}
 	
 }

@@ -9,7 +9,7 @@ import com.gu.glug.model.SignificantIntervalOccupier;
 
 public class CompletedDatabaseQuery implements SignificantIntervalOccupier {
 	
-	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(2,BLACK);
+	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(2,BLACK,"Database Query");
 	
 	private final static Map<String,CompletedDatabaseQuery> cache = new HashMap<String,CompletedDatabaseQuery>();
 	
@@ -66,6 +66,6 @@ public class CompletedDatabaseQuery implements SignificantIntervalOccupier {
 	
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName()+"["+dbQuery+"]";
+		return dbQuery;
 	}
 }

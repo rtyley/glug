@@ -16,6 +16,7 @@ import static javax.swing.JFileChooser.APPROVE_OPTION;
 import java.io.File;
 import java.util.List;
 
+import javax.swing.JViewport;
 import javax.swing.UIManager;
 
 import org.joda.time.Duration;

@@ -21,10 +21,6 @@ public class UITimeScale {
 	
 	private double millisecondsPerPixel;
 	
-	public UITimeScale() {
-		this.millisecondsPerPixel = millisecondsPerPixel;
-	}
-
 	public void addChangeListener(PropertyChangeListener changeListener) {
 		changeListeners.add(changeListener);
 	}
@@ -52,7 +48,7 @@ public class UITimeScale {
 	}
 
 	public int fullModelToViewLength() {
-		return (int) round(fullInterval.toDurationMillis()*millisecondsPerPixel);
+		return (int) round(fullInterval.toDurationMillis()/millisecondsPerPixel);
 	}
 	
 	public int modelToView(Instant instant) {

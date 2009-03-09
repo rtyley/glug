@@ -5,10 +5,12 @@ import java.awt.Color;
 public class IntervalTypeDescriptor implements Comparable<IntervalTypeDescriptor> {
 	private final Color colour;
 	private final int precedence;
+	private final String description;
 
-	public IntervalTypeDescriptor(int precedence, Color colour) {
+	public IntervalTypeDescriptor(int precedence, Color colour, String description) {
 		this.precedence = precedence;
 		this.colour = colour;
+		this.description = description;
 	}
 	
 	@Override
@@ -18,5 +20,9 @@ public class IntervalTypeDescriptor implements Comparable<IntervalTypeDescriptor
 
 	public Color getColour() {
 		return colour;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 }
