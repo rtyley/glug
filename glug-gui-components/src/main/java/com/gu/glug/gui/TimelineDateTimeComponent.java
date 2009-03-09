@@ -3,6 +3,8 @@ package com.gu.glug.gui;
 import static com.gu.glug.gui.TickInterval.tick;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.WHITE;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.lang.Math.exp;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -86,13 +88,18 @@ public class TimelineDateTimeComponent extends JComponent {
 		super.paintComponent(g);
 		Graphics2D graphics2D = (Graphics2D) g;
 		Rectangle clipBounds = graphics2D.getClipBounds();
+		fillBackgroundOf(clipBounds, graphics2D);
+		Interval visibleInterval = timeScale.viewToModel(clipBounds);
+		paintTicksFor(visibleInterval, graphics2D);
+	}
+
+	private void fillBackgroundOf(Rectangle clipBounds, Graphics2D graphics2D) {
 		graphics2D.setColor(getBackground());
 		graphics2D.fill(clipBounds);
+	}
+
+	private void paintTicksFor(Interval visibleInterval, Graphics2D graphics2D) {
 		NavigableMap<Duration, TickInterval> periodRange = tickIntervalsAtCurrentScale();
-		int bottom = getHeight()-1;
-		graphics2D.setColor(BLACK);
-		Interval visibleInterval = timeScale.viewToModel(clipBounds);
-		int tickHeight = 1;
 		Map<DateTime, TickInterval> tickMap = new HashMap<DateTime, TickInterval>();
 		Map<TickInterval, Float> tickWeight = new HashMap<TickInterval, Float>();
 		for (TickInterval tickInterval : periodRange.values()) {
@@ -109,23 +116,29 @@ public class TimelineDateTimeComponent extends JComponent {
 				tickMap.put(tickDateTime, tickInterval);
 			}
 		}
-		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
-		DateTimeFormatter dtf = DateTimeFormat.forPattern("HH:mm:ss.SSS");
+		paintTicksFor(tickMap, tickWeight, graphics2D);
+	}
+
+	private void paintTicksFor(Map<DateTime, TickInterval> tickMap,
+			Map<TickInterval, Float> tickWeight, Graphics2D graphics2D) {
+		int tickHeight;
+		int bottom = getHeight()-1;
+		graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 		Font baseFont = new Font(Font.SANS_SERIF, Font.PLAIN,16);
 		for (Entry<DateTime, TickInterval> entry : tickMap.entrySet()) {
 			TickInterval tickInterval = entry.getValue();
 			float proportionOfRange = tickWeight.get(tickInterval);
 			int col=round(255*(1f-proportionOfRange));
-			g.setColor(new Color(col,col,col));
-			tickHeight = (int) round(16f*exp(proportionOfRange-1));
+			graphics2D.setColor(new Color(col,col,col));
+			float punchSize = (float) (16f*exp(proportionOfRange-1));
+			tickHeight = (int) round(punchSize);
 			DateTime tickDateTime = entry.getKey();
 			int graphicsX = timeScale.modelToView(tickDateTime.toInstant());
 			graphics2D.drawLine(graphicsX, bottom, graphicsX, bottom-tickHeight);
 			if (proportionOfRange>0.3) {
-				Font tickFont = baseFont.deriveFont((float)tickHeight-1);
-				String myString=tickInterval.format(tickDateTime);
+				Font tickFont = baseFont.deriveFont(punchSize-1);
 				graphics2D.setFont(tickFont);
-				TextLayout textLayout = new TextLayout(myString,tickFont,graphics2D.getFontRenderContext());
+				TextLayout textLayout = new TextLayout(tickInterval.format(tickDateTime),tickFont,graphics2D.getFontRenderContext());
 				textLayout.draw(graphics2D, (float)(-(textLayout.getBounds().getWidth()/2)+graphicsX),(float) bottom-tickHeight-1);
 			}
 		}

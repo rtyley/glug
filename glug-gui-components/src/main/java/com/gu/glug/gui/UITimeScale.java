@@ -19,7 +19,7 @@ public class UITimeScale {
 	
 	private Interval fullInterval;
 	
-	private double millisecondsPerPixel;
+	private double millisecondsPerPixel=1000;
 	
 	public void addChangeListener(PropertyChangeListener changeListener) {
 		changeListeners.add(changeListener);
@@ -29,10 +29,6 @@ public class UITimeScale {
 		for (PropertyChangeListener changeListener : changeListeners) {
 			changeListener.propertyChange(propertyChangeEvent);
 		}
-	}
-	
-	public double getMillisecondsPerPixel() {
-		return millisecondsPerPixel;
 	}
 	
 	public void setFullInterval(Interval fullInterval) {

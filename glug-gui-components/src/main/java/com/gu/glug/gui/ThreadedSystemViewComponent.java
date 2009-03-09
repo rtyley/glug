@@ -46,11 +46,16 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
 		this.threadedSystem = threadedSystem;
 		this.timelineCursor = timelineCursor;
+		turnOnToolTips();
+		
+		timelineCursor.install(this);
+		//setDoubleBuffered(true); // benefit?
+	}
+
+	private void turnOnToolTips() {
 		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
 		makeResponsive(toolTipManager);
 		toolTipManager.registerComponent(this);
-		timelineCursor.install(this);
-		//setDoubleBuffered(true); // benefit?
 	}
 
 	private void makeResponsive(ToolTipManager toolTipManager) {
@@ -97,7 +102,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 			
 			long expiredDuration = currentTimeMillis()-startRenderTime;
 			if (expiredDuration>100) {
-				System.out.println("quitting with"+expiredDuration);
+				System.out.println("Abandoning painting after "+expiredDuration+" ms");
 				repaint(visibleInterval, threadIndex+1, maxThreadIndex);
 				return;
 			}
