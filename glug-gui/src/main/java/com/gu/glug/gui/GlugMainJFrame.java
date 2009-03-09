@@ -44,17 +44,16 @@ public class GlugMainJFrame extends javax.swing.JFrame {
         timelineScrollPane.getViewport().add(threadedSystemViewPanel);
         
         uiTimeScale.setFullInterval(new Interval(new Instant(), new Duration(1000000)));
-        uiTimeScale.setMillisecondsPerPixel(10);
 		timelineDateTimeComponent = new TimelineDateTimeComponent(uiTimeScale);
 		timelineScrollPane.setColumnHeaderView(timelineDateTimeComponent);
         
-        
         timelineScrollPane.validate();
-        
-        
         
         logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
         zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(uiTimeScale, logarithmicBoundedRange, timelineScrollPane.getViewport());
+        
+        uiTimeScale.setMillisecondsPerPixel(1000);
+        
         
         setTransferHandler(new FileImportDragAndDropTransferHandler() {
 			@Override

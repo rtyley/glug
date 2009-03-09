@@ -2,6 +2,8 @@ package com.gu.glug.gui;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JViewport;
 
@@ -21,6 +23,13 @@ public class ZoomFactorSlideUpdater {
 		
 		updateSliderBounds();
 		
+		timeScale.addChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				updateSliderValue();
+			}
+		});
+		
 		viewport.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -29,6 +38,11 @@ public class ZoomFactorSlideUpdater {
 		});
 	}
 	
+	private void updateSliderValue() {
+		 // We should be safe from an infinite recursive loop because LogarithmicBoundedRange round-trips
+		logarithmicBoundedRange.setCurrentMillisecondsPerPixel(timeScale.getMillisecondsPerPixel());
+	}
+
 	private void updateSliderBounds() {
 		logarithmicBoundedRange.setMinMillisecondsPerPixel(0.1);
 		updateSliderMax();

@@ -19,8 +19,12 @@ public class UITimeScale {
 	
 	private Interval fullInterval;
 	
-	private double millisecondsPerPixel=1000;
+	private double millisecondsPerPixel;
 	
+	public UITimeScale() {
+		this.millisecondsPerPixel = millisecondsPerPixel;
+	}
+
 	public void addChangeListener(PropertyChangeListener changeListener) {
 		changeListeners.add(changeListener);
 	}
@@ -77,6 +81,10 @@ public class UITimeScale {
 
 	public Interval getFullInterval() {
 		return fullInterval;
+	}
+
+	public double getMillisecondsPerPixel() {
+		return millisecondsPerPixel;
 	}
 
 
