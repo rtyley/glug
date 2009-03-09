@@ -8,7 +8,6 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
-import static java.lang.Math.sqrt;
 import static org.joda.time.DateTimeFieldType.dayOfMonth;
 import static org.joda.time.DateTimeFieldType.hourOfDay;
 import static org.joda.time.DateTimeFieldType.millisOfSecond;
@@ -17,17 +16,25 @@ import static org.joda.time.DateTimeFieldType.secondOfMinute;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.font.TextLayout;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class TimelineDateTimeComponent extends JComponent {
 	
@@ -68,23 +75,42 @@ public class TimelineDateTimeComponent extends JComponent {
 		graphics2D.setColor(BLACK);
 		Interval visibleInterval = timeScale.viewToModel(clipBounds);
 		int tickHeight = 1;
+		Map<DateTime, TickInterval> tickMap = new HashMap<DateTime, TickInterval>();
+		Map<TickInterval, Float> tickWeight = new HashMap<TickInterval, Float>();
 		for (TickInterval tickInterval : periodRange.values()) {
+			Iterator<DateTime> tickIterator = tickInterval.ticksFor(visibleInterval);
 			int pixelsForTickDuration = timeScale.modelDurationToViewPixels(tickInterval.getDuration());
-			float neif =(pixelsForTickDuration - minTickPixelSpacing)/((float)(maxTickPixelSpacing - minTickPixelSpacing));
+			float neif =(pixelsForTickDuration - minTickPixelSpacing)/(maxTickPixelSpacing*1.2f - minTickPixelSpacing);
 			float proportionOfRange = max(0,min(1,neif));
 			if (tickInterval.getValue()==1) {
 				proportionOfRange=(float) pow(proportionOfRange, 0.7);
 			}
+			tickWeight.put(tickInterval, proportionOfRange);
+			while (tickIterator.hasNext()) {
+				DateTime tickDateTime = tickIterator.next();
+				tickMap.put(tickDateTime, tickInterval);
+			}
+		}
+		graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
+		DateTimeFormatter dtf = DateTimeFormat.forPattern("HH:mm:ss.SSS");
+		Font baseFont = new Font(Font.SANS_SERIF, Font.PLAIN,16);
+		for (Entry<DateTime, TickInterval> entry : tickMap.entrySet()) {
+			TickInterval tickInterval = entry.getValue();
+			float proportionOfRange = tickWeight.get(tickInterval);
 			int col=round(255*(1f-proportionOfRange));
 			g.setColor(new Color(col,col,col));
 			tickHeight = (int) round(16f*exp(proportionOfRange-1));
-			Iterator<DateTime> tickIterator = tickInterval.ticksFor(visibleInterval);
-			while (tickIterator.hasNext()) {
-				DateTime tickDateTime = tickIterator.next();
-				int graphicsX = timeScale.modelToView(tickDateTime.toInstant());
-				graphics2D.drawLine(graphicsX, bottom, graphicsX, bottom-tickHeight);
+			DateTime tickDateTime = entry.getKey();
+			int graphicsX = timeScale.modelToView(tickDateTime.toInstant());
+			graphics2D.drawLine(graphicsX, bottom, graphicsX, bottom-tickHeight);
+			if (proportionOfRange>0.35) {
+				Font tickFont = baseFont.deriveFont((float)tickHeight-1);
+				String myString=tickDateTime.toString(dtf);
+				graphics2D.setFont(tickFont);
+				TextLayout textLayout = new TextLayout(myString,tickFont,graphics2D.getFontRenderContext());
+				textLayout.draw(graphics2D, (float)(-(textLayout.getBounds().getWidth()/2)+graphicsX),(float) bottom-tickHeight-1);
+				//graphics2D.drawString(myString, graphicsX, bottom-tickHeight);
 			}
-			//tickHeight+=2;
 		}
 	}
 
