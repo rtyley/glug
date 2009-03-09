@@ -12,6 +12,7 @@ import static org.joda.time.DateTimeFieldType.dayOfMonth;
 import static org.joda.time.DateTimeFieldType.hourOfDay;
 import static org.joda.time.DateTimeFieldType.millisOfSecond;
 import static org.joda.time.DateTimeFieldType.minuteOfHour;
+import static org.joda.time.DateTimeFieldType.monthOfYear;
 import static org.joda.time.DateTimeFieldType.secondOfMinute;
 import static org.joda.time.format.DateTimeFormat.forPattern;
 
@@ -34,6 +35,8 @@ import java.util.Map.Entry;
 import javax.swing.JComponent;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeField;
+import org.joda.time.DateTimeFieldType;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormat;
@@ -44,8 +47,10 @@ public class TimelineDateTimeComponent extends JComponent {
 	int minTickPixelSpacing = 3;
 	int maxTickPixelSpacing = 160;
 	private static TickIntervalSet tickIntervalSet = new TickIntervalSet(
-			tick(1,dayOfMonth(),forPattern("yyyy-MM-dd")),
-			tick(4,hourOfDay(),forPattern("yyyy-MM-dd HH:mm")), tick(1,hourOfDay(),forPattern("HH:mm")),
+			tick(1,DateTimeFieldType.yearOfCentury(),forPattern("YYYY")),
+			tick(1,monthOfYear(),forPattern("YYYY-MM")),
+			tick(1,dayOfMonth(),forPattern("YYYY-MM-dd")),
+			tick(4,hourOfDay(),forPattern("YYYY-MM-dd HH:mm")), tick(1,hourOfDay(),forPattern("HH:mm")),
 			tick(10,minuteOfHour(),forPattern("HH:mm")), tick(5,minuteOfHour(),forPattern("HH:mm")), tick(1,minuteOfHour(),forPattern("HH:mm")),
 			tick(10,secondOfMinute(),forPattern("HH:mm:ss")), tick(5,secondOfMinute(),forPattern("HH:mm:ss")), tick(1,secondOfMinute(),forPattern("HH:mm:ss")),
 			tick(100,millisOfSecond(),forPattern("HH:mm:ss.S")),tick(10,millisOfSecond(),forPattern("HH:mm:ss.SS")),tick(1,millisOfSecond(),forPattern("HH:mm:ss.SSS")));

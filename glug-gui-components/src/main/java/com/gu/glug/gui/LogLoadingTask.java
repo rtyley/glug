@@ -50,10 +50,9 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 		System.out.print("woo");
 		LoadReport loadReport;
 		try {
-			while (!isCancelled() && !(loadReport=logLoader.loadLines(10000)).endOfStreamReached()) {
+			while (!isCancelled() && !(loadReport=logLoader.loadLines(20000)).endOfStreamReached()) {
 				publish(loadReport);
-				System.out.print(".");
-				// setProgress(100 * numbers.size() / numbersToFind);
+				//System.out.print(".");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,12 +72,17 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 	
 	@Override
 	protected void process(List<LoadReport> loadReports) {
+		System.out.println("Just loaded "+ totalLogIntervalCoveredBy(loadReports));
+		uiTimeScale.setFullInterval(threadedSystem.getIntervalCoveredByAllThreads().toJodaInterval());
+		zoomFactorSlideUpdater.updateSliderMax();
+	}
+
+	private LogInterval totalLogIntervalCoveredBy(Iterable<LoadReport> loadReports) {
 		LogInterval interval = null;
 		for (LoadReport loadReport : loadReports) {
 			interval = loadReport.getUpdatedInterval().union(interval);
 		}
-		uiTimeScale.setFullInterval(threadedSystem.getIntervalCoveredByAllThreads().toJodaInterval());
-		zoomFactorSlideUpdater.updateSliderMax();
+		return interval;
 	}
 
 }

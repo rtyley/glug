@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Duration;
+import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.joda.time.MutableDateTime;
 import org.joda.time.Period;
@@ -22,7 +23,7 @@ public class TickInterval {
 		this.dateTimeFieldType = dateTimeFieldType;
 		this.value = value;
 		this.dateTimeFormatter = dateTimeFormatter;
-		this.duration = new Period().withField(dateTimeFieldType.getDurationType(), value).toStandardDuration();
+		this.duration = new Period().withField(dateTimeFieldType.getDurationType(), value).toDurationFrom(new Instant());
 	}
 	
 	public int getValue() {
