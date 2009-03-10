@@ -1,18 +1,15 @@
 package glug.gui;
 
-import static java.lang.Integer.toHexString;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.System.currentTimeMillis;
 import glug.model.SignificantInterval;
-import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.logmessages.IntervalTypeDescriptor;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,18 +19,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedMap;
 import java.util.Map.Entry;
 
 import javax.swing.ToolTipManager;
 
 import org.joda.time.Interval;
 
-
-/**
- * 
- * @author roberto
- */
 public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private static final long serialVersionUID = 1L;
@@ -41,6 +32,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	private ThreadedSystem threadedSystem;
 	private final TimelineCursor timelineCursor;
 
+	private SwingHtmlStyleThreadReporter htmlStyleReporter = new SwingHtmlStyleThreadReporter();
 	
 	public ThreadedSystemViewComponent(UITimeScale timeScale, ThreadedSystem threadedSystem,
 			TimelineCursor timelineCursor) {
@@ -168,26 +160,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 			return null;
 		}
 		LogInstant instant = instantFor(event.getX());
-		SortedMap<IntervalTypeDescriptor, SignificantInterval> significantIntervalsForInstant = thread.getSignificantIntervalsFor(instant);
-		if (significantIntervalsForInstant.isEmpty()) {
-			return null;
-		}
-		StringBuilder sb =new StringBuilder("<html>At "+instant.getRecordedInstant()+":<ul>");
-		for (SignificantInterval significantInterval:significantIntervalsForInstant.values()) {
-			SignificantIntervalOccupier type = significantInterval.getType();
-			IntervalTypeDescriptor intervalTypeDescriptor = type.getIntervalTypeDescriptor();
-			Color colour = intervalTypeDescriptor.getColour();
-			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+type);
-		}
-		return sb.append("</ul></html>").toString();
-	}
-
-	String hexFor(Color colour) {
-		int red = colour.getRed();
-		int green = colour.getGreen();
-		int blue = colour.getBlue();
-		int hex = (red<<16) + (green<<8) + blue;
-		return toHexString(hex);
+		return htmlStyleReporter.htmlSyledReportFor(thread, instant);
 	}
 
 	private ThreadModel threadFor(Point point) {
