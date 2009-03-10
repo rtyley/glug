@@ -55,7 +55,7 @@ public class LogLineParser {
 			for (LogMessageParser messageParser : messageParsersForLoggerName) {
 				Matcher matcher = messageParser.getPattern().matcher(logMessage);
 				
-				if (matcher.find()) {
+				if (matcher.matches()) {
 					ThreadModel threadModel = logCoordinateParser.getThreadModel(line);
 					LogInstant logInstant = new LogInstant(logCoordinateParser.getLogLineInstantInMillis(line),lineNumber);
 					return messageParser.process(matcher, threadModel, logInstant);
