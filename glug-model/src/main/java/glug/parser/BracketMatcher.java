@@ -2,9 +2,13 @@ package glug.parser;
 
 import java.text.ParseException;
 
-public class BracketCounter {
+public class BracketMatcher {
 
 	int count=0;
+	
+	public boolean areClosed(String inputText) throws ParseException {
+		return count(inputText)==0;
+	}
 	
 	public int count(String inputText) throws ParseException {
 		for (int index = 0; index<inputText.length(); ++index) {
