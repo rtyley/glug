@@ -17,7 +17,7 @@ import org.junit.Test;
 public class ThreadModelTest {
 	@Test
 	public void shouldReturnEmptySetIfNoBuggerMatches() throws Exception {
-		ThreadModel thread = new ThreadModel(null);
+		ThreadModel thread = new ThreadModel(null, null);
 		
 		new SignificantInterval(thread,
 				mock(SignificantIntervalOccupier.class),

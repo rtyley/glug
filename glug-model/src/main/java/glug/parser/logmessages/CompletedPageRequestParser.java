@@ -24,7 +24,9 @@ public class CompletedPageRequestParser implements LogMessageParser {
 		int durationInMillis = parseInt(durationInMillisText);
 		String pagePath = matcher.group(1);
 		LogInterval interval = new LogInterval(new Duration(durationInMillis),logInstant);
-		return new SignificantInterval(threadModel,new CompletedPageRequest(pagePath),interval);
+		SignificantInterval significantInterval = new SignificantInterval(threadModel,new CompletedPageRequest(pagePath),interval);
+		threadModel.add(significantInterval);
+		return significantInterval;
 	}
 
 	@Override

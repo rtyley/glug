@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.nullValue;
 import static org.joda.time.Duration.standardSeconds;
 import static org.mockito.MockitoAnnotations.initMocks;
 import glug.model.time.LogInstant;
@@ -29,7 +30,7 @@ public class SignificantInstantsTest {
 	@Before
 	public void setUp() {
 		initMocks(this);
-		thread = new ThreadModel("blahThread");
+		thread = new ThreadModel("blahThread", null);
 		significantInstants = new SignificantInstants();
 	}
 	
@@ -52,9 +53,9 @@ public class SignificantInstantsTest {
 		Instant endOfACrowdedMillisecond = new Instant(1234L);
 		int logLine=345;
 		
-		SignificantInterval si1 = new SignificantInterval(thread, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
-		SignificantInterval si2 = new SignificantInterval(thread, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
-		SignificantInterval si3 = new SignificantInterval(thread, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
+		SignificantInterval si1 = new SignificantInterval(null, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
+		SignificantInterval si2 = new SignificantInterval(null, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
+		SignificantInterval si3 = new SignificantInterval(null, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
 		
 		significantInstants.add(si1);
 		significantInstants.add(si2);
@@ -75,5 +76,27 @@ public class SignificantInstantsTest {
 		LogInterval searchIntervalEntirelyWithinDurationOfEvent = new LogInterval(standardSeconds(1),new LogInstant(3000,3));
 		
 		assertThat(significantInstants.getSignificantIntervalsDuring(searchIntervalEntirelyWithinDurationOfEvent),hasItem(significantInterval));
+	}
+	
+	@Test
+	public void shouldOverrideOtherIntervals() throws Exception {
+		SignificantInterval si1 = new SignificantInterval(thread, sio, new LogInterval(standardSeconds(3),new LogInstant(3000,3)));
+		
+		significantInstants.overrideWith(si1);
+		SignificantInterval si2 = new SignificantInterval(thread, sio, new LogInterval(standardSeconds(5),new LogInstant(5000,5)));
+		significantInstants.overrideWith(si2);
+		
+		assertThat(significantInstants.getSignificantIntervalAt(new LogInstant(1000,1)), equalTo(si2));
+	}
+	
+	@Test
+	public void shouldGetLatestSignificantIntervalStartingAtOrBefore() {
+		SignificantInterval significantInterval = new SignificantInterval(null, null, new LogInterval(standardSeconds(3),new LogInstant(5000)));
+		significantInstants.add(significantInterval);
+		
+		assertThat(significantInstants.getLatestSignificantIntervalStartingAtOrBefore(new Instant(1000)), nullValue());
+		assertThat(significantInstants.getLatestSignificantIntervalStartingAtOrBefore(new Instant(2000)), equalTo(significantInterval));
+		assertThat(significantInstants.getLatestSignificantIntervalStartingAtOrBefore(new Instant(3000)), equalTo(significantInterval));
+		assertThat(significantInstants.getLatestSignificantIntervalStartingAtOrBefore(new Instant(6000)), equalTo(significantInterval));
 	}
 }

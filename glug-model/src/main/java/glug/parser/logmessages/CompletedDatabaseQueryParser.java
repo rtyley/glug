@@ -29,7 +29,9 @@ Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithCon
 		String durationInMillisText = matcher.group(3);
 		int durationInMillis = parseInt(durationInMillisText);
 		LogInterval interval = new LogInterval(new Duration(durationInMillis),logInstant);
-		return new SignificantInterval(threadModel,CompletedDatabaseQuery.createCompletedDatabaseQueryFor(dbQuery),interval);
+		SignificantInterval significantInterval = new SignificantInterval(threadModel,CompletedDatabaseQuery.createCompletedDatabaseQueryFor(dbQuery),interval);
+		threadModel.add(significantInterval);
+		return significantInterval;
 	}
 
 	@Override

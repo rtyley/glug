@@ -4,6 +4,8 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
+import glug.model.ThreadedSystem;
+import glug.model.Uptime;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
@@ -14,7 +16,6 @@ import org.joda.time.Duration;
 
 
 public class JVMUptimeParser implements LogMessageParser {
-
 	
 	private final static Pattern JVM_UPTIME_PATTERN = Pattern.compile("JVM uptime: (.*) seconds");
 	
@@ -32,7 +33,12 @@ public class JVMUptimeParser implements LogMessageParser {
 	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant) {
 		String uptimeText = matcher.group(1);
 		Duration d = new Duration(round((parseDouble(uptimeText)*1000)));
-		return new SignificantInterval(threadModel,new JVMUptime(),new LogInterval(d,logInstant));
+		
+		SignificantInterval significantInterval = new SignificantInterval(threadModel,new JVMUptime(),new LogInterval(d,logInstant));
+		ThreadedSystem threadedSystem = threadModel.getThreadedSystem();
+		Uptime uptime = threadedSystem.getUptime();
+		uptime.addUptime(significantInterval);
+		return significantInterval;
 	}
 	
 }

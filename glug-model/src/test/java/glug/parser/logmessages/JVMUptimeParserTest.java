@@ -3,13 +3,13 @@ package glug.parser.logmessages;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
 import glug.model.SignificantInterval;
-import glug.model.ThreadModel;
+import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 
 import java.util.regex.Matcher;
 
+import org.joda.time.Duration;
 import org.junit.Test;
 
 
@@ -23,13 +23,15 @@ JVM uptime: 2494.322 seconds
 	@Test
 	public void shouldParseJVMUptimeCorrectly() {
 		JVMUptimeParser parser = new JVMUptimeParser();
+		ThreadedSystem threadedSystem = new ThreadedSystem();
+		
 		String logMessage = "JVM uptime: 2494.322 seconds";
 		
 		Matcher matcher = parser.getPattern().matcher(logMessage);
 		assertThat(matcher.find(), is(true));
-		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(4567,1001));
+		LogInstant logInstant = new LogInstant(4567,1001);
+		SignificantInterval sigInt = parser.process(matcher, threadedSystem.getOrCreateThread("randomThread"), logInstant);
 		
-		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(2494322L));
-		JVMUptime completedDatabaseQuery = (JVMUptime) sigInt.getType();
+		assertThat(threadedSystem.getUptime().at(logInstant.getRecordedInstant()), equalTo(new Duration(2494322)));
 	}
 }

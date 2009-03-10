@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import org.joda.time.Instant;
+
 
 public class SignificantInstants {
 	private ConcurrentNavigableMap<LogInstant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<LogInstant, SignificantInterval>();
@@ -27,17 +29,45 @@ public class SignificantInstants {
 		return new TreeSet<SignificantInterval>(subMapFor(logInterval).values()); // Make SignificantInterval implement Comparable!
 	}
 	
+	public SignificantInterval getLatestSignificantIntervalStartingAtOrBefore(Instant instant) {
+		Entry<LogInstant, SignificantInterval> entry = significantInstants.floorEntry(new LogInstant(instant));
+		return entry==null?null:entry.getValue();
+	}
+	
 	public void add(SignificantInterval significantInterval) {
 		LogInterval interval = significantInterval.getLogInterval();
-		LogInstant startInstant = interval.getStart(), endInstant = interval.getEnd();
-		
-		if (significantInstants.containsKey(startInstant) ||
-			significantInstants.containsKey(endInstant) ||
+		if (significantInstants.containsKey(interval.getStart()) ||
+			significantInstants.containsKey(interval.getEnd()) ||
 				containsSignificantInstantsDuring(interval)) {
 			throw new IllegalArgumentException();
 		}
-		significantInstants.put(startInstant, significantInterval);
-		significantInstants.put(endInstant, significantInterval);
+		addWithoutChecking(significantInterval);
+	}
+
+	private void addWithoutChecking(SignificantInterval significantInterval) {
+		LogInterval interval = significantInterval.getLogInterval();
+		significantInstants.put(interval.getStart(), significantInterval);
+		significantInstants.put(interval.getEnd(), significantInterval);
+	}
+	
+
+	public void overrideWith(SignificantInterval significantInterval) {
+		Collection<SignificantInterval> otherSigIntsDuringInterval = getSignificantIntervalsDuring(significantInterval.getLogInterval());
+		for (SignificantInterval otherSignificantInterval : otherSigIntsDuringInterval) {
+			remove(otherSignificantInterval);
+		}
+		addWithoutChecking(significantInterval);
+	}
+
+	private void remove(SignificantInterval significantInterval) {
+		LogInterval otherLogInterval = significantInterval.getLogInterval();
+		LogInstant start = otherLogInterval.getStart(), end = otherLogInterval.getEnd();
+		if (significantInstants.get(start)==significantInterval) {
+			significantInstants.remove(start);
+		}
+		if (significantInstants.get(end)==significantInterval) {
+			significantInstants.remove(end);
+		}
 	}
 
 	private boolean containsSignificantInstantsDuring(LogInterval interval) {
@@ -54,4 +84,7 @@ public class SignificantInstants {
 	public LogInterval getLogInterval() {
 		return significantInstants.isEmpty()?null:new LogInterval(significantInstants.firstKey(),significantInstants.lastKey());
 	}
+
+
+
 }

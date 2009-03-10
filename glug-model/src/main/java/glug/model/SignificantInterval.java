@@ -11,7 +11,6 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 		this.threadModel = threadModel;
 		this.logInterval = logInterval;
 		this.intervalOccupier = intervalOccupier;
-		threadModel.add(this);
 	}
 
 	@Override

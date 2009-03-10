@@ -17,9 +17,11 @@ public class ThreadModel {
 		new HashMap<IntervalTypeDescriptor, SignificantInstants>();
 	
 	private final String name;
+	private final ThreadedSystem threadedSystem;
 	
-	public ThreadModel(String name) {
+	public ThreadModel(String name, ThreadedSystem threadedSystem) {
 		this.name = name;
+		this.threadedSystem = threadedSystem;
 	}
 	
 	public void add(SignificantInterval significantInterval) {
@@ -61,5 +63,9 @@ public class ThreadModel {
 		}
 		return significantIntervals;
 		
+	}
+
+	public ThreadedSystem getThreadedSystem() {
+		return threadedSystem;
 	}
 }

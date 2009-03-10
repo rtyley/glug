@@ -8,6 +8,9 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 
 public class ThreadedSystem {
+	
+	private Uptime uptime = new Uptime();
+
 	ConcurrentNavigableMap<String,ThreadModel> map = new ConcurrentSkipListMap<String, ThreadModel>();
 	
 	public void add(String threadName, SignificantInterval significantInterval) {
@@ -32,8 +35,13 @@ public class ThreadedSystem {
 	
 	public ThreadModel getOrCreateThread(String threadName) {
 		if (!map.containsKey(threadName)) {
-			map.put(threadName, new ThreadModel(threadName));
+			map.put(threadName, new ThreadModel(threadName, this));
 		}
 		return map.get(threadName);
 	}
+
+	public Uptime getUptime() {
+		return uptime;
+	}
+
 }
