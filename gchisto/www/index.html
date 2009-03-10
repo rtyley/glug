@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice 8  (Linux)">
+	<META NAME="AUTHOR" CONTENT="Tony Printezis">
+	<META NAME="CREATED" CONTENT="20080330;21585200">
+	<META NAME="CHANGEDBY" CONTENT="Tony Printezis">
+	<META NAME="CHANGED" CONTENT="20080520;4564600">
+	<STYLE>
+	<!--
+		@page { size: 8.5in 11in; margin: 0.79in }
+		H1 { margin-bottom: 0.08in }
+		H1.western { font-family: "Albany", sans-serif; font-size: 16pt }
+		H1.cjk { font-family: "Mincho"; font-size: 16pt }
+		H1.ctl { font-family: "Lucidasans"; font-size: 16pt }
+		P { margin-bottom: 0.08in }
+		H2 { margin-bottom: 0.08in }
+		H2.western { font-family: "Albany", sans-serif; font-size: 14pt; font-style: italic }
+		H2.cjk { font-family: "Mincho"; font-size: 14pt; font-style: italic }
+		H2.ctl { font-size: 14pt; font-style: italic }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 CLASS="western">GChisto: Garbage Collection Histogram Tool</H1>
+<P>GChisto is a garbage collection (GC) log visualization tool,
+developed by members of the GC group of Sun Microsystems' Java
+HotSpot{tm} Virtual Machine (HotSpot JVM) development team. It is
+currently (and will always be?) under development. 
+</P>
+<H2 CLASS="western">Goals</H2>
+<P>The main goal of the GChisto project is to create a tool that can
+visualize and provide summary statistics for GC logs so that its user
+can get a good understanding of how the GC operated and how it
+affected the user's application(s).</P>
+<P>Additionally, we will also keep in this project the HotSpot GC log
+parsing code for developers who wish to programmatically analyze
+their logs but who do not wish to use the full visualizer.</P>
+<P>We would like GChisto and the HotSpot GC log parsing code to be
+the standard tools for consuming HotSpot GC logs. But, we would keep
+GChisto extensible enough to be easily adapted to handle non-HotSpot
+GC logs too.</P>
+<H2 CLASS="western">VisualVM</H2>
+<P>A <A HREF="https://visualvm.dev.java.net/">VisualVM</A> plug-in,
+based on GChisto, is currently under development. We are hoping to
+release this in the near future.</P>
+<H2 CLASS="western">Design</H2>
+<P>Some important design decisions taken for GChisto were the
+following.</P>
+<UL>
+	<LI><P>GChisto was designed to handle quite large, “real world”
+	logs (the largest one we've loaded into GChisto so far was from a
+	JVM in production that ran for 3+ weeks and performed 340,000+
+	individual GCs).</P>
+	<LI><P>More than one log can be loaded at any time and there is an
+	option to provide comparisons between GC logs.</P>
+	<LI><P>There is a plug-in model for GC log readers. Different
+	readers can co-exist within the same instance of GChisto so that
+	logs in different formats (from, say, different JVMs, GCs, etc.) can
+	be read and compared.</P>
+	<LI><P>GChisto supports GC logs being dynamically updated with new
+	data so that the user can use it, say, to monitor the GC behavior of
+	live JVMs.</P>
+	<LI><P>There is also a plug-in model for visualization panels that
+	can access all the data in the GC logs currently loaded in GChisto
+	and get notifications when, say, a new GC log is added, an existing
+	GC log is updated, etc. So GChisto can be easily extended with new
+	types of visualizations.</P>
+</UL>
+<H2 CLASS="western">Current Limitations / Known Issues</H2>
+<P>GChisto is not by any means perfect right now (is any software
+ever perfect?). Here are a few current limitations and issues.</P>
+<UL>
+	<LI><P>The Javadoc is incomplete and badly out-of-date.</P>
+	<LI><P>The parser for logs of HotSpot JVM's CMS GC needs some work
+	as it cannot at the moment correctly read all CMS logs.</P>
+	<LI><P>GChisto is very quiet when it is having trouble parsing a
+	particular log and usually just shows that the contents of the log
+	were empty instead of complaining that the format was incorrect.</P>
+</UL>
+<H2 CLASS="western">Planned Development</H2>
+<P>Some features that we are planning to add to GChisto are the
+following.</P>
+<UL>
+	<LI><P>Right now we only include information about GC pause times.
+	We will extend this to also include information about heap
+	occupancy.</P>
+	<LI><P>Ability to hook up to a live HotSpot JVM.</P>
+</UL>
+<H2 CLASS="western">How To Get It / Build It / Run It</H2>
+<P>Our private GChisto repository is under <A HREF="http://www.selenic.com/mercurial/">Mercurial</A>.
+However, given that java.net does not support Mercurial (yet), we're
+temporarily using CVS. Instructions on how to get a CVS checkout of
+GChisto can be found <A HREF="https://gchisto.dev.java.net/servlets/ProjectSource">here</A>.
+You can also browse the source online <A HREF="https://gchisto.dev.java.net/source/browse/gchisto/">here</A>.</P>
+<P>GChisto relies on, and is shipped with, the <A HREF="http://www.jfree.org/jfreechart/">JFreeChart</A>
+chart library (and we have to give a tip of the hat to the JFreeChart
+folks for a job very well done!).</P>
+<P>GChisto was developed using <A HREF="http://www.netbeans.org/">NetBeans
+6</A>, the <A HREF="http://www.netbeans.org/features/java/swing.html">NetBeans
+GUI builder</A>, and <A HREF="http://java.sun.com/javase/6/">JDK 6</A>
+(we try to stay current and use the latest 6 update that is
+available). The GChisto repository is a NetBeans project.
+Non-NetBeans users can still access the source in the top-level <FONT FACE="Courier New, monospace">src/</FONT>
+directory (note: some of the GUI-related classes are generated by the
+NetBeans GUI builder) and build it using the top-level ant script:
+<FONT FACE="Courier New, monospace">ant jar</FONT>. 
+</P>
+<P>Unfortunately, how to run GChisto depends on how you've built it.
+If you've built GChisto using NetBeans, you can run it by pointing
+the JVM to the generated JAR file: <FONT FACE="Courier New, monospace">java
+-jar dist/GChisto.jar</FONT>. If you've built GChisto using the ant
+script, you can also use ant to run it: <FONT FACE="Courier New, monospace">ant
+run</FONT>. 
+</P>
+<H2 CLASS="western">How To Use It</H2>
+<P STYLE="font-style: normal">The GChisto window contains a few
+tabbed panes. The first one is the one that manages all the loaded GC
+traces, the rest are visualization panes. 
+</P>
+<H3><A NAME="Trace_Management_Pane"></A>Trace Management Pane</H3>
+<P>This is where GC logs (called “traces”) are added and removed.
+More than one trace can be loaded at any time. Moving traces up and
+down changes the order in which they will appear in the other panes.</P>
+<P>At the bottom-left there's a pulldown menu. GChisto supports
+different trace readers and with that you can choose the reader you
+want. The default is the reader that will read HotSpot JVM GC logs.
+The dynamic version of that (second one down) is similar, but instead
+of simply loading the trace, it will replay it with the
+visualizations and stats changing dynamically (a pop-up window will
+appear after adding the trace, just click on the Play button).</P>
+<P>The next two readers operate over “simple” files (and there
+are two: one non-dynamic, the other is dynamic). A simple file is
+basically one that contains lines in this format:</P>
+<P><TT><FONT FACE="Courier New, monospace">GC_TYPE START_SEC
+DURATION_SEC</FONT></TT></P>
+<P>Simple files are mainly used for debugging.</P>
+<H3><A NAME="GC_Pause_Stats_Pane"></A>GC Pause Stats Pane</H3>
+<P>This pane shows some GC statistics (GC number, total time, etc.)
+for the loaded traces and broken down by GC type. If only one trace
+is loaded, then this pane will show the stats for that trace. If more
+than one trace are loaded, this pane will show the stats for all
+traces (say 1 to N) and, optionally, will also show comparison stats
+for traces 2 to N as compared against trace 1. This is a nice and
+intuitive way to compare different runs of the JVM with, say,
+different GC settings and tuning.</P>
+<P>Apart from the table with the stats, this pane has several
+sub-panes with graphs for different metrics.</P>
+<H3><A NAME="GC_Pause_Distribution_Pane"></A>GC Pause Distribution
+Pane</H3>
+<P>This pane shows the pause time distribution for the loaded traces,
+with one sub-pane per loaded trace. A set of checkboxes on the left
+allows you to make individual GC types visible / invisible.</P>
+<H3><A NAME="GC_Timeline_Pane"></A>GC Timeline Pane</H3>
+<P>This pane shows the GC timeline for each trace, with one sub-pane
+per loaded trace. A set of checkboxes on the left allows you to make
+individual GC types visible / invisible.</P>
+<H3><A NAME="Zooming_In_And_Out_On_The_Charts"></A>Zooming In And Out
+On The Charts 
+</H3>
+<P>In all the charts it is possible to zoom in and out to take a
+better look at some detail in the chart. Left-clicking on the chart
+and then dragging the mouse will create a selection rectangle and
+then the chart will zoom into that rectangle. Right-clicking on the
+chart will give you a pop-up menu with some options. To totally zoom
+back out choose “Auto Range,” then “Both Axes” from that
+menu.</P>
+<H2 CLASS="western">High Level Architecture</H2>
+<P><I>Coming Soon</I></P>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>
