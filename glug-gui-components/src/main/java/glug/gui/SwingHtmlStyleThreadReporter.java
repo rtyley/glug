@@ -21,9 +21,14 @@ public class SwingHtmlStyleThreadReporter {
 			SignificantIntervalOccupier type = significantInterval.getType();
 			IntervalTypeDescriptor intervalTypeDescriptor = type.getIntervalTypeDescriptor();
 			Color colour = intervalTypeDescriptor.getColour();
-			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+type);
+			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+type+" ("+durationStringFor(significantInterval)+")");
 		}
 		return sb.append("</ul></html>").toString();
+	}
+
+	private String durationStringFor(SignificantInterval significantInterval) {
+		//return significantInterval.getLogInterval().toJodaInterval().toPeriod().toString(PeriodFormat.getDefault());
+		return significantInterval.getLogInterval().toDurationMillis()+" ms";
 	}
 
 	String hexFor(Color colour) {
