@@ -22,7 +22,7 @@ public class LogLoader {
 				if (significantInterval!=null) {
 					intervalUpdated=significantInterval.getLogInterval().union(intervalUpdated);
 				}
-			} catch (ParseException e) {
+			} catch (Throwable e) {
 				e.printStackTrace();
 			}
 		}

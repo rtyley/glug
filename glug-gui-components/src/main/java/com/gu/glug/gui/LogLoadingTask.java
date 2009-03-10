@@ -60,7 +60,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 				loadedLogInterval=loadReport.getUpdatedInterval().union(loadedLogInterval);
 				//System.out.print(".");
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}

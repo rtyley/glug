@@ -10,7 +10,11 @@ import java.util.Map;
 public class LogMessageParserRegistry {
 	
 	public static final LogMessageParserRegistry EXAMPLE =
-		new LogMessageParserRegistry(asList(new CompletedPageRequestParser(), new CompletedDatabaseQueryParser()));
+		new LogMessageParserRegistry(asList(
+				new CompletedPageRequestParser(),
+				new CompletedDatabaseQueryParser()
+			//	new JVMUptimeParser()
+				));
 	//new LogMessageParserRegistry(asList((LogMessageParser) new CompletedPageRequestParser()));
 	
 	private final Map<String,List<LogMessageParser>> parsersByLoggerName = new HashMap<String, List<LogMessageParser>>();

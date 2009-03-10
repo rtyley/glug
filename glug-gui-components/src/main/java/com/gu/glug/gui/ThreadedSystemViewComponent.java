@@ -106,7 +106,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 			
 			long expiredDuration = currentTimeMillis()-startRenderTime;
 			if (expiredDuration>100) {
-				System.out.println("Abandoning painting after "+expiredDuration+" ms");
+				// System.out.println("Abandoning painting after "+expiredDuration+" ms");
 				repaint(visibleInterval, threadIndex+1, maxThreadIndex);
 				return;
 			}
