@@ -3,7 +3,6 @@ package glug.parser.logmessages;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import glug.model.SignificantInterval;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 
@@ -30,7 +29,8 @@ JVM uptime: 2494.322 seconds
 		Matcher matcher = parser.getPattern().matcher(logMessage);
 		assertThat(matcher.find(), is(true));
 		LogInstant logInstant = new LogInstant(4567,1001);
-		SignificantInterval sigInt = parser.process(matcher, threadedSystem.getOrCreateThread("randomThread"), logInstant);
+		
+		parser.process(matcher, threadedSystem.getOrCreateThread("randomThread"), logInstant);
 		
 		assertThat(threadedSystem.getUptime().at(logInstant.getRecordedInstant()), equalTo(new Duration(2494322)));
 	}

@@ -12,8 +12,8 @@ public class LogMessageParserRegistry {
 	public static final LogMessageParserRegistry EXAMPLE =
 		new LogMessageParserRegistry(asList(
 				new CompletedPageRequestParser(),
-				new CompletedDatabaseQueryParser()
-			//	new JVMUptimeParser()
+				new CompletedDatabaseQueryParser(),
+				new JVMUptimeParser()
 				));
 	//new LogMessageParserRegistry(asList((LogMessageParser) new CompletedPageRequestParser()));
 	

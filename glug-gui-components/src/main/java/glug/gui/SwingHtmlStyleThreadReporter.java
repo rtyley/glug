@@ -4,19 +4,34 @@ import static java.lang.Integer.toHexString;
 import glug.model.SignificantInterval;
 import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
+import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.parser.logmessages.IntervalTypeDescriptor;
 
 import java.awt.Color;
+import java.text.NumberFormat;
 import java.util.SortedMap;
 
+import org.joda.time.Duration;
+
 public class SwingHtmlStyleThreadReporter {
+	
+	private static NumberFormat uptimeNumberFormat = uptimeNumberFormat();
+	
+	private static NumberFormat uptimeNumberFormat() {
+		NumberFormat nf = NumberFormat.getNumberInstance();
+		nf.setMinimumFractionDigits(3);
+		nf.setMaximumFractionDigits(3);
+		return nf;
+	}
+	
 	public String htmlSyledReportFor(ThreadModel thread, LogInstant instant) {
 		SortedMap<IntervalTypeDescriptor, SignificantInterval> significantIntervalsForInstant = thread.getSignificantIntervalsFor(instant);
 		if (significantIntervalsForInstant.isEmpty()) {
 			return null;
 		}
-		StringBuilder sb =new StringBuilder("<html>At "+instant.getRecordedInstant()+":<ul>");
+		ThreadedSystem threadedSystem = thread.getThreadedSystem();
+		StringBuilder sb =new StringBuilder("<html>At " + instant.getRecordedInstant() + uptimeStringFor(threadedSystem,instant) + ":<ul>");
 		for (SignificantInterval significantInterval:significantIntervalsForInstant.values()) {
 			SignificantIntervalOccupier type = significantInterval.getType();
 			IntervalTypeDescriptor intervalTypeDescriptor = type.getIntervalTypeDescriptor();
@@ -26,8 +41,12 @@ public class SwingHtmlStyleThreadReporter {
 		return sb.append("</ul></html>").toString();
 	}
 
+	String uptimeStringFor(ThreadedSystem threadedSystem, LogInstant instant) {
+		Duration uptime = threadedSystem.getUptime().at(instant.getRecordedInstant());
+		return uptime==null?"":" (uptime: "+uptimeNumberFormat.format(uptime.getMillis()/1000d)+" s)";
+	}
+
 	private String durationStringFor(SignificantInterval significantInterval) {
-		//return significantInterval.getLogInterval().toJodaInterval().toPeriod().toString(PeriodFormat.getDefault());
 		return significantInterval.getLogInterval().toDurationMillis()+" ms";
 	}
 
