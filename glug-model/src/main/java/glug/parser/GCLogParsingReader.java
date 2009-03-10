@@ -32,8 +32,8 @@ public class GCLogParsingReader {
 		String uptimeString = line.substring(0, line.indexOf(':'));
 		Duration uptimeAtStartOfCollection = durationFrom(uptimeString);
 
-		BracketMatcher brackets = new BracketMatcher();
-		while (!brackets.areClosed(line)) { 
+		BracketCounter counter = new BracketCounter();
+		while (!counter.bracketsAreClosedWith(line)) { 
 			line=bufferedReader.readLine();
 			if (line==null) {
 				return null;

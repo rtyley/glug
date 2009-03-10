@@ -2,11 +2,11 @@ package glug.parser;
 
 import java.text.ParseException;
 
-public class BracketMatcher {
+public class BracketCounter {
 
 	int count=0;
 	
-	public boolean areClosed(String inputText) throws ParseException {
+	public boolean bracketsAreClosedWith(String inputText) throws ParseException {
 		return count(inputText)==0;
 	}
 	
