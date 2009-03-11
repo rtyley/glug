@@ -18,6 +18,7 @@ import org.joda.time.Duration;
 public class JVMUptimeParser implements LogMessageParser {
 	
 	private final static Pattern JVM_UPTIME_PATTERN = Pattern.compile("JVM uptime: (.*) seconds");
+	private final static JVMUptime jvmUptime = new JVMUptime();
 	
 	@Override
 	public String getLoggerClassName() {
@@ -34,10 +35,8 @@ public class JVMUptimeParser implements LogMessageParser {
 		String uptimeText = matcher.group(1);
 		Duration d = new Duration(round((parseDouble(uptimeText)*1000)));
 		
-		SignificantInterval significantInterval = new SignificantInterval(threadModel,new JVMUptime(),new LogInterval(d,logInstant));
-		ThreadedSystem threadedSystem = threadModel.getThreadedSystem();
-		Uptime uptime = threadedSystem.getUptime();
-		uptime.addUptime(significantInterval);
+		SignificantInterval significantInterval = new SignificantInterval(threadModel,jvmUptime,new LogInterval(d,logInstant));
+		threadModel.getThreadedSystem().uptime().addUptime(significantInterval);
 		return significantInterval;
 	}
 	

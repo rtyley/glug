@@ -27,7 +27,7 @@ public class SwingHtmlStyleThreadReporterTest {
 	@Test
 	public void shouldIncludeUptimeIfKnown() {
 		ThreadedSystem threadedSystem = new ThreadedSystem();
-		threadedSystem.getUptime().addUptime(new SignificantInterval(null,null,new LogInterval(standardSeconds(3),new LogInstant(3000))));
+		threadedSystem.uptime().addUptime(new SignificantInterval(null,null,new LogInterval(standardSeconds(3),new LogInstant(3000))));
 		assertThat(reporter.uptimeStringFor(threadedSystem, new LogInstant(1000)),containsString("uptime: 1.000 s"));
 	}
 	

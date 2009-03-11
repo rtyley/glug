@@ -15,7 +15,6 @@ public class LogMessageParserRegistry {
 				new CompletedDatabaseQueryParser(),
 				new JVMUptimeParser()
 				));
-	//new LogMessageParserRegistry(asList((LogMessageParser) new CompletedPageRequestParser()));
 	
 	private final Map<String,List<LogMessageParser>> parsersByLoggerName = new HashMap<String, List<LogMessageParser>>();
 	
@@ -33,7 +32,5 @@ public class LogMessageParserRegistry {
 	public List<LogMessageParser> getMessageParsersFor(String loggerName) {
 		return parsersByLoggerName.get(loggerName);
 	}
-	
-	
 	
 }

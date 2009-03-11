@@ -42,7 +42,7 @@ public class SwingHtmlStyleThreadReporter {
 	}
 
 	String uptimeStringFor(ThreadedSystem threadedSystem, LogInstant instant) {
-		Duration uptime = threadedSystem.getUptime().at(instant.getRecordedInstant());
+		Duration uptime = threadedSystem.uptime().at(instant.getRecordedInstant());
 		return uptime==null?"":" (uptime: "+uptimeNumberFormat.format(uptime.getMillis()/1000d)+" s)";
 	}
 

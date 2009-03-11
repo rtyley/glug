@@ -32,6 +32,6 @@ JVM uptime: 2494.322 seconds
 		
 		parser.process(matcher, threadedSystem.getOrCreateThread("randomThread"), logInstant);
 		
-		assertThat(threadedSystem.getUptime().at(logInstant.getRecordedInstant()), equalTo(new Duration(2494322)));
+		assertThat(threadedSystem.uptime().at(logInstant.getRecordedInstant()), equalTo(new Duration(2494322)));
 	}
 }

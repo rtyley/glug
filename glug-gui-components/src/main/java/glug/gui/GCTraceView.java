@@ -46,7 +46,7 @@ public class GCTraceView extends TimelineComponent {
 		Interval visibleInterval = uiTimeScale.viewToModel(clipBounds);
 		
 		Instant startOfVisibleInterval = visibleInterval.getStart().toInstant();
-		Instant jvmRestartPrecedingStartOfVisibleInterval = threadedSystem.getUptime().startPreceding(startOfVisibleInterval);
+		Instant jvmRestartPrecedingStartOfVisibleInterval = threadedSystem.uptime().startPreceding(startOfVisibleInterval);
 		graphics2D.setColor(BLACK);
 		for (GCActivity activity : gcTrace.getAllGCActivities()) {
 			Instant activityStartInstant = jvmRestartPrecedingStartOfVisibleInterval.plus(round(activity.getStartSec()*1000));

@@ -40,7 +40,7 @@ public class ThreadedSystem {
 		return map.get(threadName);
 	}
 
-	public Uptime getUptime() {
+	public Uptime uptime() {
 		return uptime;
 	}
 
