@@ -25,6 +25,7 @@ package gcparser;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStream;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import java.util.regex.*;
+import java.util.zip.GZIPInputStream;
 
 public class GCParserDriver
 {
@@ -411,9 +413,18 @@ public class GCParserDriver
 
 	public void parse(File file) throws IOException
 	{
-		FileReader fr = new FileReader(file);
-		parse(new BufferedReader(fr), file.getName());
-		fr.close();
+		InputStream inputStreamForFile = streamForFile(file);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStreamForFile));
+		parse(reader, file.getName());
+		reader.close();
+	}
+	
+	private InputStream streamForFile(File logFile) throws IOException, FileNotFoundException {
+		FileInputStream uncompressedFileStream = new FileInputStream(logFile);
+		if (logFile.getName().endsWith(".gz")) {
+			return new GZIPInputStream(uncompressedFileStream);
+		}
+		return uncompressedFileStream;
 	}
 
 	public static void
