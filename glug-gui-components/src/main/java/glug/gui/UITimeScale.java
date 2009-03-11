@@ -66,7 +66,7 @@ public class UITimeScale {
 	public Interval viewToModel(Rectangle rectangle) {
 		return new Interval(viewToModel(rectangle.x),viewToModel(rectangle.x + rectangle.width));
 	}
-
+	
 	public Duration viewPixelsToModelDuration(int pixels) {
 		return new Duration(round(millisecondsPerPixel*pixels));
 	}

@@ -2,7 +2,7 @@ package glug.gui;
 
 import glug.model.time.LogInstant;
 
-import java.awt.Point;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -18,6 +18,7 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 
 	private static final long serialVersionUID = 1L;
 	protected final UITimeScale uiTimeScale;
+	private TimelineCursor timelineCursor;
 
 	public TimelineComponent(UITimeScale uiTimeScale) {
 		this.uiTimeScale = uiTimeScale;
@@ -33,12 +34,25 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 		});
 	}
 	
-	abstract TimelineCursor getTimelineCursor();
+	@Override
+	public Dimension getPreferredSize() {
+		if (!containsData()) {
+			return super.getPreferredSize();
+		}
+		return new Dimension(uiTimeScale.fullModelToViewLength(), getPreferredHeight());
+	}
 
-	abstract LogInstant getLogInstantFor(Point point);
 	
-	abstract Rectangle getViewFor(LogInstant logInstant);
+	abstract int getPreferredHeight();
 	
+	public UITimeScale getUITimeScale() {
+		return uiTimeScale;
+	}
+	
+	public TimelineCursor getTimelineCursor() {
+		return timelineCursor;
+	}
+
 	public void stateChanged(ChangeEvent e) {
 		Object source = e.getSource();
 		if (source instanceof TimelineCursor.CursorPositionChanged)
@@ -75,4 +89,9 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 
 	public abstract boolean containsData();
 
+	
+	public Rectangle getViewFor(LogInstant logInstant) {
+		return new Rectangle(uiTimeScale.modelToView(logInstant.getRecordedInstant()), 0, 0,
+				getHeight());
+	}
 }

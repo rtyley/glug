@@ -10,7 +10,6 @@ import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.logmessages.IntervalTypeDescriptor;
 
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -60,11 +59,8 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	@Override
-	public Dimension getPreferredSize() {
-		if (!containsData()) {
-			return super.getPreferredSize();
-		}
-		return new Dimension(uiTimeScale.fullModelToViewLength(), threadedSystem.getNumThreads());
+	int getPreferredHeight() {
+		return threadedSystem.getNumThreads();
 	}
 
 	@Override
@@ -175,19 +171,8 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	@Override
-	public LogInstant getLogInstantFor(Point point) {
-		return instantFor(point.x);
-	}
-
-	@Override
 	public TimelineCursor getTimelineCursor() {
 		return timelineCursor;
-	}
-
-	@Override
-	Rectangle getViewFor(LogInstant logInstant) {
-		return new Rectangle(graphicsXFor(logInstant.getRecordedInstant()), 0, 0,
-				getHeight());
 	}
 
 	@Override

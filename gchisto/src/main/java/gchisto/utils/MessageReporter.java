@@ -35,7 +35,7 @@ import gchisto.utils.errorchecking.ArgumentChecking;
 public class MessageReporter {
     
     /**
-     * The object that manages the behavior of the status label.
+     * The object that moanages the behavior of the status label.
      */
     static private StatusLabelManager statusLabel;
 
@@ -57,6 +57,10 @@ public class MessageReporter {
      * @param str The message to be shown in the status label.
      */
     static public void showMessage(String str) {
+    	if (statusLabel==null) {
+    		System.out.println(str);
+    		return;
+    	}
         ArgumentChecking.notNull(str, "str");
         
         statusLabel.showMessage(str);
@@ -68,6 +72,10 @@ public class MessageReporter {
      * @param str The error to be shown in the status label.
      */
     static public void showError(String str) {
+    	if (statusLabel==null) {
+    		System.out.println(str);
+    		return;
+    	}
         ArgumentChecking.notNull(str, "str");
         
         statusLabel.showError(str);
