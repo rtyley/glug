@@ -58,7 +58,7 @@ public class TimelineDateTimeComponent extends JComponent {
 
 	public TimelineDateTimeComponent(UITimeScale timeScale) {
 		this.timeScale = timeScale;
-		//setSize(getPreferredSize());
+		setSize(getPreferredSize());
 		setDoubleBuffered(true);
 		setBackground(WHITE);
 		setOpaque(true);
@@ -75,7 +75,8 @@ public class TimelineDateTimeComponent extends JComponent {
 	
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(timeScale.fullModelToViewLength(), 32);
+		//return new Dimension(timeScale.fullModelToViewLength(), 32);
+		return new Dimension(Integer.MAX_VALUE>>>2, 32);
 	}
 	
 	@Override
