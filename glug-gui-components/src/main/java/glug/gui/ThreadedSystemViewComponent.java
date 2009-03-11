@@ -28,6 +28,8 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	private ThreadedSystem threadedSystem;
 
 	private SwingHtmlStyleThreadReporter htmlStyleReporter = new SwingHtmlStyleThreadReporter();
+
+	private int threadGraphicsHeight = 4;
 	
 	public ThreadedSystemViewComponent(UITimeScale timeScale, ThreadedSystem threadedSystem,
 			TimelineCursor timelineCursor) {
@@ -55,7 +57,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	@Override
 	int getPreferredHeight() {
-		return threadedSystem.getNumThreads();
+		return threadGraphicsHeight * threadedSystem.getNumThreads();
 	}
 
 	@Override
@@ -72,7 +74,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private int minThreadIndexFor(Rectangle clipBounds, List<ThreadModel> fullThreadList) {
-		return min(max(clipBounds.y,0),fullThreadList.size()-1);
+		return min(max(clipBounds.y/threadGraphicsHeight ,0),fullThreadList.size()-1);
 	}
 
 	private void paint(List<ThreadModel> threads, int minThreadIndex, int maxThreadIndex, LogInterval visibleInterval, Graphics2D g) {
@@ -106,8 +108,10 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 				LogInterval visibleIntervalOfLine = aa.overlap(visibleInterval);
 				if (visibleIntervalOfLine!=null) {
 					int startX = graphicsXFor(visibleIntervalOfLine.getStart().getRecordedInstant());
-					int endX = graphicsXFor(visibleIntervalOfLine.getEnd().getRecordedInstant());
-					g.drawLine(startX,threadIndex,endX,threadIndex);
+					//int endX = graphicsXFor(visibleIntervalOfLine.getEnd().getRecordedInstant());
+					int width = max(1,uiTimeScale.modelDurationToViewPixels(visibleIntervalOfLine.toJodaInterval().toDuration()));
+					int threadGraphicsY = graphicsYFor(threadIndex);
+					g.fillRect(startX,threadGraphicsY,width,threadGraphicsHeight);
 				}
 			}
 		}
@@ -131,7 +135,12 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	private Rectangle boundsFor(LogInterval logInterval, int threadSetStartIndex, int threadSetEndIndex) {
 		int x=graphicsXFor(logInterval.getStart().getRecordedInstant());
 		int width=graphicsXFor(logInterval.getEnd().getRecordedInstant()) - x;
-		return new Rectangle(x,threadSetStartIndex,width,threadSetEndIndex);
+		int threads = threadSetEndIndex - threadSetStartIndex +1;
+		return new Rectangle(x,graphicsYFor(threadSetStartIndex),width,threads * threadGraphicsHeight);
+	}
+
+	private int graphicsYFor(int threadIndex) {
+		return threadIndex * threadGraphicsHeight ;
 	}
 
 	@Override
@@ -151,7 +160,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 		ArrayList<ThreadModel> threads = new ArrayList<ThreadModel>(
 				threadedSystem.getThreads());
-		int threadIndex = point.y;
+		int threadIndex = point.y/threadGraphicsHeight;
 		if (threadIndex >= 0 && threadIndex < threads.size()) {
 			return threads.get(threadIndex);
 		}
