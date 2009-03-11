@@ -17,6 +17,11 @@ public class Uptime {
 		}
 		return new Duration(significantInterval.getLogInterval().getStart().getRecordedInstant(),instant);
 	}
+
+	public Instant startPreceding(Instant instant) {
+		Duration uptimeDurationAtInstant = at(instant);
+		return instant.minus(uptimeDurationAtInstant);
+	}
 	
 	
 	

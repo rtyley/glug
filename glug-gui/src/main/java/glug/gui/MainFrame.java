@@ -40,7 +40,8 @@ public class MainFrame extends javax.swing.JFrame {
 	@SuppressWarnings("serial")
 	public MainFrame() {
 		initComponents();
-		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadedSystem, new TimelineCursor());
+		timelineCursor = new TimelineCursor();
+		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadedSystem, timelineCursor);
 
 		// threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
 		timelineScrollPane.getViewport().add(threadedSystemViewPanel);
@@ -191,7 +192,7 @@ public class MainFrame extends javax.swing.JFrame {
 				invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						timelineScrollPane.getViewport().add(new GCTraceView(gcTrace, uiTimeScale, threadedSystem));
+						timelineScrollPane.getViewport().add(new GCTraceView(gcTrace, uiTimeScale, threadedSystem, timelineCursor));
 					}
 				});
 			}
@@ -222,5 +223,6 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private ZoomFactorSlideUpdater zoomFactorSlideUpdater;
 	private TimelineDateTimeComponent timelineDateTimeComponent;
+	private TimelineCursor timelineCursor;
 
 }

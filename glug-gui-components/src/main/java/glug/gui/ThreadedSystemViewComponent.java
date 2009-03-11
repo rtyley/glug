@@ -10,7 +10,6 @@ import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.logmessages.IntervalTypeDescriptor;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -22,24 +21,20 @@ import java.util.Map.Entry;
 
 import javax.swing.ToolTipManager;
 
-import org.joda.time.Interval;
-
 public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private static final long serialVersionUID = 1L;
 	
 	private ThreadedSystem threadedSystem;
-	private final TimelineCursor timelineCursor;
 
 	private SwingHtmlStyleThreadReporter htmlStyleReporter = new SwingHtmlStyleThreadReporter();
 	
 	public ThreadedSystemViewComponent(UITimeScale timeScale, ThreadedSystem threadedSystem,
 			TimelineCursor timelineCursor) {
-		super(timeScale);
+		super(timeScale, timelineCursor);
 		
 		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
 		this.threadedSystem = threadedSystem;
-		this.timelineCursor = timelineCursor;
 		turnOnToolTips();
 		
 		timelineCursor.install(this);
@@ -64,16 +59,12 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	@Override
-	public void paintComponent(Graphics g) {
-		Graphics2D graphics2D = (Graphics2D) g;
+	void paintPopulatedComponent(Graphics2D graphics2D) {
 		Rectangle clipBounds = graphics2D.getClipBounds();
-		//System.out.println("Clip bounds ="+clipBounds);
-		if (containsData()) {
-			LogInterval visibleInterval = visibleIntervalFor(clipBounds);
-			List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
-			paint(fullThreadList, minThreadIndexFor(clipBounds, fullThreadList), maxThreadIndexFor(clipBounds, fullThreadList), visibleInterval, graphics2D);
-			timelineCursor.paintOn(this, graphics2D);
-		}
+		LogInterval visibleInterval = visibleIntervalFor(clipBounds);
+		List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
+		paint(fullThreadList, minThreadIndexFor(clipBounds, fullThreadList), maxThreadIndexFor(clipBounds, fullThreadList), visibleInterval, graphics2D);
+		getTimelineCursor().paintOn(this, graphics2D);
 	}
 
 	private int maxThreadIndexFor(Rectangle clipBounds, List<ThreadModel> fullThreadList) {
@@ -122,10 +113,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		}
 	}
 
-	private LogInterval visibleIntervalFor(Rectangle clipBounds) {
-		Interval interval = uiTimeScale.viewToModel(clipBounds);
-		return new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),Integer.MAX_VALUE));
-	}
+
 
 	private LogInstant instantFor(int graphicsX) {
 		return new LogInstant( uiTimeScale.viewToModel(graphicsX),0);
@@ -168,11 +156,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 			return threads.get(threadIndex);
 		}
 		return null;
-	}
-
-	@Override
-	public TimelineCursor getTimelineCursor() {
-		return timelineCursor;
 	}
 
 	@Override

@@ -18,5 +18,10 @@
 			<artifactId>glug-model</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.gu</groupId>
+			<artifactId>gchisto</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

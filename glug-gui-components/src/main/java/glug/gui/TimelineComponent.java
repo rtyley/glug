@@ -1,8 +1,11 @@
 package glug.gui;
 
 import glug.model.time.LogInstant;
+import glug.model.time.LogInterval;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -12,16 +15,18 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.joda.time.Instant;
+import org.joda.time.Interval;
 
 
 public abstract class TimelineComponent extends JComponent implements ChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	protected final UITimeScale uiTimeScale;
-	private TimelineCursor timelineCursor;
+	private final TimelineCursor timelineCursor;
 
-	public TimelineComponent(UITimeScale uiTimeScale) {
+	public TimelineComponent(UITimeScale uiTimeScale, TimelineCursor timelineCursor) {
 		this.uiTimeScale = uiTimeScale;
+		this.timelineCursor = timelineCursor;
 		uiTimeScale.addChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -34,6 +39,23 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 		});
 	}
 	
+	
+	protected LogInterval visibleIntervalFor(Rectangle clipBounds) {
+		Interval interval = uiTimeScale.viewToModel(clipBounds);
+		return new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),Integer.MAX_VALUE));
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		Graphics2D graphics2D = (Graphics2D) g;
+		//System.out.println("Clip bounds ="+clipBounds);
+		if (containsData()) {
+			paintPopulatedComponent(graphics2D);
+		}
+	}
+	
+	abstract void paintPopulatedComponent(Graphics2D graphics2D);
+
 	@Override
 	public Dimension getPreferredSize() {
 		if (!containsData()) {
