@@ -50,14 +50,14 @@ public class MainFrame extends javax.swing.JFrame {
 
 		innerPanel = new JPanel();
 		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
-		innerPanel.add(threadedSystemViewPanel);
-		uiTimeScale.addChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				innerPanel.setSize(uiTimeScale.fullModelToViewLength(),400);
-			}
-		});
-		timelineScrollPane.getViewport().add(innerPanel);
+//		innerPanel.add(threadedSystemViewPanel);
+//		uiTimeScale.addChangeListener(new PropertyChangeListener() {
+//			@Override
+//			public void propertyChange(PropertyChangeEvent evt) {
+//				innerPanel.setSize(uiTimeScale.fullModelToViewLength(),400);
+//			}
+//		});
+		timelineScrollPane.getViewport().add(threadedSystemViewPanel);
 
 
 		uiTimeScale.setFullInterval(new Interval(new Instant(), new Duration(1000000)));
