@@ -43,15 +43,24 @@ public class GCTraceView extends TimelineComponent {
 	@Override
 	void paintPopulatedComponent(Graphics2D graphics2D) {
 		Rectangle clipBounds = graphics2D.getClipBounds();
-		Interval interval = uiTimeScale.viewToModel(clipBounds);
+		Interval visibleInterval = uiTimeScale.viewToModel(clipBounds);
 		
-		Instant startOfVisibleInterval = interval.getStart().toInstant();
+		Instant startOfVisibleInterval = visibleInterval.getStart().toInstant();
 		Instant jvmRestartPrecedingStartOfVisibleInterval = threadedSystem.getUptime().startPreceding(startOfVisibleInterval);
 		graphics2D.setColor(BLACK);
-		for (GCActivity activity : fullGCActivitySet) {
+		for (GCActivity activity : gcTrace.getAllGCActivities()) {
 			Instant activityStartInstant = jvmRestartPrecedingStartOfVisibleInterval.plus(round(activity.getStartSec()*1000));
 			Duration activityDuration = new Duration(round(activity.getDurationSec()*1000));
-			graphics2D.fillRect(uiTimeScale.modelToView(activityStartInstant), 0, uiTimeScale.modelDurationToViewPixels(activityDuration), 100);
+			Interval activityInterval = new Interval(activityStartInstant,activityDuration);
+			Interval visibleActivityInterval = visibleInterval.overlap(activityInterval);
+			if (visibleActivityInterval!=null) {
+				float colVal = (float) (100-activity.getOverheadPerc());
+				graphics2D.setColor(new Color(colVal,colVal,colVal));
+				graphics2D.fillRect(
+						uiTimeScale.modelToView(visibleActivityInterval.getStart().toInstant()),
+						0,
+						uiTimeScale.modelDurationToViewPixels(visibleActivityInterval.toDuration()), 100);
+			}
 		}
 		
 	}
