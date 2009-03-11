@@ -19,9 +19,10 @@ import gchisto.gctracegenerator.file.FileGCTrace;
 import gchisto.gctracegenerator.file.hotspot.GCLogFileReader;
 import glug.gui.model.LogarithmicBoundedRange;
 import glug.model.ThreadedSystem;
+import glug.parser.LogLoader;
+import glug.parser.LogLoaderFactory;
+import glug.parser.logmessages.LogMessageParserRegistry;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
 
@@ -193,8 +194,9 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private void loadJavaProcessLogFile(File file) {
 		System.out.println("Loading Java process log...");
-		
-		new LogLoadingTask(file, threadedSystem, uiTimeScale, zoomFactorSlideUpdater).execute();
+		LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
+		LogLoader logLoader = logLoaderFactory.createLoaderFor(file,threadedSystem, LogMessageParserRegistry.EXAMPLE);
+		new LogLoadingTask(logLoader, threadedSystem, uiTimeScale, zoomFactorSlideUpdater).execute();
 	}
 
 	private void loadGarbageCollectionLogFile(File file) {

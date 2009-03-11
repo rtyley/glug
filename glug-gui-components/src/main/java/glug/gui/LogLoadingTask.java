@@ -27,13 +27,13 @@ import org.joda.time.format.PeriodFormat;
 
 public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 
-	private final File logFile;
+	private final LogLoader logLoader;
 	private final ThreadedSystem threadedSystem;
 	private final UITimeScale uiTimeScale;
 	private final ZoomFactorSlideUpdater zoomFactorSlideUpdater;
 	
-	public LogLoadingTask(File logFile,ThreadedSystem threadedSystem, UITimeScale uiTimeScale, ZoomFactorSlideUpdater zoomFactorSlideUpdater) {
-		this.logFile = logFile;
+	public LogLoadingTask(LogLoader logLoader,ThreadedSystem threadedSystem, UITimeScale uiTimeScale, ZoomFactorSlideUpdater zoomFactorSlideUpdater) {
+		this.logLoader = logLoader;
 		this.threadedSystem = threadedSystem;
 		this.uiTimeScale = uiTimeScale;
 		this.zoomFactorSlideUpdater = zoomFactorSlideUpdater;
@@ -41,18 +41,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 
 	@Override
 	public ThreadedSystem doInBackground() {
-		System.out.println("Processing "+logFile);
 		long startLoadTime=currentTimeMillis();
-		LineNumberReader reader;
-		try {
-			reader = new LineNumberReader(new InputStreamReader(streamForFile()));
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-		
-		LogLoader logLoader = new LogLoader(new LogParsingReader(reader,new LogLineParser(new LogCoordinateParser(threadedSystem),LogMessageParserRegistry.EXAMPLE )));
-		System.out.print("woo");
 		LoadReport loadReport;LogInterval loadedLogInterval=null;
 		try {
 			while (!isCancelled() && !(loadReport=logLoader.loadLines(50000)).endOfStreamReached()) {
@@ -65,17 +54,15 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 			throw new RuntimeException(e);
 		}
 		long durationLoadTime=currentTimeMillis()-startLoadTime;
-		System.out.println("Finished loading "+loadedLogInterval+" ("+loadedLogInterval.toJodaInterval().toDuration().toPeriod().toString(PeriodFormat.getDefault())+") in "+durationLoadTime+" ms");
+		System.out.println("Finished loading "+loadedLogInterval+" ("+format(loadedLogInterval)+") in "+durationLoadTime+" ms");
 		return threadedSystem;
 	}
 
-	private InputStream streamForFile() throws IOException, FileNotFoundException {
-		FileInputStream uncompressedFileStream = new FileInputStream(logFile);
-		if (logFile.getName().endsWith(".gz")) {
-			return new GZIPInputStream(uncompressedFileStream);
-		}
-		return uncompressedFileStream;
+	private String format(LogInterval loadedLogInterval) {
+		return loadedLogInterval.toJodaInterval().toDuration().toPeriod().toString(PeriodFormat.getDefault());
 	}
+
+
 	
 	@Override
 	protected void process(List<LoadReport> loadReports) {
