@@ -20,8 +20,13 @@ import gchisto.gctracegenerator.file.hotspot.GCLogFileReader;
 import glug.gui.model.LogarithmicBoundedRange;
 import glug.model.ThreadedSystem;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
+
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -43,8 +48,17 @@ public class MainFrame extends javax.swing.JFrame {
 		timelineCursor = new TimelineCursor();
 		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadedSystem, timelineCursor);
 
-		// threadedSystemViewPanel.setSize(threadedSystemViewPanel.getPreferredSize());
-		timelineScrollPane.getViewport().add(threadedSystemViewPanel);
+		innerPanel = new JPanel();
+		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
+		innerPanel.add(threadedSystemViewPanel);
+		uiTimeScale.addChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				innerPanel.setSize(uiTimeScale.fullModelToViewLength(),400);
+			}
+		});
+		timelineScrollPane.getViewport().add(innerPanel);
+
 
 		uiTimeScale.setFullInterval(new Interval(new Instant(), new Duration(1000000)));
 		timelineDateTimeComponent = new TimelineDateTimeComponent(uiTimeScale);
@@ -192,7 +206,7 @@ public class MainFrame extends javax.swing.JFrame {
 				invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						timelineScrollPane.getViewport().add(new GCTraceView(gcTrace, uiTimeScale, threadedSystem, timelineCursor));
+						innerPanel.add(new GCTraceView(gcTrace, uiTimeScale, threadedSystem, timelineCursor));
 					}
 				});
 			}
@@ -224,5 +238,6 @@ public class MainFrame extends javax.swing.JFrame {
 	private ZoomFactorSlideUpdater zoomFactorSlideUpdater;
 	private TimelineDateTimeComponent timelineDateTimeComponent;
 	private TimelineCursor timelineCursor;
+	private JPanel innerPanel;
 
 }
