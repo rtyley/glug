@@ -68,4 +68,9 @@ public class ThreadModel {
 	public ThreadedSystem getThreadedSystem() {
 		return threadedSystem;
 	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName()+"["+getInterval()+"]";
+	}
 }
