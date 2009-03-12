@@ -105,7 +105,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 			g.setColor(intervalTypeDescriptor.getColour());
 
 			Collection<SignificantInterval> sigInts = blah.getValue();
-			// System.out.println("size="+size);
 			
 			LogInterval visibleIntervalToPlot = null;
 			
@@ -116,7 +115,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 						visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;
 					} else if (close(visibleIntervalToPlot, durationFor1Pixel, visibleIntervalOfCurrentSigInt)) {
 						visibleIntervalToPlot = visibleIntervalToPlot.union(visibleIntervalOfCurrentSigInt);
-						// continue
 					} else {
 						plotBlock(visibleIntervalToPlot, threadGraphicsY, g); // finish with the old block
 						visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;  // start the new block
