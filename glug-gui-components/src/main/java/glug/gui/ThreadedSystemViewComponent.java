@@ -2,6 +2,7 @@ package glug.gui;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.lang.Math.round;
 import static java.lang.System.currentTimeMillis;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
@@ -95,6 +96,9 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private void paintThread(ThreadModel threadModel, int threadIndex, LogInterval visibleInterval, Graphics2D g) {
+		int durationFor1Pixel = (int)round(uiTimeScale.getMillisecondsPerPixel());
+		int threadGraphicsY = graphicsYFor(threadIndex);
+		
 		for (Entry<IntervalTypeDescriptor, Collection<SignificantInterval>> blah : threadModel
 				.getSignificantIntervalsFor(visibleInterval).entrySet()) {
 			IntervalTypeDescriptor intervalTypeDescriptor = blah.getKey();
@@ -102,19 +106,47 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 			Collection<SignificantInterval> sigInts = blah.getValue();
 			// System.out.println("size="+size);
+			
+			LogInterval visibleIntervalToPlot = null;
+			
 			for (SignificantInterval significantInterval : sigInts) {
-				LogInterval aa = significantInterval.getLogInterval();
-				
-				LogInterval visibleIntervalOfLine = aa.overlap(visibleInterval);
-				if (visibleIntervalOfLine!=null) {
-					int startX = graphicsXFor(visibleIntervalOfLine.getStart().getRecordedInstant());
-					//int endX = graphicsXFor(visibleIntervalOfLine.getEnd().getRecordedInstant());
-					int width = max(1,uiTimeScale.modelDurationToViewPixels(visibleIntervalOfLine.toJodaInterval().toDuration()));
-					int threadGraphicsY = graphicsYFor(threadIndex);
-					g.fillRect(startX,threadGraphicsY,width,threadGraphicsHeight);
+				LogInterval visibleIntervalOfCurrentSigInt = portionOfSigIntWhichIsVisible(visibleInterval, significantInterval);
+				if (visibleIntervalOfCurrentSigInt!=null) {
+					if (visibleIntervalToPlot==null) {
+						visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;
+					} else if (close(visibleIntervalToPlot, durationFor1Pixel, visibleIntervalOfCurrentSigInt)) {
+						visibleIntervalToPlot = visibleIntervalToPlot.union(visibleIntervalOfCurrentSigInt);
+						// continue
+					} else {
+						plotBlock(visibleIntervalToPlot, threadGraphicsY, g); // finish with the old block
+						visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;  // start the new block
+					}
 				}
 			}
+			if (visibleIntervalToPlot != null) {
+				plotBlock(visibleIntervalToPlot, threadGraphicsY, g);
+			}
+			
 		}
+	}
+
+	private boolean close(LogInterval visibleIntervalToPlot, int durationFor1Pixel, LogInterval visibleIntervalOfCurrentSigInt) {
+		return (visibleIntervalOfCurrentSigInt.getStart().getMillis()-visibleIntervalToPlot.getEnd().getMillis())<durationFor1Pixel;
+	}
+
+	private void plotBlock(LogInterval visibleIntervalOfLine, int threadGraphicsY, Graphics2D g) {
+		int startX = graphicsXFor(visibleIntervalOfLine.getStart().getRecordedInstant());
+		//int endX = graphicsXFor(visibleIntervalOfLine.getEnd().getRecordedInstant());
+		int width = max(1,uiTimeScale.modelDurationToViewPixels(visibleIntervalOfLine.toJodaInterval().toDuration()));
+		g.fillRect(startX,threadGraphicsY,width,threadGraphicsHeight);
+	}
+
+	private LogInterval portionOfSigIntWhichIsVisible(LogInterval visibleInterval,
+			SignificantInterval significantInterval) {
+		LogInterval aa = significantInterval.getLogInterval();
+		
+		LogInterval visibleIntervalOfLine = aa.overlap(visibleInterval);
+		return visibleIntervalOfLine;
 	}
 
 
