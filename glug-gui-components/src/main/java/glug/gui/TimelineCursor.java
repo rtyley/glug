@@ -1,7 +1,9 @@
 package glug.gui;
 
+import static java.awt.Color.BLACK;
 import glug.model.time.LogInstant;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
@@ -100,6 +102,7 @@ public class TimelineCursor {
 	
 	public void paintOn(TimelineComponent timelineComponent, Graphics2D g) {
 		if (dot != null) {
+			g.setColor(BLACK);
 			g.draw(timelineComponent.getViewFor(dot));
 		}
 	}
