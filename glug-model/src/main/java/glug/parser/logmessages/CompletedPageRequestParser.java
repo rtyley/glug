@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.joda.time.Duration;
 
 
-public class CompletedPageRequestParser implements LogMessageParser {
+public abstract class CompletedPageRequestParser implements LogMessageParser {
 
 	private static final Pattern requestCompletedPattern = 
 		Pattern.compile("^Request for ([^ ]+?) completed in (\\d+?) ms$");
@@ -27,11 +27,6 @@ public class CompletedPageRequestParser implements LogMessageParser {
 		SignificantInterval significantInterval = new SignificantInterval(threadModel,new CompletedPageRequest(pagePath),interval);
 		threadModel.add(significantInterval);
 		return significantInterval;
-	}
-
-	@Override
-	public String getLoggerClassName() {
-		return "com.gu.r2.common.webutil.RequestLoggingFilter";
 	}
 
 	@Override

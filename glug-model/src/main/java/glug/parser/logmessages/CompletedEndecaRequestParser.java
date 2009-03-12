@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.joda.time.Duration;
 
 
-public class CompletedEndecaRequestParser implements LogMessageParser {
+public abstract class CompletedEndecaRequestParser implements LogMessageParser {
 
 /*
  * 2009-03-10 00:00:39,158 [resin-tcp-connection-srchrespub.gul3.gnl:6802-49] INFO  com.gu.endeca.data.bridge.AbstractBridge - [EducationBridge] 
@@ -21,7 +21,7 @@ public class CompletedEndecaRequestParser implements LogMessageParser {
  * 
  */
 	
-	private static final Pattern endecaRequestPattern = Pattern.compile(".*\\} \\[(.+?)\\].*completed in (\\d+?) ms");
+	private static final Pattern endecaRequestPattern = Pattern.compile(".*\\}\\s?\\[(.+?)\\].*completed in (\\d+?) ms");
 	
 
 	@Override

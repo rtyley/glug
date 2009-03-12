@@ -22,7 +22,7 @@ public class CompletedPageRequestParserTest {
 	
 	@Test
 	public void shouldParseCompletedPageRequestCorrectly() {
-		CompletedPageRequestParser parser = new CompletedPageRequestParser();
+		CompletedPageRequestParser parser = new CompletedR2PageRequestParser();
 		String logMessage = "Request for /pages/Guardian/lifeandstyle completed in 712 ms";
 		
 		Matcher matcher = parser.getPattern().matcher(logMessage);
@@ -31,5 +31,19 @@ public class CompletedPageRequestParserTest {
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(712L));
 		assertThat(sigInt.getType(), equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/lifeandstyle")));
+	}
+	
+	@Test
+	public void shouldParseEndecaPageRequestsAsWell() throws Exception {
+		CompletedPageRequestParser parser = new CompletedPageRequestDiagnosticParser();
+		String logMessage = "Request for /search?search=guy+browning&No=10&sitesearch-radio=guardian&go-guardian=Search completed in 1296 ms";
+		
+		Matcher matcher = parser.getPattern().matcher(logMessage);
+		assertThat(matcher.find(), is(true));
+		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L,101));
+		
+		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(1296L));
+		assertThat(sigInt.getType(), equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/search?search=guy+browning&No=10&sitesearch-radio=guardian&go-guardian=Search")));
+	
 	}
 }

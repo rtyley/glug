@@ -12,8 +12,11 @@ public class LogMessageParserRegistry {
 	public static final List<LogMessageParser> ALL_PARSERS 
 		= asList(
 				new JVMUptimeParser(),
-				new CompletedPageRequestParser(),
-				new CompletedDatabaseQueryParser());
+				new CompletedR2PageRequestParser(),
+				new CompletedPageRequestDiagnosticParser(),
+				new CompletedDatabaseQueryParser(), 
+				new CompletedSearchEndecaRequestParser(), 
+				new CompletedOpenApiEndecaRequestParser());
 	
 	public static final LogMessageParserRegistry EXAMPLE = new LogMessageParserRegistry(ALL_PARSERS);
 	
