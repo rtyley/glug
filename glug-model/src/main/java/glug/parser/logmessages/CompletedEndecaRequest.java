@@ -9,7 +9,7 @@ import glug.model.SignificantIntervalOccupier;
 
 public class CompletedEndecaRequest implements SignificantIntervalOccupier {
 
-	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(2,ORANGE,"Endeca Request");
+	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(3,ORANGE,"Endeca Request");
 	
 	private final static Map<String,CompletedEndecaRequest> cache = new HashMap<String,CompletedEndecaRequest>();
 	
