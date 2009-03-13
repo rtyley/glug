@@ -42,7 +42,7 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 	
 	protected LogInterval visibleIntervalFor(Rectangle clipBounds) {
 		Interval interval = uiTimeScale.viewToModel(clipBounds);
-		return new LogInterval(new LogInstant(interval.getStart().toInstant(),0),new LogInstant(interval.getEnd().toInstant(),Integer.MAX_VALUE));
+		return new LogInterval(new LogInstant(interval.getStart().getMillis()-1,0),new LogInstant(interval.getEnd().getMillis()+1,Integer.MAX_VALUE));
 	}
 	
 	@Override

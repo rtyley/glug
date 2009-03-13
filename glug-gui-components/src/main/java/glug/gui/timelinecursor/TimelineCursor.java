@@ -70,7 +70,7 @@ public class TimelineCursor {
 	 * Moves the cursor position to the specified instant.
 	 */
 	public void moveDot(LogInstant newDot) {
-		if (!dot.equals(newDot)) {
+		if (!newDot.equals(dot)) {
 			changeCaretPosition(newDot);
 		}
 	}
