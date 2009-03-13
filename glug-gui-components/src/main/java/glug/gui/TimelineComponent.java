@@ -80,14 +80,10 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 		if (source instanceof TimelineCursor.CursorPositionChanged)
 		{
 			TimelineCursor.CursorPositionChanged cursorPositionChanged = (TimelineCursor.CursorPositionChanged) source;
-			LogInstant oldPosition = cursorPositionChanged.getOldPosition();
-			if (oldPosition!=null) {
-				paintImmediately(getTimelineCursor().getBoundsForCursorAt(oldPosition, this));
-			}
-			repaint(getTimelineCursor().getBoundsForCursorAt(getTimelineCursor().getDot(), this));
+			
+			getTimelineCursor().processCursorPositionChangedFor(this, cursorPositionChanged);
 		}
 	}
-
 
 	protected void scrollViewToKeepCursorInSamePosition(double oldMillisecondsPerPixel) {
 		LogInstant cursorDot = getTimelineCursor().getDot();

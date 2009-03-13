@@ -127,5 +127,12 @@ public class TimelineCursor {
 		}
 	}
 
+	public void processCursorPositionChangedFor(TimelineComponent timelineComponent, CursorPositionChanged cursorPositionChanged) {
+		LogInstant oldPosition = cursorPositionChanged.getOldPosition();
+		if (oldPosition!=null) {
+			timelineComponent.paintImmediately(getBoundsForCursorAt(oldPosition, timelineComponent));
+		}
+		timelineComponent.repaint(getBoundsForCursorAt(getDot(), timelineComponent));
+	}
 
 }

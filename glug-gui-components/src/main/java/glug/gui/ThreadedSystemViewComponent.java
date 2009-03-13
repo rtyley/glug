@@ -141,10 +141,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	private LogInstant instantFor(int graphicsX) {
 		return new LogInstant(uiTimeScale.viewToModel(graphicsX), 0);
 	}
-
-	public void repaint(LogInterval logInterval) {
-		repaint(boundsFor(logInterval, 0, threadedSystem.getThreads().size()-1));
-	}
 	
 	private void repaint(LogInterval logInterval, int minThreadIndex, int maxThreadIndex) {
 		repaint(boundsFor(logInterval, minThreadIndex, maxThreadIndex));
