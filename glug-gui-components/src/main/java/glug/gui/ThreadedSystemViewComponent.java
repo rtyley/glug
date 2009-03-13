@@ -34,12 +34,11 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private int threadGraphicsHeight = 4;
 	
-	public ThreadedSystemViewComponent(UITimeScale timeScale, ThreadedSystem threadedSystem,
-			TimelineCursor timelineCursor) {
+	public ThreadedSystemViewComponent(UITimeScale timeScale, ThreadedSystem threadedSystem, TimelineCursor timelineCursor) {
 		super(timeScale, timelineCursor);
+		this.threadedSystem = threadedSystem;
 		
 		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
-		this.threadedSystem = threadedSystem;
 		turnOnToolTips();
 		
 		timelineCursor.install(this);
@@ -110,7 +109,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 			LogInterval visibleIntervalToPlot = null;
 			
 			for (SignificantInterval significantInterval : sigInts) {
-				LogInterval visibleIntervalOfCurrentSigInt = portionOfSigIntWhichIsVisible(visibleInterval, significantInterval);
+				LogInterval visibleIntervalOfCurrentSigInt = significantInterval.getLogInterval().overlap(visibleInterval);
 				if (visibleIntervalOfCurrentSigInt!=null) {
 					if (visibleIntervalToPlot==null) {
 						visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;
@@ -135,17 +134,8 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private void plotBlock(LogInterval visibleIntervalOfLine, int threadGraphicsY, Graphics2D g) {
 		int startX = graphicsXFor(visibleIntervalOfLine.getStart().getRecordedInstant());
-		//int endX = graphicsXFor(visibleIntervalOfLine.getEnd().getRecordedInstant());
-		int width = max(1,uiTimeScale.modelDurationToViewPixels(visibleIntervalOfLine.toJodaInterval().toDuration()));
-		g.fillRect(startX,threadGraphicsY,width,threadGraphicsHeight);
-	}
-
-	private LogInterval portionOfSigIntWhichIsVisible(LogInterval visibleInterval,
-			SignificantInterval significantInterval) {
-		LogInterval aa = significantInterval.getLogInterval();
-		
-		LogInterval visibleIntervalOfLine = aa.overlap(visibleInterval);
-		return visibleIntervalOfLine;
+		int endX = graphicsXFor(visibleIntervalOfLine.getEnd().getRecordedInstant());
+		g.fillRect(startX,threadGraphicsY,endX - startX,threadGraphicsHeight);
 	}
 
 	private LogInstant instantFor(int graphicsX) {
@@ -185,7 +175,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private ThreadModel threadFor(Point point) {
-
 		ArrayList<ThreadModel> threads = new ArrayList<ThreadModel>(
 				threadedSystem.getThreads());
 		int threadIndex = point.y/threadGraphicsHeight;
