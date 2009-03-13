@@ -1,4 +1,4 @@
-package glug.gui;
+package glug.gui.mousecursor;
 
 import static java.awt.Color.DARK_GRAY;
 

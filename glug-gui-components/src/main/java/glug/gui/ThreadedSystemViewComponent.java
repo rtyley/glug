@@ -4,6 +4,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.Math.round;
 import static java.lang.System.currentTimeMillis;
+import glug.gui.mousecursor.FineCrosshairMouseCursorFactory;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
