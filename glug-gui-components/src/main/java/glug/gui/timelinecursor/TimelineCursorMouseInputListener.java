@@ -1,7 +1,8 @@
-package glug.gui;
+package glug.gui.timelinecursor;
 
 import static java.awt.event.ActionEvent.SHIFT_MASK;
 import static javax.swing.SwingUtilities.isLeftMouseButton;
+import glug.gui.TimelineComponent;
 import glug.model.time.LogInstant;
 
 import java.awt.event.MouseEvent;

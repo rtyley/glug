@@ -1,5 +1,6 @@
 package glug.gui;
 
+import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 

@@ -6,8 +6,8 @@ import gchisto.gcactivity.GCActivity;
 import gchisto.gcactivity.GCActivitySet;
 import gchisto.gctrace.GCTrace;
 import glug.gui.TimelineComponent;
-import glug.gui.TimelineCursor;
 import glug.gui.UITimeScale;
+import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.ThreadedSystem;
 
 import java.awt.Color;

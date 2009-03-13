@@ -1,15 +1,11 @@
 package glug.parser.logmessages;
 
-
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
-
 
 public interface LogMessageParser {
 

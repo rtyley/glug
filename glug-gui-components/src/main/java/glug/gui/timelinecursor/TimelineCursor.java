@@ -1,6 +1,7 @@
-package glug.gui;
+package glug.gui.timelinecursor;
 
 import static java.awt.Color.BLACK;
+import glug.gui.TimelineComponent;
 import glug.model.time.LogInstant;
 
 import java.awt.Graphics2D;
@@ -15,10 +16,10 @@ import javax.swing.event.EventListenerList;
  * This class is modelled a little after javax.swing.text.Caret, and uses some
  * of it's terminology.
  * 
- * The cursor has a position in the timeline referred to as a dot. The dot is
+ * The cursor has a position in the timeline referred to as a 'dot'. The dot is
  * where the cursor is currently located in the model. There is a second
  * position maintained by the cursor that represents the other end of a
- * selection called mark. If there is no selection the dot and mark will be
+ * selection called 'mark'. If there is no selection the dot and mark will be
  * equal. If a selection exists, the two values will be different.
  * <p>
  * The dot can be placed by either calling <code>setDot</code> or

@@ -20,6 +20,7 @@ import gchisto.gctracegenerator.file.hotspot.GCLogFileReader;
 import glug.gui.gc.GCTraceView;
 import glug.gui.model.LogarithmicBoundedRange;
 import glug.gui.timebar.TimelineDateTimeComponent;
+import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.ThreadedSystem;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
