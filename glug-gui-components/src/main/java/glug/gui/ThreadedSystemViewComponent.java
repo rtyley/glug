@@ -167,7 +167,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private int graphicsYFor(int threadIndex) {
-		return threadIndex * threadGraphicsHeight ;
+		return threadIndex * threadGraphicsHeight;
 	}
 
 	@Override
