@@ -4,8 +4,6 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
-import glug.model.ThreadedSystem;
-import glug.model.Uptime;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 

@@ -1,11 +1,10 @@
 package glug.parser.logmessages;
 
 import static java.awt.Color.ORANGE;
+import glug.model.SignificantIntervalOccupier;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import glug.model.SignificantIntervalOccupier;
 
 public class CompletedEndecaRequest implements SignificantIntervalOccupier {
 
