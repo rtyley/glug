@@ -7,20 +7,21 @@ import org.joda.time.Duration;
 
 public class TickIntervalSet {
 
-	NavigableMap<Duration, TickInterval> durationToPeriodMap = new TreeMap<Duration, TickInterval>();
+	NavigableMap<Duration, TickInterval> tickIntervalsByDuration = new TreeMap<Duration, TickInterval>();
 	
 	public TickIntervalSet(TickInterval... tickIntervals) {
 		for (TickInterval tickInterval : tickIntervals) {
-			durationToPeriodMap.put(tickInterval.getDuration(), tickInterval);
+			tickIntervalsByDuration.put(tickInterval.getDuration(), tickInterval);
 		}
 	}
 
-	public NavigableMap<Duration, TickInterval> rangeFor(Duration smallestDuration, Duration largeDuration) {
-		Duration largestDuration = durationToPeriodMap.ceilingKey(largeDuration);
-		
-		return durationToPeriodMap.subMap(smallestDuration, true, largestDuration==null?largeDuration:largestDuration, true);
+	public NavigableMap<Duration, TickInterval> forRange(Duration smallestDuration, Duration largeDuration) {
+		return tickIntervalsByDuration.subMap(smallestDuration, true, greaterOrEqualDurationIfAvailable(largeDuration), true);
 	}
-	
-	
+
+	private Duration greaterOrEqualDurationIfAvailable(Duration largeDuration) {
+		Duration largestDuration = tickIntervalsByDuration.ceilingKey(largeDuration);
+		return largestDuration==null?largeDuration:largestDuration;
+	}
 	
 }

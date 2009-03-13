@@ -14,14 +14,14 @@ import org.joda.time.format.DateTimeFormatter;
 
 public class TickInterval {
 
-	private final DateTimeFieldType dateTimeFieldType;
 	private final int value;
+	private final DateTimeFieldType dateTimeFieldType;
 	private final Duration duration;
 	private final DateTimeFormatter dateTimeFormatter;
 
-	public TickInterval(DateTimeFieldType dateTimeFieldType, int value, DateTimeFormatter dateTimeFormatter) {
-		this.dateTimeFieldType = dateTimeFieldType;
+	public TickInterval(int value, DateTimeFieldType dateTimeFieldType, DateTimeFormatter dateTimeFormatter) {
 		this.value = value;
+		this.dateTimeFieldType = dateTimeFieldType;
 		this.dateTimeFormatter = dateTimeFormatter;
 		this.duration = new Period().withField(dateTimeFieldType.getDurationType(), value).toDurationFrom(new Instant());
 	}
@@ -76,7 +76,7 @@ public class TickInterval {
 	}
 
 	public static TickInterval tick(int value, DateTimeFieldType dateTimeFieldType, DateTimeFormatter dateTimeFormatter) {
-		return new TickInterval(dateTimeFieldType, value, dateTimeFormatter);
+		return new TickInterval(value, dateTimeFieldType, dateTimeFormatter);
 	}
 
 	public Iterator<DateTime> ticksFor(final Interval interval) {
@@ -105,7 +105,4 @@ public class TickInterval {
 			}
 		};
 	}
-
-
-
 }

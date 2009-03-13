@@ -2,6 +2,8 @@ package glug.gui.timebar;
 
 import static glug.gui.timebar.TickInterval.tick;
 import static java.awt.Color.WHITE;
+import static java.awt.Font.PLAIN;
+import static java.awt.Font.SANS_SERIF;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.lang.Math.exp;
@@ -44,7 +46,7 @@ public class TimelineDateTimeComponent extends JComponent {
 	
 	int minTickPixelSpacing = 3;
 	int maxTickPixelSpacing = 160;
-	private static TickIntervalSet tickIntervalSet = new TickIntervalSet(
+	private static TickIntervalSet availableTicks = new TickIntervalSet(
 			tick(1,DateTimeFieldType.yearOfCentury(),forPattern("YYYY")),
 			tick(1,monthOfYear(),forPattern("YYYY-MM")),
 			tick(1,dayOfMonth(),forPattern("YYYY-MM-dd")),
@@ -121,7 +123,7 @@ public class TimelineDateTimeComponent extends JComponent {
 		int tickHeight;
 		int bottom = getHeight()-1;
 		graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-		Font baseFont = new Font(Font.SANS_SERIF, Font.PLAIN,16);
+		Font baseFont = new Font(SANS_SERIF, PLAIN,16);
 		for (Entry<DateTime, TickInterval> entry : tickMap.entrySet()) {
 			TickInterval tickInterval = entry.getValue();
 			float proportionOfRange = tickWeight.get(tickInterval);
@@ -142,11 +144,10 @@ public class TimelineDateTimeComponent extends JComponent {
 	}
 
 	private NavigableMap<Duration, TickInterval> tickIntervalsAtCurrentScale() {
-		
 		Duration approxGoodMinorTickDuration = timeScale.viewPixelsToModelDuration(minTickPixelSpacing);
 		Duration approxGoodMajorTickDuration = timeScale.viewPixelsToModelDuration(maxTickPixelSpacing);
 		
-		return tickIntervalSet.rangeFor(approxGoodMinorTickDuration,approxGoodMajorTickDuration);
+		return availableTicks.forRange(approxGoodMinorTickDuration,approxGoodMajorTickDuration);
 	}
 	
 }

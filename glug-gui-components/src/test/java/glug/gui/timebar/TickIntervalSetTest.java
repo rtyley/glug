@@ -26,9 +26,9 @@ public class TickIntervalSetTest {
 				tick(10,secondOfMinute(),null), tick(5,secondOfMinute(),null), tick(1,secondOfMinute(),null),
 				tick(100,millisOfSecond(),null),tick(10,millisOfSecond(),null),tick(1,millisOfSecond(),null));
 		
-		assertThat(ps.rangeFor(standardSeconds(4), standardMinutes(8)).lastEntry().getValue(),equalTo(tick(10,minuteOfHour(),null)));
-		assertThat(ps.rangeFor(standardSeconds(4), standardMinutes(8)).firstEntry().getValue(),equalTo(tick(5,secondOfMinute(),null)));
-		assertThat(ps.rangeFor(standardSeconds(5), standardMinutes(8)).firstEntry().getValue(),equalTo(tick(5,secondOfMinute(),null)));
-		assertThat(ps.rangeFor(standardSeconds(5), standardDays(3)).lastEntry().getValue(),equalTo(tick(1,dayOfMonth(),null)));
+		assertThat(ps.forRange(standardSeconds(4), standardMinutes(8)).lastEntry().getValue(),equalTo(tick(10,minuteOfHour(),null)));
+		assertThat(ps.forRange(standardSeconds(4), standardMinutes(8)).firstEntry().getValue(),equalTo(tick(5,secondOfMinute(),null)));
+		assertThat(ps.forRange(standardSeconds(5), standardMinutes(8)).firstEntry().getValue(),equalTo(tick(5,secondOfMinute(),null)));
+		assertThat(ps.forRange(standardSeconds(5), standardDays(3)).lastEntry().getValue(),equalTo(tick(1,dayOfMonth(),null)));
 	}
 }
