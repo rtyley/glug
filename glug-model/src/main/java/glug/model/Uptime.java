@@ -11,11 +11,11 @@ public class Uptime {
 	}
 
 	public Duration at(Instant instant) {
-		SignificantInterval significantInterval = uptime.getLatestSignificantIntervalStartingAtOrBefore(instant);
-		if (significantInterval==null) {
+		SignificantInterval uptimeInterval = uptime.getLatestSignificantIntervalStartingAtOrBefore(instant);
+		if (uptimeInterval==null) {
 			return null;
 		}
-		return new Duration(significantInterval.getLogInterval().getStart().getRecordedInstant(),instant);
+		return new Duration(uptimeInterval.getLogInterval().getStart().getMillis(),instant.getMillis());
 	}
 
 	public Instant startPreceding(Instant instant) {

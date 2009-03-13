@@ -133,13 +133,13 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private void plotBlock(LogInterval visibleIntervalOfLine, int threadGraphicsY, Graphics2D g) {
-		int startX = graphicsXFor(visibleIntervalOfLine.getStart().getRecordedInstant());
-		int endX = graphicsXFor(visibleIntervalOfLine.getEnd().getRecordedInstant());
+		int startX = graphicsXFor(visibleIntervalOfLine.getStart());
+		int endX = graphicsXFor(visibleIntervalOfLine.getEnd());
 		g.fillRect(startX,threadGraphicsY,endX - startX,threadGraphicsHeight);
 	}
 
 	private LogInstant instantFor(int graphicsX) {
-		return new LogInstant( uiTimeScale.viewToModel(graphicsX),0);
+		return new LogInstant(uiTimeScale.viewToModel(graphicsX), 0);
 	}
 
 	public void repaint(LogInterval logInterval) {
@@ -151,8 +151,8 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private Rectangle boundsFor(LogInterval logInterval, int threadSetStartIndex, int threadSetEndIndex) {
-		int x=graphicsXFor(logInterval.getStart().getRecordedInstant());
-		int width=graphicsXFor(logInterval.getEnd().getRecordedInstant()) - x;
+		int x=graphicsXFor(logInterval.getStart());
+		int width=graphicsXFor(logInterval.getEnd()) - x;
 		int threads = threadSetEndIndex - threadSetStartIndex +1;
 		return new Rectangle(x,graphicsYFor(threadSetStartIndex),width,threads * threadGraphicsHeight);
 	}

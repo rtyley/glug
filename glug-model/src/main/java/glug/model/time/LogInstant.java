@@ -1,41 +1,41 @@
 package glug.model.time;
 
+import org.joda.time.Duration;
 import org.joda.time.Instant;
 
 public class LogInstant implements Comparable<LogInstant> {
-	private final Instant recordedInstant;
+	private final long recordedInstantMillis;
 	private final int logLineNumber;
 
-	public LogInstant(long millis, int logLineNumber) {
-		this.recordedInstant = new Instant(millis);
+	public LogInstant(long recordedInstantMillis, int logLineNumber) {
+		this.recordedInstantMillis = recordedInstantMillis;
 		this.logLineNumber = logLineNumber;
 	}
 	
-	public LogInstant(long millis) {
-		this(new Instant(millis));
+	public LogInstant(long recordedInstantMillis) {
+		this(recordedInstantMillis,0);
 	}
 
-	public LogInstant(Instant instant, int logLineNumber) {
-		this.recordedInstant = instant;
+	public LogInstant(Instant recordedInstant, int logLineNumber) {
+		this.recordedInstantMillis = recordedInstant.getMillis();
 		this.logLineNumber = logLineNumber;
 	}
 	
-	public LogInstant(Instant instant) {
-		this.recordedInstant = instant;
-		this.logLineNumber = 0;
+	public LogInstant(Instant recordedInstant) {
+		this(recordedInstant,0);
 	}
 
 
 	public long getMillis() {
-		return recordedInstant.getMillis();
+		return recordedInstantMillis;
 	}
 
 	public boolean isAfter(LogInstant otherLogInstant) {
-		return (recordedInstant.isAfter(otherLogInstant.recordedInstant)) || (recordedInstant.equals(otherLogInstant.recordedInstant) && logLineNumber>otherLogInstant.logLineNumber);
+		return (recordedInstantMillis>otherLogInstant.recordedInstantMillis) || (recordedInstantMillis==otherLogInstant.recordedInstantMillis && logLineNumber>otherLogInstant.logLineNumber);
 	}
 
 	public boolean isBefore(LogInstant otherLogInstant) {
-		return (recordedInstant.isBefore(otherLogInstant.recordedInstant)) || (recordedInstant.equals(otherLogInstant.recordedInstant) && logLineNumber<otherLogInstant.logLineNumber);
+		return (recordedInstantMillis<otherLogInstant.recordedInstantMillis) || (recordedInstantMillis==otherLogInstant.recordedInstantMillis && logLineNumber<otherLogInstant.logLineNumber);
 	}
 
 	public Instant getRecordedInstant() {
@@ -44,6 +44,33 @@ public class LogInstant implements Comparable<LogInstant> {
 
 	public int getLogLine() {
 		return logLineNumber;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + logLineNumber;
+		result = prime
+				* result
+				+ (int) (recordedInstantMillis ^ (recordedInstantMillis >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LogInstant other = (LogInstant) obj;
+		if (logLineNumber != other.logLineNumber)
+			return false;
+		if (recordedInstantMillis != other.recordedInstantMillis)
+			return false;
+		return true;
 	}
 
 	@Override
@@ -58,35 +85,9 @@ public class LogInstant implements Comparable<LogInstant> {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((recordedInstant == null) ? 0 : recordedInstant.hashCode());
-		result = prime * result + logLineNumber;
-		return result;
+	public String toString() {
+		return getRecordedInstant()+":line="+logLineNumber;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		LogInstant other = (LogInstant) obj;
-		if (recordedInstant == null) {
-			if (other.recordedInstant != null)
-				return false;
-		} else if (!recordedInstant.equals(other.recordedInstant))
-			return false;
-		if (logLineNumber != other.logLineNumber)
-			return false;
-		return true;
-	}
-	
-	@Override
-	public String toString() {
-		return recordedInstant+":line="+logLineNumber;
-	}
+
 }

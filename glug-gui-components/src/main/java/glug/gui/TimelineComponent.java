@@ -15,7 +15,6 @@ import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.joda.time.Instant;
 import org.joda.time.Interval;
 
 
@@ -93,8 +92,8 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 	protected void scrollViewToKeepCursorInSamePosition(double oldMillisecondsPerPixel) {
 		LogInstant cursorDot = getTimelineCursor().getDot();
 		if (cursorDot != null) {
-			int originalCursorHorizontalPositionInComponent = graphicsXFor(cursorDot.getRecordedInstant(), oldMillisecondsPerPixel);
-			int updatedCursorHorizontalPositionInComponent = graphicsXFor(cursorDot.getRecordedInstant());
+			int originalCursorHorizontalPositionInComponent = graphicsXFor(cursorDot, oldMillisecondsPerPixel);
+			int updatedCursorHorizontalPositionInComponent = graphicsXFor(cursorDot);
 			int differenceInCursorHorizontalPositionInComponent = updatedCursorHorizontalPositionInComponent - originalCursorHorizontalPositionInComponent;
 			Rectangle visibleRectangle = getVisibleRect();
 			visibleRectangle.translate(differenceInCursorHorizontalPositionInComponent, 0);
@@ -102,12 +101,12 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 		}
 	}
 
-	protected int graphicsXFor(Instant instant) {
-		return uiTimeScale.modelToView(instant);
+	protected int graphicsXFor(LogInstant instant) {
+		return uiTimeScale.modelToView(instant.getRecordedInstant());
 	}
 
-	private int graphicsXFor(Instant instant, double specifiedMillisPerPixel) {
-		return uiTimeScale.modelToView(instant, specifiedMillisPerPixel);
+	private int graphicsXFor(LogInstant instant, double specifiedMillisPerPixel) {
+		return uiTimeScale.modelToView(instant.getRecordedInstant(), specifiedMillisPerPixel);
 	}
 
 	public abstract boolean containsData();

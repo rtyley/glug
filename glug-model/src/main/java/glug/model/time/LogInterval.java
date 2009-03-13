@@ -13,7 +13,7 @@ public class LogInterval implements Comparable<LogInterval> {
 	}
 
 	public LogInterval(Duration duration, LogInstant logInstantAtEnd) {
-		this.start = new LogInstant(logInstantAtEnd.getRecordedInstant().minus(duration), logInstantAtEnd.getLogLine()); // TODO De-hack?
+		this.start = new LogInstant(logInstantAtEnd.getMillis() - duration.getMillis(),logInstantAtEnd.getLogLine()); // TODO De-hack?
 		this.end = logInstantAtEnd;
 	}
 
