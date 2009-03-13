@@ -3,22 +3,10 @@ package glug.gui;
 import static java.lang.System.currentTimeMillis;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
-import glug.parser.LogCoordinateParser;
-import glug.parser.LogLineParser;
 import glug.parser.LogLoader;
-import glug.parser.LogParsingReader;
 import glug.parser.LogLoader.LoadReport;
-import glug.parser.logmessages.LogMessageParserRegistry;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 
 import javax.swing.SwingWorker;
 

@@ -54,7 +54,7 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 		}
 	}
 	
-	abstract void paintPopulatedComponent(Graphics2D graphics2D);
+	protected abstract void paintPopulatedComponent(Graphics2D graphics2D);
 
 	@Override
 	public Dimension getPreferredSize() {
@@ -65,7 +65,7 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 	}
 
 	
-	abstract int getPreferredHeight();
+	protected abstract int getPreferredHeight();
 	
 	public UITimeScale getUITimeScale() {
 		return uiTimeScale;

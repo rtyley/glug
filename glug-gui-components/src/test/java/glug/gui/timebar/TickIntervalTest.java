@@ -1,4 +1,4 @@
-package glug.gui;
+package glug.gui.timebar;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;

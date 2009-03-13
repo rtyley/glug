@@ -1,6 +1,6 @@
-package glug.gui;
+package glug.gui.timebar;
 
-import static glug.gui.TickInterval.tick;
+import static glug.gui.timebar.TickInterval.tick;
 import static org.hamcrest.Matchers.equalTo;
 import static org.joda.time.DateTimeFieldType.dayOfMonth;
 import static org.joda.time.DateTimeFieldType.hourOfDay;

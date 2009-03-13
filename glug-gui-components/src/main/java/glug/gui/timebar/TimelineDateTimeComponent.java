@@ -1,6 +1,6 @@
-package glug.gui;
+package glug.gui.timebar;
 
-import static glug.gui.TickInterval.tick;
+import static glug.gui.timebar.TickInterval.tick;
 import static java.awt.Color.WHITE;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
@@ -16,6 +16,7 @@ import static org.joda.time.DateTimeFieldType.minuteOfHour;
 import static org.joda.time.DateTimeFieldType.monthOfYear;
 import static org.joda.time.DateTimeFieldType.secondOfMinute;
 import static org.joda.time.format.DateTimeFormat.forPattern;
+import glug.gui.UITimeScale;
 
 import java.awt.Color;
 import java.awt.Dimension;

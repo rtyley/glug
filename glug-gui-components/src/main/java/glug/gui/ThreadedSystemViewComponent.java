@@ -58,12 +58,12 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	@Override
-	int getPreferredHeight() {
+	protected int getPreferredHeight() {
 		return threadGraphicsHeight * threadedSystem.getNumThreads();
 	}
 
 	@Override
-	void paintPopulatedComponent(Graphics2D graphics2D) {
+	protected void paintPopulatedComponent(Graphics2D graphics2D) {
 		Rectangle clipBounds = graphics2D.getClipBounds();
 		LogInterval visibleInterval = visibleIntervalFor(clipBounds);
 		List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
@@ -80,7 +80,6 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private void paint(List<ThreadModel> threads, int minThreadIndex, int maxThreadIndex, LogInterval visibleInterval, Graphics2D g) {
-		//System.out.println("Asked to paint "+threads.size()+" "+visibleInterval);
 		long startRenderTime = currentTimeMillis();
 		for (int threadIndex = minThreadIndex ; threadIndex<=maxThreadIndex;++threadIndex) {
 			ThreadModel threadModel = threads.get(threadIndex);
@@ -148,14 +147,11 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		return visibleIntervalOfLine;
 	}
 
-
-
 	private LogInstant instantFor(int graphicsX) {
 		return new LogInstant( uiTimeScale.viewToModel(graphicsX),0);
 	}
 
 	public void repaint(LogInterval logInterval) {
-		//System.out.println("***Want to repaint "+logInterval);
 		repaint(boundsFor(logInterval, 0, threadedSystem.getThreads().size()-1));
 	}
 	

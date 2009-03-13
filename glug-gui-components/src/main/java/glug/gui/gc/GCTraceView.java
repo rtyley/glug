@@ -1,10 +1,13 @@
-package glug.gui;
+package glug.gui.gc;
 
 import static java.awt.Color.BLACK;
 import static java.lang.Math.round;
 import gchisto.gcactivity.GCActivity;
 import gchisto.gcactivity.GCActivitySet;
 import gchisto.gctrace.GCTrace;
+import glug.gui.TimelineComponent;
+import glug.gui.TimelineCursor;
+import glug.gui.UITimeScale;
 import glug.model.ThreadedSystem;
 
 import java.awt.Color;
@@ -36,12 +39,12 @@ public class GCTraceView extends TimelineComponent {
 	}
 
 	@Override
-	int getPreferredHeight() {
+	protected int getPreferredHeight() {
 		return 100;
 	}
 
 	@Override
-	void paintPopulatedComponent(Graphics2D graphics2D) {
+	protected void paintPopulatedComponent(Graphics2D graphics2D) {
 		Rectangle clipBounds = graphics2D.getClipBounds();
 		Interval visibleInterval = uiTimeScale.viewToModel(clipBounds);
 		

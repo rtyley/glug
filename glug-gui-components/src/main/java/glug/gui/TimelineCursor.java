@@ -3,7 +3,6 @@ package glug.gui;
 import static java.awt.Color.BLACK;
 import glug.model.time.LogInstant;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 

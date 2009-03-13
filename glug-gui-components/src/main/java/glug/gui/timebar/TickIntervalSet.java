@@ -1,4 +1,4 @@
-package glug.gui;
+package glug.gui.timebar;
 
 import java.util.NavigableMap;
 import java.util.TreeMap;
