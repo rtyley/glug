@@ -11,7 +11,7 @@
 		<artifactId>glug</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<url>http://code.google.com/p/glug/</url>
+	<url>http://glug.googlecode.com/</url>
 	<description>A log visualizer for multi-threaded systems</description>
 	<build>
 		<plugins>
@@ -28,6 +28,7 @@
 				</executions>
 				<configuration>
 					<jnlp>
+						<outputFile>glug.jnlp</outputFile>
 						<mainClass>glug.Glug</mainClass>
 						<j2seVersion>1.6+</j2seVersion>
 					</jnlp>
