@@ -31,7 +31,7 @@ public class SwingHtmlStyleThreadReporter {
 			return null;
 		}
 		ThreadedSystem threadedSystem = thread.getThreadedSystem();
-		StringBuilder sb =new StringBuilder("<html>At " + instant.getRecordedInstant() + uptimeStringFor(threadedSystem,instant) + ":<ul>");
+		StringBuilder sb =new StringBuilder("<html>At " + instant.getRecordedInstant() + uptimeStringFor(threadedSystem,instant) + " on thread '"+thread.getName()+"':<ul>");
 		for (SignificantInterval significantInterval:significantIntervalsForInstant.values()) {
 			SignificantIntervalOccupier type = significantInterval.getType();
 			IntervalTypeDescriptor intervalTypeDescriptor = type.getIntervalTypeDescriptor();
