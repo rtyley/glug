@@ -2,7 +2,6 @@ package glug.gui;
 
 import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.time.LogInstant;
-import glug.model.time.LogInterval;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -14,8 +13,6 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import org.joda.time.Interval;
 
 
 public abstract class TimelineComponent extends JComponent implements ChangeListener {
@@ -39,12 +36,18 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 		});
 	}
 	
-	
-	protected LogInterval visibleIntervalFor(Rectangle clipBounds) {
-		Interval interval = uiTimeScale.viewToModel(clipBounds);
-		return new LogInterval(new LogInstant(interval.getStart().getMillis()-1,0),new LogInstant(interval.getEnd().getMillis()+1,Integer.MAX_VALUE));
+	protected void scrollViewToKeepCursorInSamePosition(double oldMillisecondsPerPixel) {
+		LogInstant cursorDot = getTimelineCursor().getDot();
+		if (cursorDot != null) {
+			int originalCursorHorizontalPositionInComponent = uiTimeScale.modelToView(cursorDot.getRecordedInstant(), oldMillisecondsPerPixel);
+			int updatedCursorHorizontalPositionInComponent = uiTimeScale.modelToView(cursorDot.getRecordedInstant());
+			int differenceInCursorHorizontalPositionInComponent = updatedCursorHorizontalPositionInComponent - originalCursorHorizontalPositionInComponent;
+			Rectangle visibleRectangle = getVisibleRect();
+			visibleRectangle.translate(differenceInCursorHorizontalPositionInComponent, 0);
+			scrollRectToVisible(visibleRectangle);
+		}
 	}
-	
+
 	@Override
 	public void paintComponent(Graphics g) {
 		Graphics2D graphics2D = (Graphics2D) g;
@@ -83,26 +86,6 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 			
 			getTimelineCursor().processCursorPositionChangedFor(this, cursorPositionChanged);
 		}
-	}
-
-	protected void scrollViewToKeepCursorInSamePosition(double oldMillisecondsPerPixel) {
-		LogInstant cursorDot = getTimelineCursor().getDot();
-		if (cursorDot != null) {
-			int originalCursorHorizontalPositionInComponent = graphicsXFor(cursorDot, oldMillisecondsPerPixel);
-			int updatedCursorHorizontalPositionInComponent = graphicsXFor(cursorDot);
-			int differenceInCursorHorizontalPositionInComponent = updatedCursorHorizontalPositionInComponent - originalCursorHorizontalPositionInComponent;
-			Rectangle visibleRectangle = getVisibleRect();
-			visibleRectangle.translate(differenceInCursorHorizontalPositionInComponent, 0);
-			scrollRectToVisible(visibleRectangle);
-		}
-	}
-
-	protected int graphicsXFor(LogInstant instant) {
-		return uiTimeScale.modelToView(instant.getRecordedInstant());
-	}
-
-	private int graphicsXFor(LogInstant instant, double specifiedMillisPerPixel) {
-		return uiTimeScale.modelToView(instant.getRecordedInstant(), specifiedMillisPerPixel);
 	}
 
 	public abstract boolean containsData();

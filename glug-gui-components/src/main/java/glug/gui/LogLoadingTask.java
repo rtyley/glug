@@ -19,11 +19,13 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 	private final ThreadedSystem threadedSystem;
 	private final UITimeScale uiTimeScale;
 	private final ZoomFactorSlideUpdater zoomFactorSlideUpdater;
+	private final UIThreadScale threadScale;
 	
-	public LogLoadingTask(LogLoader logLoader,ThreadedSystem threadedSystem, UITimeScale uiTimeScale, ZoomFactorSlideUpdater zoomFactorSlideUpdater) {
+	public LogLoadingTask(LogLoader logLoader,ThreadedSystem threadedSystem, UITimeScale uiTimeScale, UIThreadScale threadScale, ZoomFactorSlideUpdater zoomFactorSlideUpdater) {
 		this.logLoader = logLoader;
 		this.threadedSystem = threadedSystem;
 		this.uiTimeScale = uiTimeScale;
+		this.threadScale = threadScale;
 		this.zoomFactorSlideUpdater = zoomFactorSlideUpdater;
 	}
 
@@ -56,6 +58,7 @@ public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
 	protected void process(List<LoadReport> loadReports) {
 		System.out.println("Just loaded "+ totalLogIntervalCoveredBy(loadReports));
 		uiTimeScale.setFullInterval(threadedSystem.getIntervalCoveredByAllThreads().toJodaInterval());
+		threadScale.setNumThreads(threadedSystem.getNumThreads());
 		zoomFactorSlideUpdater.updateSliderMax();
 	}
 
