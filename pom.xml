@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gu</groupId>
 	<version>1.0-SNAPSHOT</version>
@@ -10,11 +10,18 @@
 	<scm>
 		<connection>scm:git@github.com:rtyley/glug.git</connection>
 	</scm>
-
+	<distributionManagement>
+		<downloadUrl>http://code.google.com/p/glug/downloads/list</downloadUrl>
+	</distributionManagement>
+	<organization>
+		<name>Roberto Tyley</name>
+	</organization>
+	<url>http://code.google.com/p/glug/</url>
 	<modules>
-		<module>glug-model</module>
-		<module>glug-gui-components</module>
+		<module>glug-executable</module>
 		<module>glug-gui</module>
+		<module>glug-gui-components</module>
+		<module>glug-model</module>
 		<module>gchisto</module>
 	</modules>
 	<dependencies>
@@ -46,6 +53,18 @@
 					<target>1.6</target>
 					<source>1.6</source>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
