@@ -34,20 +34,8 @@
 					<pack200>true</pack200>
 					<gzip>true</gzip>
 
-					<!-- SIGNING -->
-					<!--
-						defining this will automatically sign the jar and its
-						dependencies, if necessary
-					-->
 					<sign>
-						<!-- <keystore>fillme</keystore> 
-						<keypass>fillme</keypass>-->
-						<!--
-							we need to override passwords easily from the command line.
-							${keypass}
-						-->
-						<storepass>rabbit123</storepass> <!-- ${storepass} -->
-						<!--storetype>fillme</storetype-->
+						<storepass>${storepass}</storepass>
 						<alias>roberto</alias>
 
 						<validity>730</validity>
