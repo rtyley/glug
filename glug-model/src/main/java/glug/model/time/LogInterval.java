@@ -35,14 +35,18 @@ public class LogInterval implements Comparable<LogInterval> {
         return !otherLogInterval.end.isAfter(start);
 	}
 
+	public boolean isAfter(LogInstant otherInstant) {
+		return start.isAfter(otherInstant);
+	}
+
     /**
      * Is this time interval before the specified millisecond instant.
      * <p>
      * Intervals are inclusive of the start instant and exclusive of the end.
      * 
      */
-	public boolean isBefore(LogInstant instant) {
-		return !end.isAfter(instant);
+	public boolean isBefore(LogInstant otherInstant) {
+		return !end.isAfter(otherInstant);
 	}
 	
 	public boolean isBefore(LogInterval otherInterval) {
