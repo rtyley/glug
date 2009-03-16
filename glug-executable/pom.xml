@@ -11,7 +11,8 @@
 		<artifactId>glug</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-
+	<url>http://glug.googlecode.com/</url>
+	<description>A log visualizer for multi-threaded systems</description>
 	<build>
 		<plugins>
 			<plugin>
@@ -37,6 +38,52 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo.webstart</groupId>
+				<artifactId>webstart-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>deploy</phase>
+						<goals>
+							<goal>jnlp</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<jnlp>
+						<outputFile>glug.jnlp</outputFile>
+						<mainClass>glug.Glug</mainClass>
+						<j2seVersion>1.6+</j2seVersion>
+					</jnlp>
+					<excludeTransitive>true</excludeTransitive>
+					<pack200>true</pack200>
+					<gzip>true</gzip>
+
+					<sign>
+						<storepass>${storepass}</storepass>
+						<alias>roberto</alias>
+
+						<validity>730</validity>
+
+						<!-- only required for generating the keystore -->
+						<dnameCn>Roberto Tyley</dnameCn>
+						<dnameOu>Glug Development</dnameOu>
+						<dnameO>Glug Project</dnameO>
+						<dnameL>London</dnameL>
+						<dnameC>United Kingdom</dnameC>
+
+						<verify>true</verify> <!-- verify that the signing operation succeeded -->
+
+						<!-- KEYSTORE MANAGEMENT 
+						<keystoreConfig>
+							<delete>true</delete>
+							<gen>true</gen>
+						</keystoreConfig>
+						-->
+					</sign>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 	<dependencies>
