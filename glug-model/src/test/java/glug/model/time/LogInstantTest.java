@@ -22,4 +22,16 @@ public class LogInstantTest {
 		assertThat(laterLogInstant.isBefore(earlyLogInstant),is(false));
 	}
 	
+	@Test
+	public void shouldCorrectlyDetermineEquality() {
+		Instant instant = new Instant(1234L);
+		LogInstant logInstant = new LogInstant(instant, 344);
+		LogInstant sameLogInstant = new LogInstant(instant, 344);
+		LogInstant differentLogInstant = new LogInstant(instant, 345);
+		
+		assertThat(logInstant.equals(sameLogInstant), is(true));
+		assertThat(logInstant.equals(differentLogInstant), is(false));
+		assertThat(differentLogInstant.equals(logInstant), is(false));
+	}
+	
 }
