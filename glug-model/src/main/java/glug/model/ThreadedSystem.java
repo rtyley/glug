@@ -1,6 +1,8 @@
 package glug.model;
 
 import glug.model.time.LogInterval;
+import glug.parser.ThreadId;
+import glug.parser.ThreadIdCache;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -8,9 +10,10 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 public class ThreadedSystem {
 
+	private ThreadIdCache threadIdFactory = new ThreadIdCache();
 	private Uptime uptime = new Uptime();
 
-	ConcurrentNavigableMap<String, ThreadModel> map = new ConcurrentSkipListMap<String, ThreadModel>();
+	ConcurrentNavigableMap<ThreadId, ThreadModel> map = new ConcurrentSkipListMap<ThreadId, ThreadModel>();
 
 	public void add(String threadName, SignificantInterval significantInterval) {
 		getOrCreateThread(threadName).add(significantInterval);
@@ -36,10 +39,11 @@ public class ThreadedSystem {
 	}
 
 	public ThreadModel getOrCreateThread(String threadName) {
-		if (!map.containsKey(threadName)) {
-			map.put(threadName, new ThreadModel(threadName, this));
+		ThreadId threadId = threadIdFactory.parseThreadName(threadName);
+		if (!map.containsKey(threadId)) {
+			map.put(threadId, new ThreadModel(threadName, this));
 		}
-		return map.get(threadName);
+		return map.get(threadId);
 	}
 
 	public Uptime uptime() {

@@ -69,7 +69,24 @@ public class ThreadId implements Comparable<ThreadId> {
 		return threadName;
 	}
 
-	public List<Comparable<?>> getParts() {
+	@Override
+	public int hashCode() {
+		return threadName.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ThreadId other = (ThreadId) obj;
+		return threadName.equals(other.threadName);
+	}
+
+	List<Comparable<?>> getParts() {
 		return parts;
 	}
 	
