@@ -35,13 +35,21 @@ public class SignificantInstants {
 	}
 	
 	public void add(SignificantInterval significantInterval) {
+		checkCanAdd(significantInterval);
+		addWithoutChecking(significantInterval);
+	}
+
+	private void checkCanAdd(SignificantInterval significantInterval) {
 		LogInterval interval = significantInterval.getLogInterval();
 		if (significantInstants.containsKey(interval.getStart()) ||
-			significantInstants.containsKey(interval.getEnd()) ||
-				containsSignificantInstantsDuring(interval)) {
+			significantInstants.containsKey(interval.getEnd())) {
 			throw new IllegalArgumentException();
 		}
-		addWithoutChecking(significantInterval);
+		ConcurrentNavigableMap<LogInstant, SignificantInterval> eventsDuringInterval = eventsDuring(interval);
+		if (!eventsDuringInterval.isEmpty()) {
+			TreeSet<SignificantInterval> currentTenants = new TreeSet<SignificantInterval>(eventsDuringInterval.values());
+			throw new IllegalArgumentException("Can't add "+interval+" to interval already occupied by "+currentTenants);
+		}
 	}
 
 	private void addWithoutChecking(SignificantInterval significantInterval) {
@@ -71,7 +79,11 @@ public class SignificantInstants {
 	}
 
 	private boolean containsSignificantInstantsDuring(LogInterval interval) {
-		return !significantInstants.subMap(interval.getStart(),interval.getEnd()).isEmpty();
+		return !eventsDuring(interval).isEmpty();
+	}
+
+	private ConcurrentNavigableMap<LogInstant, SignificantInterval> eventsDuring(LogInterval interval) {
+		return significantInstants.subMap(interval.getStart(),interval.getEnd());
 	}
 	
 	private SortedMap<LogInstant, SignificantInterval> subMapFor(LogInterval interval) {
