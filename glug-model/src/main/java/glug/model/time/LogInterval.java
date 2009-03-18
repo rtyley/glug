@@ -1,5 +1,7 @@
 package glug.model.time;
 
+import static java.lang.Math.min;
+
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
@@ -90,7 +92,17 @@ public class LogInterval implements Comparable<LogInterval> {
 
 	@Override
 	public String toString() {
-		return start+"/"+end;
+		String diffString = diff(start.getRecordedInstant().toString(),end.getRecordedInstant().toString());
+		return diffString+":lines="+start.getLogLine()+"-"+end.getLogLine();
+	}
+
+	private String diff(String s1, String s2) {
+		int maxIndex = min(s1.length(), s2.length());
+		int index = 0;
+		for (; index < maxIndex && s1.charAt(index) == s2.charAt(index); ++index) {
+			
+		}
+		return s1.substring(0, index)+"["+s1.substring(index)+"|"+s2.substring(index)+"]";
 	}
 
 	@Override

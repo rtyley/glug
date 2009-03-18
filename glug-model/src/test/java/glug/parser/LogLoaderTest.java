@@ -42,8 +42,9 @@ public class LogLoaderTest {
 		assertThat(loadReport.getUpdatedInterval(), equalTo(new LogInterval(new LogInstant(1000,1),new LogInstant(4000,4))));
 	}
 	
+	@Test
 	public void shouldLoadExampleFile() throws Exception {
-		File file = new File("/home/roberto/guardian/incident.20090225/r2frontend.respub01.log.gz");
+		File file = new File("/home/roberto/development/glug-sample-logs/726_01.log.gz");
 		LineNumberReader reader = new LineNumberReader(new InputStreamReader( new GZIPInputStream(new FileInputStream(file))));
 		
 		ThreadedSystem threadedSystem = new ThreadedSystem();

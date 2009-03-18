@@ -17,22 +17,20 @@ public class ThreadedSystemTest {
 	public void setUp() {
 		threadedSystem = new ThreadedSystem();
 	}
-	
+
 	@Test
 	public void shouldReturnNullWhenReportingIntervalCoveredByEmptyThreadsRatherThanThrowNullPointer() {
 		threadedSystem.getOrCreateThread("Thread without sigint");
-		
+
 		assertThat(threadedSystem.getIntervalCoveredByAllThreads(), nullValue());
 	}
-	
+
 	@Test
-	public void shouldOrderThreadsByIncreasingNumericId() throws Exception {
-		threadedSystem.getOrCreateThread("resin-tcp-connection-*:8080-141");
-		threadedSystem.getOrCreateThread("resin-tcp-connection-*:8080-99");
-		
+	public void shouldUnderstandThatThreadsAreDifferentDammit() {
+		threadedSystem.getOrCreateThread("Timeout guard");
+		threadedSystem.getOrCreateThread("timerFactory");
 		List<ThreadModel> threadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
-		
-		assertThat(threadList.get(0).getName(), equalTo("resin-tcp-connection-*:8080-99"));
-		assertThat(threadList.get(1).getName(), equalTo("resin-tcp-connection-*:8080-141"));
+
+		assertThat(threadList.size(), equalTo(2));
 	}
 }
