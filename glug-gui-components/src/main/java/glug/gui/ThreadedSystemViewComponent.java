@@ -3,6 +3,7 @@ package glug.gui;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.sort;
 import glug.gui.mousecursor.FineCrosshairMouseCursorFactory;
 import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.ThreadModel;
@@ -15,6 +16,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.ToolTipManager;
@@ -34,6 +36,13 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	private final SwingHtmlStyleThreadReporter htmlStyleReporter = new SwingHtmlStyleThreadReporter();
 	
 	private final ThreadPainter threadPainter;
+	
+	private static final Comparator<ThreadModel> niceThreadOrderer = new Comparator<ThreadModel>() {
+		@Override
+		public int compare(ThreadModel t1, ThreadModel t2) {
+			return NiceOrderBasedOnNumericThreadIdComparator.INSTANCE.compare(t1.getThreadId(), t2.getThreadId());
+		}
+	};
 	
 	public ThreadedSystemViewComponent(UITimeScale timeScale, UIThreadScale threadScale, ThreadedSystem threadedSystem, TimelineCursor timelineCursor) {
 		super(timeScale, timelineCursor);
@@ -72,9 +81,15 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	protected void paintPopulatedComponent(Graphics2D graphics2D) {
 		Rectangle clipBounds = graphics2D.getClipBounds();
 		LogInterval visibleInterval = visibleIntervalFor(clipBounds);
-		List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
+		List<ThreadModel> fullThreadList = fullThreadList();
 		paint(fullThreadList, minThreadIndexFor(clipBounds, fullThreadList), maxThreadIndexFor(clipBounds, fullThreadList), visibleInterval, graphics2D);
 		getTimelineCursor().paintOn(this, graphics2D);
+	}
+
+	private List<ThreadModel> fullThreadList() {
+		List<ThreadModel> fullThreadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
+		sort(fullThreadList, niceThreadOrderer);
+		return fullThreadList;
 	}
 	
 	protected LogInterval visibleIntervalFor(Rectangle clipBounds) {
@@ -138,8 +153,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 	}
 
 	private ThreadModel threadFor(Point point) {
-		ArrayList<ThreadModel> threads = new ArrayList<ThreadModel>(
-				threadedSystem.getThreads());
+		List<ThreadModel> threads = fullThreadList();
 		int threadIndex = threadScale.viewToModelThreadIndex(point);
 		if (threadIndex >= 0 && threadIndex < threads.size()) {
 			return threads.get(threadIndex);

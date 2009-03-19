@@ -2,6 +2,7 @@ package glug.model;
 
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
+import glug.parser.ThreadId;
 import glug.parser.logmessages.IntervalTypeDescriptor;
 
 import java.util.Collection;
@@ -16,12 +17,18 @@ public class ThreadModel {
 	private Map<IntervalTypeDescriptor, SignificantInstants> map =
 		new HashMap<IntervalTypeDescriptor, SignificantInstants>();
 	
-	private final String name;
 	private final ThreadedSystem threadedSystem;
+
+	private final ThreadId threadId;
 	
 	public ThreadModel(String name, ThreadedSystem threadedSystem) {
-		this.name = name;
+		this.threadId = new ThreadId(name);
 		this.threadedSystem = threadedSystem;
+	}
+	
+
+	public ThreadId getThreadId() {
+		return threadId;
 	}
 	
 	public void add(SignificantInterval significantInterval) {
@@ -50,7 +57,7 @@ public class ThreadModel {
 	}
 
 	public String getName() {
-		return name;
+		return threadId.getName();
 	}
 
 	public SortedMap<IntervalTypeDescriptor, SignificantInterval> getSignificantIntervalsFor(LogInstant instant) {
@@ -73,4 +80,5 @@ public class ThreadModel {
 	public String toString() {
 		return getClass().getSimpleName()+"["+getInterval()+"]";
 	}
+
 }
