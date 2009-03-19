@@ -6,22 +6,22 @@
 	<name>Glug GUI</name>
 	<description>A log visualizer for multi-threaded systems</description>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 	<parent>
 		<groupId>com.gu</groupId>
 		<artifactId>glug</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>com.gu</groupId>
 			<artifactId>gchisto</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gu</groupId>
 			<artifactId>glug-gui-components</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
