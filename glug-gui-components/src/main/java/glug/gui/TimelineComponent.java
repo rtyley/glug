@@ -2,11 +2,13 @@ package glug.gui;
 
 import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.time.LogInstant;
+import glug.model.time.LogInterval;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -94,5 +96,11 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 	public Rectangle getViewFor(LogInstant logInstant) {
 		return new Rectangle(uiTimeScale.modelToView(logInstant.getRecordedInstant()), 0, 0,
 				getHeight());
+	}
+
+	public Rectangle getViewFor(LogInterval logInterval) {
+		int startX = uiTimeScale.modelToView(logInterval.getStart().getRecordedInstant());
+		int endX = uiTimeScale.modelToView(logInterval.getEnd().getRecordedInstant());
+		return new Rectangle(startX, 0, endX-startX, getHeight());
 	}
 }

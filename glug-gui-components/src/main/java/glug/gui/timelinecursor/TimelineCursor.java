@@ -3,10 +3,12 @@ package glug.gui.timelinecursor;
 import static java.awt.Color.BLACK;
 import glug.gui.TimelineComponent;
 import glug.model.time.LogInstant;
+import glug.model.time.LogInterval;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
@@ -60,10 +62,10 @@ public class TimelineCursor {
 	 * implicitly sets the selection range to zero.
 	 */
 	public void setDot(LogInstant newDot) {
-		mark = newDot;
 		if (!newDot.equals(dot)) {
 			changeCaretPosition(newDot);
 		}
+		mark = newDot;
 	}
 	
 	/**
@@ -77,7 +79,7 @@ public class TimelineCursor {
 
 	private void changeCaretPosition(LogInstant newDot) {
 		// notify listeners that the cursor moved - note they are responsible for invalidating the old areas of the component, etc 
-		CursorPositionChanged cursorPositionChanged = new CursorPositionChanged(this.dot);
+		CursorPositionChanged cursorPositionChanged = new CursorPositionChanged(this.dot, getSelectedInterval());
 		//System.out.println("Cursor move "+this.dot + " "+ newDot);
 		this.dot = newDot;
 		fireStateChanged(cursorPositionChanged);
@@ -100,7 +102,31 @@ public class TimelineCursor {
 		return bounds;
 	}
 	
-	public void paintOn(TimelineComponent timelineComponent, Graphics2D g) {
+	private Rectangle getBoundsForHighlightedInterval(
+			LogInterval logInterval,
+			TimelineComponent timelineComponent) {
+		Rectangle bounds = timelineComponent.getViewFor(logInterval);
+		bounds.grow(1, 1);
+		return bounds;
+	}
+
+	
+	public void paintHighlightOn(TimelineComponent timelineComponent, Graphics2D g) {
+		LogInterval selectedInterval = getSelectedInterval();
+		if (selectedInterval != null) {
+			g.setColor(UIManager.getColor("TextArea.selectionBackground"));
+			g.fill(timelineComponent.getViewFor(selectedInterval));
+		}
+	}
+	
+	private LogInterval getSelectedInterval() {
+		if (dot==null || mark==null || dot.equals(mark)) {
+			return null;
+		}
+		return dot.isBefore(mark)?new LogInterval(dot,mark):new LogInterval(mark,dot);
+	}
+
+	public void paintCursorOn(TimelineComponent timelineComponent, Graphics2D g) {
 		if (dot != null) {
 			g.setColor(BLACK);
 			g.draw(timelineComponent.getViewFor(dot));
@@ -117,22 +143,35 @@ public class TimelineCursor {
 
 	public class CursorPositionChanged {
 		private final LogInstant oldPosition;
+		private final LogInterval oldSelectedInterval;
 
-		public CursorPositionChanged(LogInstant oldPosition) {
+		public CursorPositionChanged(LogInstant oldPosition, LogInterval oldSelectedInterval) {
 			this.oldPosition = oldPosition;
+			this.oldSelectedInterval = oldSelectedInterval;
 		}
 		
 		public LogInstant getOldPosition() {
 			return oldPosition;
 		}
+		
+		public LogInterval getOldSelectedInterval() {
+			return oldSelectedInterval;
+		}
 	}
 
 	public void processCursorPositionChangedFor(TimelineComponent timelineComponent, CursorPositionChanged cursorPositionChanged) {
 		LogInstant oldPosition = cursorPositionChanged.getOldPosition();
+		System.out.println("Selected:"+getSelectedInterval());
 		if (oldPosition!=null) {
 			timelineComponent.paintImmediately(getBoundsForCursorAt(oldPosition, timelineComponent));
 		}
+		LogInterval oldSelectedInterval = cursorPositionChanged.getOldSelectedInterval();
+		LogInterval intervalContainingDifferences = LogInterval.intervalContainingDeltaFor(oldSelectedInterval, getSelectedInterval());
+		System.out.println("intervalContainingDifferences="+intervalContainingDifferences);
+		
+		if (intervalContainingDifferences!=null) {
+			timelineComponent.repaint(getBoundsForHighlightedInterval(intervalContainingDifferences, timelineComponent));
+		}
 		timelineComponent.repaint(getBoundsForCursorAt(getDot(), timelineComponent));
 	}
-
 }

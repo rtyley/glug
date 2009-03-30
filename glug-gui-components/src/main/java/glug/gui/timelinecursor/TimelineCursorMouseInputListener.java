@@ -20,8 +20,13 @@ public class TimelineCursorMouseInputListener extends MouseInputAdapter {
 		this.cursor = timelineComponent.getTimelineCursor();
 	}
 
+//	@Override
+//	public void mousePressed(MouseEvent e) {
+//		
+//	}
+	
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
 		if (willAcceptEvent(e)) {
 			if (shiftPressedFor(e)) {
 				moveCursorToLocationOf(e);
@@ -42,10 +47,12 @@ public class TimelineCursorMouseInputListener extends MouseInputAdapter {
 		return isLeftMouseButton(e) && timelineComponent.containsData();
 	}
 	private void setCursorToLocationOf(MouseEvent e) {
+		System.out.println("Set cursor");
 		cursor.setDot(logInstantFor(e));
 	}
 	
 	private void moveCursorToLocationOf(MouseEvent e) {
+		System.out.println("Moved cursor");
 		cursor.moveDot(logInstantFor(e));
 	}
 

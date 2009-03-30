@@ -82,8 +82,9 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		Rectangle clipBounds = graphics2D.getClipBounds();
 		LogInterval visibleInterval = visibleIntervalFor(clipBounds);
 		List<ThreadModel> fullThreadList = fullThreadList();
+		getTimelineCursor().paintHighlightOn(this, graphics2D);
 		paint(fullThreadList, minThreadIndexFor(clipBounds, fullThreadList), maxThreadIndexFor(clipBounds, fullThreadList), visibleInterval, graphics2D);
-		getTimelineCursor().paintOn(this, graphics2D);
+		getTimelineCursor().paintCursorOn(this, graphics2D);
 	}
 
 	private List<ThreadModel> fullThreadList() {

@@ -9,9 +9,14 @@ public class LogInterval implements Comparable<LogInterval> {
 
 	private final LogInstant start,end;
 
-	public LogInterval(LogInstant start, LogInstant end) {
-		this.start = start;
-		this.end = end;
+	public LogInterval(LogInstant a, LogInstant b) {
+		if (a.isBefore(b)) {
+			this.start = a;
+			this.end = b;
+		} else {
+			this.start = b;
+			this.end = a;
+		}
 	}
 
 	public LogInterval(Duration duration, LogInstant logInstantAtEnd) {
@@ -166,6 +171,19 @@ public class LogInterval implements Comparable<LogInterval> {
 
 	private boolean overlaps(LogInterval otherLogInterval) {
 		return start.isBefore(otherLogInterval.end) && otherLogInterval.start.isBefore(end);
+	}
+
+	public static LogInterval intervalContainingDeltaFor(LogInterval intervalA, LogInterval intervalB) {
+		if (intervalA==null || intervalB==null) {
+			return intervalA!=null?intervalA:intervalB;
+		}
+		if (intervalA.start.equals(intervalB.start)) {
+			return new LogInterval(intervalA.end,intervalB.end);
+		}
+		if (intervalA.end.equals(intervalB.end)) {
+			return new LogInterval(intervalA.start,intervalB.start);
+		}
+		return intervalA.union(intervalB);
 	}
 	
 }
