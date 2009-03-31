@@ -49,6 +49,10 @@ public class TimelineCursor {
 
 	}
 
+	State getState() {
+		return new State(dot,mark);
+	}
+	
 	public LogInstant getDot() {
 		return dot;
 	}
@@ -62,26 +66,30 @@ public class TimelineCursor {
 	 * implicitly sets the selection range to zero.
 	 */
 	public void setDot(LogInstant newDot) {
-		if (!newDot.equals(dot)) {
-			changeCaretPosition(newDot);
+		State oldState = getState();
+		dot = mark = newDot;
+		State newState = getState();
+		if (newState.differsWith(oldState)) {
+			changeCaretPosition(oldState,newState);
 		}
-		mark = newDot;
 	}
-	
+
 	/**
 	 * Moves the cursor position to the specified instant.
 	 */
 	public void moveDot(LogInstant newDot) {
-		if (!newDot.equals(dot)) {
-			changeCaretPosition(newDot);
+		State oldState = getState();
+		dot = newDot;
+		State newState = getState();
+		if (newState.differsWith(oldState)) {
+			changeCaretPosition(oldState,newState);
 		}
 	}
 
-	private void changeCaretPosition(LogInstant newDot) {
+	private void changeCaretPosition(State oldState, State newState) {
 		// notify listeners that the cursor moved - note they are responsible for invalidating the old areas of the component, etc 
-		CursorPositionChanged cursorPositionChanged = new CursorPositionChanged(this.dot, getSelectedInterval());
+		CursorPositionChanged cursorPositionChanged = new CursorPositionChanged(oldState, newState);
 		//System.out.println("Cursor move "+this.dot + " "+ newDot);
-		this.dot = newDot;
 		fireStateChanged(cursorPositionChanged);
 	}
 
@@ -119,12 +127,7 @@ public class TimelineCursor {
 		}
 	}
 	
-	private LogInterval getSelectedInterval() {
-		if (dot==null || mark==null || dot.equals(mark)) {
-			return null;
-		}
-		return dot.isBefore(mark)?new LogInterval(dot,mark):new LogInterval(mark,dot);
-	}
+
 
 	public void paintCursorOn(TimelineComponent timelineComponent, Graphics2D g) {
 		if (dot != null) {
@@ -141,37 +144,98 @@ public class TimelineCursor {
 		listenerList.remove(ChangeListener.class, l);
 	}
 
-	public class CursorPositionChanged {
-		private final LogInstant oldPosition;
-		private final LogInterval oldSelectedInterval;
+	public static class CursorPositionChanged {
+		private final State oldState, newState;
 
-		public CursorPositionChanged(LogInstant oldPosition, LogInterval oldSelectedInterval) {
-			this.oldPosition = oldPosition;
-			this.oldSelectedInterval = oldSelectedInterval;
+		public CursorPositionChanged(State oldState, State newState) {
+			this.oldState = oldState;
+			this.newState = newState;
 		}
-		
-		public LogInstant getOldPosition() {
-			return oldPosition;
+
+		public State getOldState() {
+			return oldState;
 		}
-		
-		public LogInterval getOldSelectedInterval() {
-			return oldSelectedInterval;
+
+		public State getNewState() {
+			return newState;
 		}
 	}
 
 	public void processCursorPositionChangedFor(TimelineComponent timelineComponent, CursorPositionChanged cursorPositionChanged) {
-		LogInstant oldPosition = cursorPositionChanged.getOldPosition();
-		System.out.println("Selected:"+getSelectedInterval());
-		if (oldPosition!=null) {
-			timelineComponent.paintImmediately(getBoundsForCursorAt(oldPosition, timelineComponent));
+		State oldState = cursorPositionChanged.getOldState();
+		if (oldState.getDot()!=null) {
+			timelineComponent.paintImmediately(getBoundsForCursorAt(oldState.getDot(), timelineComponent));
 		}
-		LogInterval oldSelectedInterval = cursorPositionChanged.getOldSelectedInterval();
-		LogInterval intervalContainingDifferences = LogInterval.intervalContainingDeltaFor(oldSelectedInterval, getSelectedInterval());
+		LogInterval currentlySelectedInterval = getSelectedInterval();
+		LogInterval oldSelectedInterval = oldState.getSelectedInterval();
+		System.out.println("      oldSelectedInterval:"+oldState.getSelectedInterval());
+		System.out.println("currentlySelectedInterval:"+currentlySelectedInterval);
+		LogInterval intervalContainingDifferences = LogInterval.intervalContainingDeltaFor(oldSelectedInterval, currentlySelectedInterval);
 		System.out.println("intervalContainingDifferences="+intervalContainingDifferences);
 		
 		if (intervalContainingDifferences!=null) {
 			timelineComponent.repaint(getBoundsForHighlightedInterval(intervalContainingDifferences, timelineComponent));
 		}
 		timelineComponent.repaint(getBoundsForCursorAt(getDot(), timelineComponent));
+	}
+	
+	LogInterval getSelectedInterval() {
+		return getState().getSelectedInterval();
+	}
+
+	public static class State {
+		private LogInstant dot, mark;
+		
+		public State(LogInstant dot, LogInstant mark) {
+			this.dot = dot;
+			this.mark = mark;
+		}
+
+		public boolean differsWith(State otherState) {
+			return !this.equals(otherState);
+		}
+
+		public LogInstant getDot() {
+			return dot;
+		}
+		
+		LogInterval getSelectedInterval() {
+			if (dot==null || mark==null || dot.equals(mark)) {
+				return null;
+			}
+			return dot.isBefore(mark)?new LogInterval(dot,mark):new LogInterval(mark,dot);
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((dot == null) ? 0 : dot.hashCode());
+			result = prime * result + ((mark == null) ? 0 : mark.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			State other = (State) obj;
+			if (dot == null) {
+				if (other.dot != null)
+					return false;
+			} else if (!dot.equals(other.dot))
+				return false;
+			if (mark == null) {
+				if (other.mark != null)
+					return false;
+			} else if (!mark.equals(other.mark))
+				return false;
+			return true;
+		}
+		
 	}
 }
