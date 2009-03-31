@@ -17,7 +17,7 @@ import org.junit.Test;
 public class TimelineCursorTest {
 
 	@Test
-	public void shouldSayArrrrgh() {
+	public void shouldFireAChangeEventThatContainsCorrectOldAndNewState() {
 		TimelineCursor cursor = new TimelineCursor();
 		LogInterval intervalSelected = new LogInterval(standardSeconds(5),new LogInstant(8000));
 		cursor.setDot(intervalSelected.getStart());

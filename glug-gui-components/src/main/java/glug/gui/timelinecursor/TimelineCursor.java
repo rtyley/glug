@@ -68,10 +68,7 @@ public class TimelineCursor {
 	public void setDot(LogInstant newDot) {
 		State oldState = getState();
 		dot = mark = newDot;
-		State newState = getState();
-		if (newState.differsWith(oldState)) {
-			changeCaretPosition(oldState,newState);
-		}
+		fireEventIfStateChangedFrom(oldState);
 	}
 
 	/**
@@ -80,17 +77,17 @@ public class TimelineCursor {
 	public void moveDot(LogInstant newDot) {
 		State oldState = getState();
 		dot = newDot;
+		fireEventIfStateChangedFrom(oldState);
+	}
+	
+	private void fireEventIfStateChangedFrom(State oldState) {
 		State newState = getState();
 		if (newState.differsWith(oldState)) {
-			changeCaretPosition(oldState,newState);
+			// notify listeners that the cursor moved - note they are responsible for invalidating the old areas of the component, etc 
+			CursorPositionChanged cursorPositionChanged = new CursorPositionChanged(oldState, newState);
+			//System.out.println("Cursor move "+this.dot + " "+ newDot);
+			fireStateChanged(cursorPositionChanged);
 		}
-	}
-
-	private void changeCaretPosition(State oldState, State newState) {
-		// notify listeners that the cursor moved - note they are responsible for invalidating the old areas of the component, etc 
-		CursorPositionChanged cursorPositionChanged = new CursorPositionChanged(oldState, newState);
-		//System.out.println("Cursor move "+this.dot + " "+ newDot);
-		fireStateChanged(cursorPositionChanged);
 	}
 
 	protected void fireStateChanged(CursorPositionChanged cursorPositionChanged) {
