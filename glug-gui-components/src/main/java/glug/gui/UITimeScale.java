@@ -2,6 +2,8 @@ package glug.gui;
 
 import static java.lang.Math.round;
 
+import glug.model.time.LogInterval;
+
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -81,6 +83,10 @@ public class UITimeScale {
 
 	public double getMillisecondsPerPixel() {
 		return millisecondsPerPixel;
+	}
+
+	public void setMillisecondsPerPixelToFit(LogInterval interval, int pixels) {
+		setMillisecondsPerPixel(((double) interval.toDurationMillis()) / pixels);
 	}
 
 

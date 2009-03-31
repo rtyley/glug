@@ -22,6 +22,7 @@ import glug.gui.model.LogarithmicBoundedRange;
 import glug.gui.timebar.TimelineDateTimeComponent;
 import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.ThreadedSystem;
+import glug.model.time.LogInterval;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
 import glug.parser.logmessages.LogMessageParserRegistry;
@@ -207,7 +208,11 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
-    	uiTimeScale.setMillisecondsPerPixel(uiTimeScale.getMillisecondsPerPixel()/2);
+    	
+    	LogInterval selectedInterval = timelineCursor.getSelectedInterval();
+    	if (selectedInterval!=null) {
+    		uiTimeScale.setMillisecondsPerPixelToFit(selectedInterval,timelineScrollPane.getViewport().getExtentSize().width);
+    	}
     }//GEN-LAST:event_zoomToSelectionMenuItemActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed

@@ -176,7 +176,7 @@ public class TimelineCursor {
 		timelineComponent.repaint(getBoundsForCursorAt(getDot(), timelineComponent));
 	}
 	
-	LogInterval getSelectedInterval() {
+	public LogInterval getSelectedInterval() {
 		return getState().getSelectedInterval();
 	}
 
