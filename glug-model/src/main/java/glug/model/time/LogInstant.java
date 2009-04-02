@@ -1,6 +1,5 @@
 package glug.model.time;
 
-import org.joda.time.Duration;
 import org.joda.time.Instant;
 
 public class LogInstant implements Comparable<LogInstant> {

@@ -107,7 +107,7 @@ public class TimelineCursor {
 		return bounds;
 	}
 	
-	private Rectangle getBoundsForHighlightedInterval(
+	public Rectangle getBoundsForHighlightedInterval(
 			LogInterval logInterval,
 			TimelineComponent timelineComponent) {
 		Rectangle bounds = timelineComponent.getViewFor(logInterval);
