@@ -52,6 +52,8 @@ public class MainFrame extends javax.swing.JFrame {
 
 	final ThreadedSystemViewComponent threadedSystemViewPanel;
 
+	private ViewPreservingZoomer viewPreservingZoomer;
+
 	/** Creates new form GlugMainJFrame */
 	@SuppressWarnings("serial")
 	public MainFrame() {
@@ -79,12 +81,12 @@ public class MainFrame extends javax.swing.JFrame {
 
 		timelineScrollPane.validate();
 
-		logarithmicBoundedRange = new LogarithmicBoundedRange(
-				timeMagnificationSlider.getModel());
-		zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(uiTimeScale,
-				logarithmicBoundedRange, timelineScrollPane.getViewport());
+		logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
+		viewPreservingZoomer = new ViewPreservingZoomer(timelineScrollPane.getViewport(), uiTimeScale, logarithmicBoundedRange, timelineCursor);
+		zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(uiTimeScale,logarithmicBoundedRange, timelineScrollPane.getViewport());
 
 		uiTimeScale.setMillisecondsPerPixel(1000);
+		
 
 		setTransferHandler(new FileImportDragAndDropTransferHandler() {
 			@Override
@@ -238,49 +240,20 @@ public class MainFrame extends javax.swing.JFrame {
 			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
 		LogInterval selectedInterval = timelineCursor.getSelectedInterval();
 		if (selectedInterval != null) {
-			uiTimeScale.setMillisecondsPerPixelToFit(selectedInterval,
-					timelineScrollPane.getViewport().getExtentSize().width);
-			timelineScrollPane.getViewport().scrollRectToVisible(timelineCursor.getBoundsForHighlightedInterval(selectedInterval, (TimelineComponent) timelineScrollPane.getViewport().getView()));
+			JViewport viewport = timelineScrollPane.getViewport();
+			uiTimeScale.setMillisecondsPerPixelToFit(selectedInterval,	viewport.getExtentSize().width);
+			TimelineComponent timelineComponent = (TimelineComponent) viewport.getView();
+			viewport.scrollRectToVisible(timelineComponent.getViewFor(selectedInterval));
 		}
-
 	}// GEN-LAST:event_zoomToSelectionMenuItemActionPerformed
 
 	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
-		uiTimeScale.setMillisecondsPerPixel(uiTimeScale
-				.getMillisecondsPerPixel() / 2);
+		uiTimeScale.setMillisecondsPerPixel(uiTimeScale.getMillisecondsPerPixel() / 2);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
 	private void timeMagnificationSliderStateChanged(
 			javax.swing.event.ChangeEvent evt) {// GEN-FIRST:event_timeMagnificationSliderStateChanged
-		JViewport viewport = timelineScrollPane.getViewport();
-		Instant instantToZoomAround = null;
-		Interval visibleInterval = uiTimeScale.viewToModel(viewport
-				.getViewRect());
-		LogInstant dot = timelineCursor.getDot();
-		if (dot != null && visibleInterval.contains(dot.getRecordedInstant())) {
-			instantToZoomAround = dot.getRecordedInstant();
-		}
-		if (instantToZoomAround == null) {
-			instantToZoomAround = new Instant(visibleInterval.getStartMillis()
-					+ visibleInterval.toDurationMillis() / 2);
-		}
-		int viewPositionToZoomAroundPreZoom = uiTimeScale
-				.modelToView(instantToZoomAround);
-		// int viewportCoordToZoomAround = viewport.getLocation().x;
-		uiTimeScale.setMillisecondsPerPixel(logarithmicBoundedRange
-				.getCurrentMillisecondsPerPixel());
-		// int updatedCursorHorizontalPositionInComponent =
-		// uiTimeScale.modelToView(cursorDot.getRecordedInstant());
-		int viewPositionToZoomAroundPostZoom = uiTimeScale
-				.modelToView(instantToZoomAround);
-
-		int differenceInCursorHorizontalPositionInComponent = viewPositionToZoomAroundPostZoom
-				- viewPositionToZoomAroundPreZoom;
-		Rectangle visibleRectangle = viewport.getVisibleRect();
-		visibleRectangle.translate(
-				differenceInCursorHorizontalPositionInComponent, 0);
-		viewport.scrollRectToVisible(visibleRectangle);
-
+		viewPreservingZoomer.zoomPreservingViewLocation();
 	}// GEN-LAST:event_timeMagnificationSliderStateChanged
 
 	private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_openFileMenuItemActionPerformed
