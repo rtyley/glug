@@ -4,6 +4,7 @@ import glug.gui.model.LogarithmicBoundedRange;
 import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.time.LogInstant;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import javax.swing.JViewport;
@@ -27,22 +28,21 @@ public class ViewPreservingZoomer {
 	
 	public void zoomPreservingViewLocation() {
 		Instant instantToZoomAround = instantToZoomAround();
+		Point p = viewport.getViewPosition();
 		int viewPositionToZoomAroundPreZoom = uiTimeScale.modelToView(instantToZoomAround);
+		int positionToZoomAroundInViewportCoordinates = viewPositionToZoomAroundPreZoom - p.x;
 		uiTimeScale.setMillisecondsPerPixel(logarithmicBoundedRange.getCurrentMillisecondsPerPixel());
-		scrollSoThatViewPositionIsMaintainedFor(instantToZoomAround, viewPositionToZoomAroundPreZoom);
+		scrollSoThatViewPositionIsMaintainedFor(instantToZoomAround, positionToZoomAroundInViewportCoordinates);
 	}
 
 	private void scrollSoThatViewPositionIsMaintainedFor(
 			Instant instantToZoomAround,
-			int viewPositionToZoomAroundPreZoom) {
+			int positionToZoomAroundInViewportCoordinates) {
+		System.out.println("Scrolling around "+instantToZoomAround);
 		int viewPositionToZoomAroundPostZoom = uiTimeScale.modelToView(instantToZoomAround);
 
-		int differenceInCursorHorizontalPositionInComponent = viewPositionToZoomAroundPostZoom
-				- viewPositionToZoomAroundPreZoom;
-		Rectangle visibleRectangle = viewport.getVisibleRect();
-		visibleRectangle.translate(
-				differenceInCursorHorizontalPositionInComponent, 0);
-		viewport.scrollRectToVisible(visibleRectangle);
+		int upperLeftCornerInViewCoords = viewPositionToZoomAroundPostZoom - positionToZoomAroundInViewportCoordinates;
+		viewport.setViewPosition(new Point(upperLeftCornerInViewCoords, viewport.getViewPosition().y));
 	}
 
 	private Instant instantToZoomAround() {

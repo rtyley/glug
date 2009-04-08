@@ -28,6 +28,7 @@ import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.util.List;
@@ -60,8 +61,7 @@ public class MainFrame extends javax.swing.JFrame {
 		initComponents();
 		timelineCursor = new TimelineCursor();
 		threadScale = new UIThreadScale();
-		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale,
-				threadScale, threadedSystem, timelineCursor);
+		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadScale, threadedSystem, timelineCursor);
 
 		innerPanel = new JPanel();
 		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
@@ -74,19 +74,18 @@ public class MainFrame extends javax.swing.JFrame {
 		// });
 		timelineScrollPane.getViewport().add(threadedSystemViewPanel);
 
-		uiTimeScale.setFullInterval(new Interval(new Instant(), new Duration(
-				1000000)));
+		uiTimeScale.setFullInterval(new Interval(new Instant(), new Duration(1000000)));
 		timelineDateTimeComponent = new TimelineDateTimeComponent(uiTimeScale);
 		timelineScrollPane.setColumnHeaderView(timelineDateTimeComponent);
 
 		timelineScrollPane.validate();
 
 		logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
-		viewPreservingZoomer = new ViewPreservingZoomer(timelineScrollPane.getViewport(), uiTimeScale, logarithmicBoundedRange, timelineCursor);
-		zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(uiTimeScale,logarithmicBoundedRange, timelineScrollPane.getViewport());
+		viewPreservingZoomer = new ViewPreservingZoomer(timelineScrollPane.getViewport(), uiTimeScale, logarithmicBoundedRange,
+				timelineCursor);
+		zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(uiTimeScale, logarithmicBoundedRange, timelineScrollPane.getViewport());
 
 		uiTimeScale.setMillisecondsPerPixel(1000);
-		
 
 		setTransferHandler(new FileImportDragAndDropTransferHandler() {
 			@Override
@@ -125,12 +124,11 @@ public class MainFrame extends javax.swing.JFrame {
 		setTitle("Glug");
 
 		timeMagnificationSlider.setPaintTicks(true);
-		timeMagnificationSlider
-				.addChangeListener(new javax.swing.event.ChangeListener() {
-					public void stateChanged(javax.swing.event.ChangeEvent evt) {
-						timeMagnificationSliderStateChanged(evt);
-					}
-				});
+		timeMagnificationSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+			public void stateChanged(javax.swing.event.ChangeEvent evt) {
+				timeMagnificationSliderStateChanged(evt);
+			}
+		});
 
 		fileMenu.setMnemonic('F');
 		fileMenu.setText("File");
@@ -158,22 +156,18 @@ public class MainFrame extends javax.swing.JFrame {
 		viewMenu.setMnemonic('V');
 		viewMenu.setText("View");
 
-		zoomToSelectionMenuItem.setAccelerator(javax.swing.KeyStroke
-				.getKeyStroke(java.awt.event.KeyEvent.VK_E,
-						java.awt.event.InputEvent.CTRL_MASK));
+		zoomToSelectionMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
+				java.awt.event.InputEvent.CTRL_MASK));
 		zoomToSelectionMenuItem.setMnemonic('Z');
 		zoomToSelectionMenuItem.setText("Zoom to selection");
-		zoomToSelectionMenuItem
-				.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						zoomToSelectionMenuItemActionPerformed(evt);
-					}
-				});
+		zoomToSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				zoomToSelectionMenuItemActionPerformed(evt);
+			}
+		});
 		viewMenu.add(zoomToSelectionMenuItem);
 
-		jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-				java.awt.event.KeyEvent.VK_ADD,
-				java.awt.event.InputEvent.CTRL_MASK));
+		jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ADD, java.awt.event.InputEvent.CTRL_MASK));
 		jMenuItem1.setMnemonic('I');
 		jMenuItem1.setText("Zoom In");
 		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -201,49 +195,33 @@ public class MainFrame extends javax.swing.JFrame {
 
 		setJMenuBar(menuBar);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
+		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
 				javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addContainerGap().addComponent(
-						timeMagnificationSlider,
-						javax.swing.GroupLayout.PREFERRED_SIZE,
-						javax.swing.GroupLayout.DEFAULT_SIZE,
-						javax.swing.GroupLayout.PREFERRED_SIZE)).addComponent(
-				timelineScrollPane, javax.swing.GroupLayout.Alignment.TRAILING,
-				javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE));
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								layout
-										.createSequentialGroup()
-										.addComponent(
-												timeMagnificationSlider,
-												javax.swing.GroupLayout.PREFERRED_SIZE,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(
-												timelineScrollPane,
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												368, Short.MAX_VALUE)));
+				layout.createSequentialGroup().addContainerGap().addComponent(timeMagnificationSlider,
+						javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+						javax.swing.GroupLayout.PREFERRED_SIZE)).addComponent(timelineScrollPane,
+				javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE));
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+				layout.createSequentialGroup().addComponent(timeMagnificationSlider, javax.swing.GroupLayout.PREFERRED_SIZE,
+						javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(
+						javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(timelineScrollPane,
+						javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)));
 
 		pack();
 	}// </editor-fold>//GEN-END:initComponents
 
-	private void zoomToSelectionMenuItemActionPerformed(
-			java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
+	private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
 		LogInterval selectedInterval = timelineCursor.getSelectedInterval();
 		if (selectedInterval != null) {
 			JViewport viewport = timelineScrollPane.getViewport();
-			uiTimeScale.setMillisecondsPerPixelToFit(selectedInterval,	viewport.getExtentSize().width);
+			uiTimeScale.setMillisecondsPerPixelToFit(selectedInterval, viewport.getExtentSize().width);
+			System.out.println("selectedInterval="+selectedInterval+"millisecondsPerPixel="+uiTimeScale.getMillisecondsPerPixel());
 			TimelineComponent timelineComponent = (TimelineComponent) viewport.getView();
-			viewport.scrollRectToVisible(timelineComponent.getViewFor(selectedInterval));
+			int upperLeftCornerInViewCoords = uiTimeScale.modelToView(selectedInterval.getStart().getRecordedInstant());
+			System.out.println("upperLeftCornerInViewCoords="+upperLeftCornerInViewCoords);
+			viewport.setViewPosition(new Point(upperLeftCornerInViewCoords, viewport.getViewPosition().y));
 		}
 	}// GEN-LAST:event_zoomToSelectionMenuItemActionPerformed
 
@@ -251,8 +229,7 @@ public class MainFrame extends javax.swing.JFrame {
 		uiTimeScale.setMillisecondsPerPixel(uiTimeScale.getMillisecondsPerPixel() / 2);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
-	private void timeMagnificationSliderStateChanged(
-			javax.swing.event.ChangeEvent evt) {// GEN-FIRST:event_timeMagnificationSliderStateChanged
+	private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {// GEN-FIRST:event_timeMagnificationSliderStateChanged
 		viewPreservingZoomer.zoomPreservingViewLocation();
 	}// GEN-LAST:event_timeMagnificationSliderStateChanged
 
@@ -275,30 +252,24 @@ public class MainFrame extends javax.swing.JFrame {
 	private void loadJavaProcessLogFile(File file) {
 		System.out.println("Loading Java process log...");
 		LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
-		LogLoader logLoader = logLoaderFactory.createLoaderFor(file,
-				threadedSystem, LogMessageParserRegistry.EXAMPLE);
-		new LogLoadingTask(logLoader, threadedSystem, uiTimeScale, threadScale,
-				zoomFactorSlideUpdater).execute();
+		LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, LogMessageParserRegistry.EXAMPLE);
+		new LogLoadingTask(logLoader, threadedSystem, uiTimeScale, threadScale, zoomFactorSlideUpdater).execute();
 	}
 
 	private void loadGarbageCollectionLogFile(File file) {
 		System.out.println("Loading Garbage Collection file...");
-		new FileGCTrace(file, new GCLogFileReader())
-				.init(new NopGCTraceGeneratorListener() {
+		new FileGCTrace(file, new GCLogFileReader()).init(new NopGCTraceGeneratorListener() {
+			@Override
+			public void finished(final GCTrace gcTrace) {
+				System.out.println("Finished loading Garbage Collection file");
+				invokeLater(new Runnable() {
 					@Override
-					public void finished(final GCTrace gcTrace) {
-						System.out
-								.println("Finished loading Garbage Collection file");
-						invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								innerPanel.add(new GCTraceView(gcTrace,
-										uiTimeScale, threadedSystem,
-										timelineCursor));
-							}
-						});
+					public void run() {
+						innerPanel.add(new GCTraceView(gcTrace, uiTimeScale, threadedSystem, timelineCursor));
 					}
 				});
+			}
+		});
 	}
 
 	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
