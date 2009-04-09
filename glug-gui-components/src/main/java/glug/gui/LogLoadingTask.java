@@ -1,6 +1,7 @@
 package glug.gui;
 
 import static java.lang.System.currentTimeMillis;
+import glug.gui.zoom.ZoomFactorSlideUpdater;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
 import glug.parser.LogLoader;

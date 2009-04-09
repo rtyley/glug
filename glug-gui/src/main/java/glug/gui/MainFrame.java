@@ -21,6 +21,10 @@ import glug.gui.gc.GCTraceView;
 import glug.gui.model.LogarithmicBoundedRange;
 import glug.gui.timebar.TimelineDateTimeComponent;
 import glug.gui.timelinecursor.TimelineCursor;
+import glug.gui.zoom.TimelineViewport;
+import glug.gui.zoom.ViewPreservingZoomer;
+import glug.gui.zoom.ZoomFactorSlideUpdater;
+import glug.gui.zoom.ZoomFocusFinder;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
@@ -81,8 +85,9 @@ public class MainFrame extends javax.swing.JFrame {
 		timelineScrollPane.validate();
 
 		logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
-		viewPreservingZoomer = new ViewPreservingZoomer(timelineScrollPane.getViewport(), uiTimeScale, logarithmicBoundedRange,
-				timelineCursor);
+		timelineViewport = new TimelineViewport(uiTimeScale, timelineScrollPane.getViewport());
+		viewPreservingZoomer = new ViewPreservingZoomer(timelineViewport,
+				new ZoomFocusFinder(timelineCursor, timelineScrollPane.getViewport(), uiTimeScale));
 		zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(uiTimeScale, logarithmicBoundedRange, timelineScrollPane.getViewport());
 
 		uiTimeScale.setMillisecondsPerPixel(1000);
@@ -215,13 +220,8 @@ public class MainFrame extends javax.swing.JFrame {
 	private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
 		LogInterval selectedInterval = timelineCursor.getSelectedInterval();
 		if (selectedInterval != null) {
-			JViewport viewport = timelineScrollPane.getViewport();
-			uiTimeScale.setMillisecondsPerPixelToFit(selectedInterval, viewport.getExtentSize().width);
-			System.out.println("selectedInterval="+selectedInterval+"millisecondsPerPixel="+uiTimeScale.getMillisecondsPerPixel());
-			TimelineComponent timelineComponent = (TimelineComponent) viewport.getView();
-			int upperLeftCornerInViewCoords = uiTimeScale.modelToView(selectedInterval.getStart().getRecordedInstant());
-			System.out.println("upperLeftCornerInViewCoords="+upperLeftCornerInViewCoords);
-			viewport.setViewPosition(new Point(upperLeftCornerInViewCoords, viewport.getViewPosition().y));
+			uiTimeScale.setMillisecondsPerPixelToFit(selectedInterval, timelineScrollPane.getViewport().getExtentSize().width);
+			timelineViewport.setViewPosition(selectedInterval.getStart().getRecordedInstant(), 0);
 		}
 	}// GEN-LAST:event_zoomToSelectionMenuItemActionPerformed
 
@@ -230,7 +230,7 @@ public class MainFrame extends javax.swing.JFrame {
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
 	private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {// GEN-FIRST:event_timeMagnificationSliderStateChanged
-		viewPreservingZoomer.zoomPreservingViewLocation();
+		viewPreservingZoomer.zoomPreservingViewLocation(logarithmicBoundedRange.getCurrentMillisecondsPerPixel());
 	}// GEN-LAST:event_timeMagnificationSliderStateChanged
 
 	private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_openFileMenuItemActionPerformed
@@ -303,5 +303,7 @@ public class MainFrame extends javax.swing.JFrame {
 	private JPanel innerPanel;
 
 	private UIThreadScale threadScale;
+
+	private TimelineViewport timelineViewport;
 
 }

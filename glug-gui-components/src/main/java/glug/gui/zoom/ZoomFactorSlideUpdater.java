@@ -1,5 +1,6 @@
-package glug.gui;
+package glug.gui.zoom;
 
+import glug.gui.UITimeScale;
 import glug.gui.model.LogarithmicBoundedRange;
 
 import java.awt.event.ComponentAdapter;
