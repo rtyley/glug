@@ -109,121 +109,142 @@ public class MainFrame extends javax.swing.JFrame {
 	 */
 	// <editor-fold defaultstate="collapsed"
 	// <editor-fold defaultstate="collapsed"
-	// desc="Generated Code">//GEN-BEGIN:initComponents
-	private void initComponents() {
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-		jFileChooser1 = new javax.swing.JFileChooser();
-		timeMagnificationSlider = new javax.swing.JSlider();
-		timelineScrollPane = new javax.swing.JScrollPane();
-		menuBar = new javax.swing.JMenuBar();
-		fileMenu = new javax.swing.JMenu();
-		openFileMenuItem = new javax.swing.JMenuItem();
-		exitMenuItem = new javax.swing.JMenuItem();
-		viewMenu = new javax.swing.JMenu();
-		zoomToSelectionMenuItem = new javax.swing.JMenuItem();
-		jMenuItem1 = new javax.swing.JMenuItem();
-		helpMenu = new javax.swing.JMenu();
-		aboutBoxMenuItem = new javax.swing.JMenuItem();
+        jFileChooser1 = new javax.swing.JFileChooser();
+        timeMagnificationSlider = new javax.swing.JSlider();
+        timelineScrollPane = new javax.swing.JScrollPane();
+        menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        openFileMenuItem = new javax.swing.JMenuItem();
+        exitMenuItem = new javax.swing.JMenuItem();
+        viewMenu = new javax.swing.JMenu();
+        zoomToSelectionMenuItem = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        fitInWindowMenuItem = new javax.swing.JMenuItem();
+        helpMenu = new javax.swing.JMenu();
+        aboutBoxMenuItem = new javax.swing.JMenuItem();
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		setTitle("Glug");
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Glug");
 
-		timeMagnificationSlider.setPaintTicks(true);
-		timeMagnificationSlider.addChangeListener(new javax.swing.event.ChangeListener() {
-			public void stateChanged(javax.swing.event.ChangeEvent evt) {
-				timeMagnificationSliderStateChanged(evt);
-			}
-		});
+        timeMagnificationSlider.setPaintTicks(true);
+        timeMagnificationSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                timeMagnificationSliderStateChanged(evt);
+            }
+        });
 
-		fileMenu.setMnemonic('F');
-		fileMenu.setText("File");
+        fileMenu.setMnemonic('F');
+        fileMenu.setText("File");
 
-		openFileMenuItem.setMnemonic('O');
-		openFileMenuItem.setText("Open File...");
-		openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				openFileMenuItemActionPerformed(evt);
-			}
-		});
-		fileMenu.add(openFileMenuItem);
+        openFileMenuItem.setMnemonic('O');
+        openFileMenuItem.setText("Open File...");
+        openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openFileMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openFileMenuItem);
 
-		exitMenuItem.setMnemonic('X');
-		exitMenuItem.setText("Exit");
-		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				exitMenuItemActionPerformed(evt);
-			}
-		});
-		fileMenu.add(exitMenuItem);
+        exitMenuItem.setMnemonic('X');
+        exitMenuItem.setText("Exit");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitMenuItem);
 
-		menuBar.add(fileMenu);
+        menuBar.add(fileMenu);
 
-		viewMenu.setMnemonic('V');
-		viewMenu.setText("View");
+        viewMenu.setMnemonic('V');
+        viewMenu.setText("View");
 
-		zoomToSelectionMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E,
-				java.awt.event.InputEvent.CTRL_MASK));
-		zoomToSelectionMenuItem.setMnemonic('Z');
-		zoomToSelectionMenuItem.setText("Zoom to selection");
-		zoomToSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				zoomToSelectionMenuItemActionPerformed(evt);
-			}
-		});
-		viewMenu.add(zoomToSelectionMenuItem);
+        zoomToSelectionMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        zoomToSelectionMenuItem.setMnemonic('Z');
+        zoomToSelectionMenuItem.setText("Zoom to selection");
+        zoomToSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomToSelectionMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(zoomToSelectionMenuItem);
 
-		jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ADD, java.awt.event.InputEvent.CTRL_MASK));
-		jMenuItem1.setMnemonic('I');
-		jMenuItem1.setText("Zoom In");
-		jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jMenuItem1ActionPerformed(evt);
-			}
-		});
-		viewMenu.add(jMenuItem1);
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PLUS, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setMnemonic('I');
+        jMenuItem1.setText("Zoom In");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        viewMenu.add(jMenuItem1);
 
-		menuBar.add(viewMenu);
+        fitInWindowMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+        fitInWindowMenuItem.setMnemonic('F');
+        fitInWindowMenuItem.setText("Fit in Window");
+        fitInWindowMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fitInWindowMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(fitInWindowMenuItem);
 
-		helpMenu.setMnemonic('H');
-		helpMenu.setText("Help");
+        menuBar.add(viewMenu);
 
-		aboutBoxMenuItem.setMnemonic('A');
-		aboutBoxMenuItem.setText("About Glug");
-		aboutBoxMenuItem.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				aboutBoxMenuItemActionPerformed(evt);
-			}
-		});
-		helpMenu.add(aboutBoxMenuItem);
+        helpMenu.setMnemonic('H');
+        helpMenu.setText("Help");
 
-		menuBar.add(helpMenu);
+        aboutBoxMenuItem.setMnemonic('A');
+        aboutBoxMenuItem.setText("About Glug");
+        aboutBoxMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutBoxMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(aboutBoxMenuItem);
 
-		setJMenuBar(menuBar);
+        menuBar.add(helpMenu);
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addContainerGap().addComponent(timeMagnificationSlider,
-						javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-						javax.swing.GroupLayout.PREFERRED_SIZE)).addComponent(timelineScrollPane,
-				javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE));
-		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				layout.createSequentialGroup().addComponent(timeMagnificationSlider, javax.swing.GroupLayout.PREFERRED_SIZE,
-						javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(
-						javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(timelineScrollPane,
-						javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)));
+        setJMenuBar(menuBar);
 
-		pack();
-	}// </editor-fold>//GEN-END:initComponents
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(timeMagnificationSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(timelineScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(timeMagnificationSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(timelineScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void fitInWindowMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fitInWindowMenuItemActionPerformed
+        fitWindowTo(uiTimeScale.getFullInterval());
+    }//GEN-LAST:event_fitInWindowMenuItemActionPerformed
 
 	private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
 		LogInterval selectedInterval = timelineCursor.getSelectedInterval();
 		if (selectedInterval != null) {
-			uiTimeScale.setMillisecondsPerPixelToFit(selectedInterval, timelineScrollPane.getViewport().getExtentSize().width);
-			timelineViewport.setViewPosition(selectedInterval.getStart().getRecordedInstant(), 0);
+			fitWindowTo(selectedInterval.toJodaInterval());
 		}
 	}// GEN-LAST:event_zoomToSelectionMenuItemActionPerformed
+
+	private void fitWindowTo(Interval interval) {
+		uiTimeScale.setMillisecondsPerPixelToFit(interval, timelineScrollPane.getViewport().getExtentSize().width);
+		timelineViewport.setViewPosition(interval.getStart().toInstant(), 0);
+	}
 
 	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
 		uiTimeScale.setMillisecondsPerPixel(uiTimeScale.getMillisecondsPerPixel() / 2);
@@ -280,20 +301,21 @@ public class MainFrame extends javax.swing.JFrame {
 		new AboutBox().setVisible(true);
 	}// GEN-LAST:event_aboutBoxMenuItemActionPerformed
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JMenuItem aboutBoxMenuItem;
-	private javax.swing.JMenuItem exitMenuItem;
-	private javax.swing.JMenu fileMenu;
-	private javax.swing.JMenu helpMenu;
-	private javax.swing.JFileChooser jFileChooser1;
-	private javax.swing.JMenuItem jMenuItem1;
-	private javax.swing.JMenuBar menuBar;
-	private javax.swing.JMenuItem openFileMenuItem;
-	private javax.swing.JSlider timeMagnificationSlider;
-	private javax.swing.JScrollPane timelineScrollPane;
-	private javax.swing.JMenu viewMenu;
-	private javax.swing.JMenuItem zoomToSelectionMenuItem;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutBoxMenuItem;
+    private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem fitInWindowMenuItem;
+    private javax.swing.JMenu helpMenu;
+    private javax.swing.JFileChooser jFileChooser1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem openFileMenuItem;
+    private javax.swing.JSlider timeMagnificationSlider;
+    private javax.swing.JScrollPane timelineScrollPane;
+    private javax.swing.JMenu viewMenu;
+    private javax.swing.JMenuItem zoomToSelectionMenuItem;
+    // End of variables declaration//GEN-END:variables
 
 	private LogarithmicBoundedRange logarithmicBoundedRange;
 

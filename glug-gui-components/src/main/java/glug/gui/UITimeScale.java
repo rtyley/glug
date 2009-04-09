@@ -84,7 +84,7 @@ public class UITimeScale {
 		return millisecondsPerPixel;
 	}
 
-	public void setMillisecondsPerPixelToFit(LogInterval interval, int pixels) {
+	public void setMillisecondsPerPixelToFit(Interval interval, int pixels) {
 		setMillisecondsPerPixel(((double) interval.toDurationMillis()) / pixels);
 	}
 
