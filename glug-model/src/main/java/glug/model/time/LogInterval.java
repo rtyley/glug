@@ -10,6 +10,9 @@ public class LogInterval implements Comparable<LogInterval> {
 	private final LogInstant start,end;
 
 	public LogInterval(LogInstant a, LogInstant b) {
+		if (a==null || b==null) {
+			throw new IllegalArgumentException();
+		}
 		if (a.isBefore(b)) {
 			this.start = a;
 			this.end = b;

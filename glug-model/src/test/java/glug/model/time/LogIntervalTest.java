@@ -98,24 +98,4 @@ public class LogIntervalTest {
 		assertThat(interval.equals(differentInterval),is(false));
 		assertThat(interval.equals(anotherDifferentInterval),is(false));
 	}
-
-	@Test
-	public void shouldCorrectlyDetermineEqualityWithNulls() {
-		LogInterval interval = new LogInterval(new LogInstant(1000L,1),null);
-		LogInterval sameInterval = new LogInterval(new LogInstant(1000L,1),null);
-		LogInterval differentInterval = new LogInterval(new LogInstant(1001L,1),null);
-		
-		assertThat(interval.equals(sameInterval),is(true));
-		assertThat(interval.equals(differentInterval),is(false));
-
-		// Compiler will fuss about constructor ambiguity without cast
-		interval = new LogInterval((LogInstant)null,new LogInstant(2000L,2));
-		sameInterval = new LogInterval((LogInstant)null,new LogInstant(2000L,2));
-		differentInterval = new LogInterval((LogInstant)null,new LogInstant(1999L,2));
-		LogInterval anotherDifferentInterval = new LogInterval(new LogInstant(1000L,1),new LogInstant(2000L,2));
-
-		assertThat(interval.equals(sameInterval),is(true));
-		assertThat(interval.equals(differentInterval),is(false));
-		assertThat(interval.equals(anotherDifferentInterval),is(false));
-	}
 }
