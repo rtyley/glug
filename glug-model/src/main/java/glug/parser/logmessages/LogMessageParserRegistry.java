@@ -24,13 +24,17 @@ public class LogMessageParserRegistry {
 	
 	public LogMessageParserRegistry(List<LogMessageParser> parsers) {
 		for (LogMessageParser parser : parsers) {
-			List <LogMessageParser> parsersWithLoggerName = parsersByLoggerName.get(parser.getLoggerClassName());
-			if (parsersWithLoggerName==null) {
-				parsersWithLoggerName = new ArrayList<LogMessageParser>();
-				parsersByLoggerName.put(parser.getLoggerClassName(), parsersWithLoggerName);
-			}
-			parsersWithLoggerName.add(parser);
+			storeParserByLoggerClassName(parser);
 		}
+	}
+
+	private void storeParserByLoggerClassName(LogMessageParser parser) {
+		List <LogMessageParser> parsersWithLoggerName = parsersByLoggerName.get(parser.getLoggerClassName());
+		if (parsersWithLoggerName==null) {
+			parsersWithLoggerName = new ArrayList<LogMessageParser>();
+			parsersByLoggerName.put(parser.getLoggerClassName(), parsersWithLoggerName);
+		}
+		parsersWithLoggerName.add(parser);
 	}
 
 	public List<LogMessageParser> getMessageParsersFor(String loggerName) {

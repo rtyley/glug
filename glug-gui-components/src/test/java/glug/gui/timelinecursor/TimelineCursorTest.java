@@ -15,7 +15,7 @@ import org.junit.Test;
 
 
 public class TimelineCursorTest {
-
+	
 	@Test
 	public void shouldFireAChangeEventThatContainsCorrectOldAndNewState() {
 		TimelineCursor cursor = new TimelineCursor();

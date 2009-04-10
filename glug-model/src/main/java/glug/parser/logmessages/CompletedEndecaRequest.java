@@ -25,8 +25,8 @@ public class CompletedEndecaRequest implements SignificantIntervalOccupier {
 	
 	private final String endecaRequest;
 
-	private CompletedEndecaRequest(String dbQuery) {
-		this.endecaRequest = dbQuery;
+	private CompletedEndecaRequest(String endecaRequest) {
+		this.endecaRequest = endecaRequest;
 	}
 	
 	@Override
