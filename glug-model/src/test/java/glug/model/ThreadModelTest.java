@@ -5,7 +5,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
-import glug.parser.logmessages.IntervalTypeDescriptor;
 
 import java.util.Collections;
 

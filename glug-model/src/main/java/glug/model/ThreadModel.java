@@ -3,7 +3,6 @@ package glug.model;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.ThreadId;
-import glug.parser.logmessages.IntervalTypeDescriptor;
 
 import java.util.Collection;
 import java.util.HashMap;

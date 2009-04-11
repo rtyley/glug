@@ -1,8 +1,11 @@
 package glug.parser.logmessages;
 
+import static java.awt.Color.YELLOW;
 import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
+import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantInterval;
+import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
@@ -15,8 +18,10 @@ import org.joda.time.Duration;
 
 public class JVMUptimeParser implements LogMessageParser {
 	
+	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(-1,YELLOW,"JVM Uptime");
+	
 	private final static Pattern JVM_UPTIME_PATTERN = Pattern.compile("JVM uptime: (.*) seconds");
-	private final static JVMUptime jvmUptime = new JVMUptime();
+	private final static SignificantIntervalOccupier jvmUptime = intervalTypeDescriptor.with(null);
 	
 	@Override
 	public String getLoggerClassName() {

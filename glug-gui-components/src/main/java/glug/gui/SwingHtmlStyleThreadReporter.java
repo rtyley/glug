@@ -1,12 +1,12 @@
 package glug.gui;
 
 import static java.lang.Integer.toHexString;
+import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantInterval;
 import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
-import glug.parser.logmessages.IntervalTypeDescriptor;
 
 import java.awt.Color;
 import java.text.NumberFormat;
@@ -36,7 +36,7 @@ public class SwingHtmlStyleThreadReporter {
 			SignificantIntervalOccupier type = significantInterval.getType();
 			IntervalTypeDescriptor intervalTypeDescriptor = type.getIntervalTypeDescriptor();
 			Color colour = intervalTypeDescriptor.getColour();
-			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+type+" ("+durationStringFor(significantInterval)+")");
+			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+type.getData()+" ("+durationStringFor(significantInterval)+")");
 		}
 		return sb.append("</ul></html>").toString();
 	}

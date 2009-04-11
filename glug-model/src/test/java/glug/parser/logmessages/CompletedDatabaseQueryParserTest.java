@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import glug.model.SignificantInterval;
+import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 
@@ -12,10 +13,7 @@ import java.util.regex.Matcher;
 
 import org.junit.Test;
 
-
-
 public class CompletedDatabaseQueryParserTest {
-
 	
 	@Test
 	public void shouldParseCompletedDatabaseQueryCorrectly() {
@@ -27,8 +25,8 @@ public class CompletedDatabaseQueryParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(4567,1001));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(20L));
-		CompletedDatabaseQuery completedDatabaseQuery = (CompletedDatabaseQuery) sigInt.getType();
-		assertThat(completedDatabaseQuery.getDbQuery(), equalTo("load com.gu.r2.common.model.page.LivePage"));
+		SignificantIntervalOccupier completedDatabaseQuery = sigInt.getType();
+		assertThat(completedDatabaseQuery.getData(), equalTo("load com.gu.r2.common.model.page.LivePage"));
 		
 	}
 }

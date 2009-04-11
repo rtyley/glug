@@ -1,11 +1,11 @@
 package glug.parser.logmessages;
 
+import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import glug.model.SignificantInterval;
-import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 
@@ -30,7 +30,7 @@ public class CompletedPageRequestParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L,101));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(712L));
-		assertThat(sigInt.getType(), equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/lifeandstyle")));
+		assertThat(sigInt.getType(), equalTo(PAGE_REQUEST.with("/pages/Guardian/lifeandstyle")));
 	}
 	
 	@Test
@@ -43,7 +43,7 @@ public class CompletedPageRequestParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L,101));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(1296L));
-		assertThat(sigInt.getType(), equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/search?search=guy+browning&No=10&sitesearch-radio=guardian&go-guardian=Search")));
+		assertThat(sigInt.getType(), equalTo(PAGE_REQUEST.with("/search?search=guy+browning&No=10&sitesearch-radio=guardian&go-guardian=Search")));
 	
 	}
 }

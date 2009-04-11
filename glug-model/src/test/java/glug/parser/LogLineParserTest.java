@@ -1,5 +1,6 @@
 package glug.parser;
 
+import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -10,10 +11,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import glug.model.SignificantInterval;
-import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
-import glug.parser.logmessages.CompletedPageRequest;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
 import java.text.ParseException;
@@ -41,7 +40,7 @@ public class LogLineParserTest {
 		LogInterval interval = significantInterval.getLogInterval();
 		assertThat(interval.toDurationMillis(),equalTo(5L));
 		assertThat(interval.getStart().getRecordedInstant().toDateTime().getYear(),equalTo(2009));
-		assertThat(significantInterval.getType(),equalTo((SignificantIntervalOccupier) new CompletedPageRequest("/pages/Guardian/world/rss")));
+		assertThat(significantInterval.getType(),equalTo(PAGE_REQUEST.with("/pages/Guardian/world/rss")));
 	}
 	
 	@Test

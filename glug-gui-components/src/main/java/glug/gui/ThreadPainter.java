@@ -1,10 +1,10 @@
 package glug.gui;
 
 import static java.lang.Math.round;
+import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInterval;
-import glug.parser.logmessages.IntervalTypeDescriptor;
 
 import java.awt.Graphics2D;
 import java.util.Collection;

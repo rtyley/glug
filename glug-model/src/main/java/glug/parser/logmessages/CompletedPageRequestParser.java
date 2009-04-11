@@ -1,6 +1,8 @@
 package glug.parser.logmessages;
 
+import static java.awt.Color.RED;
 import static java.lang.Integer.parseInt;
+import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
@@ -13,7 +15,9 @@ import org.joda.time.Duration;
 
 
 public abstract class CompletedPageRequestParser implements LogMessageParser {
-
+	
+	public static final IntervalTypeDescriptor PAGE_REQUEST = new IntervalTypeDescriptor(1,RED,"Page Request");
+	
 	private static final Pattern requestCompletedPattern = 
 		Pattern.compile("^Request for ([^ ]+?) completed in (\\d+?) ms$");
 	
@@ -24,7 +28,8 @@ public abstract class CompletedPageRequestParser implements LogMessageParser {
 		int durationInMillis = parseInt(durationInMillisText);
 		String pagePath = matcher.group(1);
 		LogInterval interval = new LogInterval(new Duration(durationInMillis),logInstant);
-		SignificantInterval significantInterval = new SignificantInterval(threadModel,new CompletedPageRequest(pagePath),interval);
+		
+		SignificantInterval significantInterval = new SignificantInterval(threadModel,PAGE_REQUEST.with(pagePath),interval);
 		threadModel.add(significantInterval);
 		return significantInterval;
 	}
