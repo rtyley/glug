@@ -14,5 +14,5 @@ public interface LogMessageParser {
 	public String getLoggerClassName();
 
 	public SignificantInterval process(Matcher matcher,	ThreadModel threadModel, LogInstant logInstant);
-	
+
 }
