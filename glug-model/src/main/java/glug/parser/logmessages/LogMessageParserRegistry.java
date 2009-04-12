@@ -16,7 +16,8 @@ public class LogMessageParserRegistry {
 				new CompletedPageRequestDiagnosticParser(),
 				new CompletedDatabaseQueryParser(), 
 				new CompletedSearchEndecaRequestParser(), 
-				new CompletedOpenApiEndecaRequestParser());
+				new CompletedOpenApiEndecaRequestParser(),
+				new CompletedHTTPRequestParser());
 	
 	public static final LogMessageParserRegistry EXAMPLE = new LogMessageParserRegistry(ALL_PARSERS);
 	
