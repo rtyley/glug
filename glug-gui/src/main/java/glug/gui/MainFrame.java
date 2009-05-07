@@ -274,7 +274,7 @@ public class MainFrame extends javax.swing.JFrame {
 		System.out.println("Loading Java process log...");
 		LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
 		LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, LogMessageParserRegistry.EXAMPLE);
-		new LogLoadingTask(logLoader, threadedSystem, uiTimeScale, threadScale, zoomFactorSlideUpdater).execute();
+		new LogLoadingTask(logLoader, new DataLoadedUIUpdater( threadedSystem, uiTimeScale, threadScale, zoomFactorSlideUpdater),50000).execute();
 	}
 
 	private void loadGarbageCollectionLogFile(File file) {
