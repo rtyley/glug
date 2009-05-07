@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentMap;
 
 public class ThreadedSystem {
 
-	private ThreadIdCache threadIdFactory = new ThreadIdCache();
 	private Uptime uptime = new Uptime();
 
 	private ConcurrentMap<String, ThreadModel> map = new ConcurrentHashMap<String, ThreadModel>();

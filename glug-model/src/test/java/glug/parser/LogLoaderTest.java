@@ -41,15 +41,17 @@ public class LogLoaderTest {
 	}
 	
 	public void shouldLoadExampleFile() throws Exception {
-		File file = new File("/home/roberto/development/glug-sample-logs/726_01.log.gz");
+		File file = new File("/home/roberto/development/glug-sample-logs/gtlogglugger/lunchtime.log.gz");
 		LineNumberReader reader = new LineNumberReader(new InputStreamReader( new GZIPInputStream(new FileInputStream(file))));
 		
 		ThreadedSystem threadedSystem = new ThreadedSystem();
 		LogLoader logLoader=new LogLoader(new LogParsingReader(reader,new LogLineParser(new LogCoordinateParser(threadedSystem),LogMessageParserRegistry.EXAMPLE)));
-		while (!logLoader.loadLines(100000).endOfStreamReached()) {
-			LogInterval intervalCoveredByAllThreads = threadedSystem.getIntervalCoveredByAllThreads();
-			System.out.println(intervalCoveredByAllThreads);
-		}
+		LoadReport lr;
+		do {
+			lr=logLoader.loadLines(100000);
+			System.out.println(lr);
+		} while (!lr.endOfStreamReached());
+		System.out.println(threadedSystem.getIntervalCoveredByAllThreads());
 	}
 	
 

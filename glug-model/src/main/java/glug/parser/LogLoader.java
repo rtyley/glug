@@ -20,7 +20,7 @@ public class LogLoader {
 			try {
 				SignificantInterval significantInterval = reader.parseNext();
 				if (significantInterval!=null) {
-					intervalUpdated=significantInterval.getLogInterval().union(intervalUpdated);
+					intervalUpdated=significantInterval.getLogInterval().union(intervalUpdated); // Don't update all the interval of JVM uptime!
 				}
 			} catch (Throwable e) {
 				e.printStackTrace();
@@ -47,6 +47,11 @@ public class LogLoader {
 			return endOfStream;
 		}
 
+		@Override
+		public String toString() {
+			String eos = endOfStream?" EOS":"";
+			return getClass().getSimpleName()+"[updated="+intervalUpdated+eos+"]";
+		}
 	}
 
 

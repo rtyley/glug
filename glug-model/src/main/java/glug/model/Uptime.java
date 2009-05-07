@@ -23,7 +23,4 @@ public class Uptime {
 		return instant.minus(uptimeDurationAtInstant);
 	}
 	
-	
-	
-	
 }
