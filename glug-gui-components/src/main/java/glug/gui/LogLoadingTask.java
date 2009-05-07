@@ -1,8 +1,6 @@
 package glug.gui;
 
 import static java.lang.System.currentTimeMillis;
-import glug.gui.zoom.ZoomFactorSlideUpdater;
-import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
 import glug.parser.LogLoader;
 import glug.parser.LogLoader.LoadReport;
@@ -14,53 +12,47 @@ import javax.swing.SwingWorker;
 import org.joda.time.format.PeriodFormat;
 
 
-public class LogLoadingTask extends SwingWorker<ThreadedSystem, LoadReport> {
+public class LogLoadingTask extends SwingWorker<Void, LoadReport> {
 
 	private final LogLoader logLoader;
-	private final ThreadedSystem threadedSystem;
-	private final UITimeScale uiTimeScale;
-	private final ZoomFactorSlideUpdater zoomFactorSlideUpdater;
-	private final UIThreadScale threadScale;
-	
-	public LogLoadingTask(LogLoader logLoader,ThreadedSystem threadedSystem, UITimeScale uiTimeScale, UIThreadScale threadScale, ZoomFactorSlideUpdater zoomFactorSlideUpdater) {
+	private final DataLoadedUIUpdater uiUpdater;
+	private final int numLinesLoadedBetweenUIUpdates;
+
+	public LogLoadingTask(LogLoader logLoader, DataLoadedUIUpdater uiUpdater, int numLinesLoadedBetweenUIUpdates) {
 		this.logLoader = logLoader;
-		this.threadedSystem = threadedSystem;
-		this.uiTimeScale = uiTimeScale;
-		this.threadScale = threadScale;
-		this.zoomFactorSlideUpdater = zoomFactorSlideUpdater;
+		this.uiUpdater = uiUpdater;
+		this.numLinesLoadedBetweenUIUpdates = numLinesLoadedBetweenUIUpdates;
 	}
 
 	@Override
-	public ThreadedSystem doInBackground() {
+	public Void doInBackground() {
 		long startLoadTime=currentTimeMillis();
 		LoadReport loadReport;LogInterval loadedLogInterval=null;
 		try {
-			while (!isCancelled() && !(loadReport=logLoader.loadLines(50000)).endOfStreamReached()) {
+			do {
+				loadReport=logLoader.loadLines(numLinesLoadedBetweenUIUpdates);
 				publish(loadReport);
 				loadedLogInterval=loadReport.getUpdatedInterval().union(loadedLogInterval);
 				//System.out.print(".");
-			}
+			} while (!isCancelled() && !loadReport.endOfStreamReached());
 		} catch (Throwable e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 		long durationLoadTime=currentTimeMillis()-startLoadTime;
 		System.out.println("Finished loading "+loadedLogInterval+" ("+format(loadedLogInterval)+") in "+durationLoadTime+" ms");
-		return threadedSystem;
+		return null;
 	}
 
 	private String format(LogInterval loadedLogInterval) {
 		return loadedLogInterval.toJodaInterval().toDuration().toPeriod().toString(PeriodFormat.getDefault());
 	}
 
-
-	
 	@Override
 	protected void process(List<LoadReport> loadReports) {
-		System.out.println("Just loaded "+ totalLogIntervalCoveredBy(loadReports));
-		uiTimeScale.setFullInterval(threadedSystem.getIntervalCoveredByAllThreads().toJodaInterval());
-		threadScale.setNumThreads(threadedSystem.getNumThreads());
-		zoomFactorSlideUpdater.updateSliderMax();
+		LogInterval totalLogIntervalCoveredByLoadReports = totalLogIntervalCoveredBy(loadReports);
+		System.out.println("Just loaded "+ totalLogIntervalCoveredByLoadReports);
+		uiUpdater.updateUI(totalLogIntervalCoveredByLoadReports);
 	}
 
 	private LogInterval totalLogIntervalCoveredBy(Iterable<LoadReport> loadReports) {
