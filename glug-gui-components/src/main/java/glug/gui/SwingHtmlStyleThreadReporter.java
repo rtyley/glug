@@ -14,8 +14,6 @@ import java.awt.Color;
 import java.text.NumberFormat;
 import java.util.SortedMap;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
 
 public class SwingHtmlStyleThreadReporter {
