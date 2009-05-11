@@ -68,6 +68,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-scm-plugin</artifactId>
+<!-- Required?
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
@@ -75,6 +76,7 @@
 						<!-- <version>1.1-db-1</version> -->
 					</dependency>
 				</dependencies>
+-->
 			</plugin>
 
 
