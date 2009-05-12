@@ -11,7 +11,13 @@
 
 package glug.gui;
 
+import static java.awt.event.InputEvent.CTRL_MASK;
+import static java.awt.event.KeyEvent.VK_ADD;
+import static java.awt.event.KeyEvent.VK_EQUALS;
+import static java.awt.event.KeyEvent.VK_MINUS;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
+import static javax.swing.KeyStroke.getKeyStroke;
 import static javax.swing.SwingUtilities.invokeLater;
 import gchisto.gctrace.GCTrace;
 import gchisto.gctracegenerator.NopGCTraceGeneratorListener;
@@ -26,20 +32,23 @@ import glug.gui.zoom.ViewPreservingZoomer;
 import glug.gui.zoom.ZoomFactorSlideUpdater;
 import glug.gui.zoom.ZoomFocusFinder;
 import glug.model.ThreadedSystem;
-import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
 
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JViewport;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -63,6 +72,10 @@ public class MainFrame extends javax.swing.JFrame {
 	@SuppressWarnings("serial")
 	public MainFrame() {
 		initComponents();
+		hackCtrlPlus(zoomInMenuItem);
+
+
+		
 		timelineCursor = new TimelineCursor();
 		threadScale = new UIThreadScale();
 		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadScale, threadedSystem, timelineCursor);
@@ -102,6 +115,21 @@ public class MainFrame extends javax.swing.JFrame {
 		});
 	}
 
+	private void hackCtrlPlus(JComponent component) {
+		InputMap inputMap = SwingUtilities.getUIInputMap(component, WHEN_IN_FOCUSED_WINDOW);
+		KeyStroke ctrlPlusKeyStroke = getKeyStroke(KeyEvent.VK_PLUS, CTRL_MASK);
+		Object ctrlPlusInputKey = inputMap.get(ctrlPlusKeyStroke);
+		
+		inputMap.put(getKeyStroke(VK_EQUALS, CTRL_MASK), ctrlPlusInputKey);  // + key in English keyboards
+		inputMap.put(getKeyStroke(VK_ADD, CTRL_MASK), ctrlPlusInputKey);  // + key on the numpad
+		
+//		inputMap.put(getKeyStroke(VK_EQUALS  , CTRL_DOWN_MASK), actionMapKeyPlus);  // + key in English keyboards
+//		inputMap.put(getKeyStroke(VK_PLUS    , CTRL_DOWN_MASK), actionMapKeyPlus);  // + key in non-English keyboards
+//		inputMap.put(getKeyStroke(VK_ADD     , CTRL_DOWN_MASK), actionMapKeyPlus);  // + key on the numpad
+//		inputMap.put(getKeyStroke(VK_MINUS   , CTRL_DOWN_MASK), actionMapKeyMinus); // - key
+//		inputMap.put(getKeyStroke(VK_SUBTRACT, CTRL_DOWN_MASK), actionMapKeyMinus); // - key on the numpad
+	}
+
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -121,7 +149,8 @@ public class MainFrame extends javax.swing.JFrame {
         exitMenuItem = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         zoomToSelectionMenuItem = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        zoomInMenuItem = new javax.swing.JMenuItem();
+        zoomOutMenuItem = new javax.swing.JMenuItem();
         fitInWindowMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutBoxMenuItem = new javax.swing.JMenuItem();
@@ -172,15 +201,25 @@ public class MainFrame extends javax.swing.JFrame {
         });
         viewMenu.add(zoomToSelectionMenuItem);
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PLUS, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem1.setMnemonic('I');
-        jMenuItem1.setText("Zoom In");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        zoomInMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_PLUS, java.awt.event.InputEvent.CTRL_MASK));
+        zoomInMenuItem.setMnemonic('I');
+        zoomInMenuItem.setText("Zoom In");
+        zoomInMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                zoomInMenuItemActionPerformed(evt);
             }
         });
-        viewMenu.add(jMenuItem1);
+        viewMenu.add(zoomInMenuItem);
+
+        zoomOutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_MINUS, java.awt.event.InputEvent.CTRL_MASK));
+        zoomOutMenuItem.setMnemonic('O');
+        zoomOutMenuItem.setText("Zoom Out");
+        zoomOutMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomOutMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(zoomOutMenuItem);
 
         fitInWindowMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
         fitInWindowMenuItem.setMnemonic('F');
@@ -234,6 +273,10 @@ public class MainFrame extends javax.swing.JFrame {
         fitWindowTo(uiTimeScale.getFullInterval());
     }//GEN-LAST:event_fitInWindowMenuItemActionPerformed
 
+    private void zoomOutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutMenuItemActionPerformed
+    	uiTimeScale.setMillisecondsPerPixel(uiTimeScale.getMillisecondsPerPixel() * 2);
+    }//GEN-LAST:event_zoomOutMenuItemActionPerformed
+
 	private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
 		LogInterval selectedInterval = timelineCursor.getSelectedInterval();
 		if (selectedInterval != null) {
@@ -246,7 +289,7 @@ public class MainFrame extends javax.swing.JFrame {
 		timelineViewport.setViewPosition(interval.getStart().toInstant(), 0);
 	}
 
-	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
+	private void zoomInMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
 		uiTimeScale.setMillisecondsPerPixel(uiTimeScale.getMillisecondsPerPixel() / 2);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -308,12 +351,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem fitInWindowMenuItem;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JFileChooser jFileChooser1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openFileMenuItem;
     private javax.swing.JSlider timeMagnificationSlider;
     private javax.swing.JScrollPane timelineScrollPane;
     private javax.swing.JMenu viewMenu;
+    private javax.swing.JMenuItem zoomInMenuItem;
+    private javax.swing.JMenuItem zoomOutMenuItem;
     private javax.swing.JMenuItem zoomToSelectionMenuItem;
     // End of variables declaration//GEN-END:variables
 
