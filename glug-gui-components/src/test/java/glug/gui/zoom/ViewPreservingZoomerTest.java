@@ -3,6 +3,7 @@ package glug.gui.zoom;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import glug.gui.UITimeScale;
+import glug.gui.model.LogarithmicBoundedRange;
 
 import org.joda.time.Instant;
 import org.junit.Before;
@@ -16,13 +17,14 @@ public class ViewPreservingZoomerTest {
 	
 	@Mock ZoomFocusFinder zoomFocusFinder;
 	@Mock TimelineViewport timelineViewport;
+	@Mock LogarithmicBoundedRange logarithmicBoundedRange;
 	
 	private ViewPreservingZoomer viewPreservingZoomer;
 	private UITimeScale uiTimeScale;
 
 	@Before
 	public void setUp() {
-		viewPreservingZoomer = new ViewPreservingZoomer(timelineViewport, zoomFocusFinder);
+		viewPreservingZoomer = new ViewPreservingZoomer(timelineViewport, zoomFocusFinder, logarithmicBoundedRange);
 		uiTimeScale = new UITimeScale();
 	}
 	

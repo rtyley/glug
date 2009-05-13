@@ -14,7 +14,6 @@ package glug.gui;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.KeyEvent.VK_ADD;
 import static java.awt.event.KeyEvent.VK_EQUALS;
-import static java.awt.event.KeyEvent.VK_MINUS;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.KeyStroke.getKeyStroke;
@@ -41,8 +40,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.Action;
-import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
@@ -100,7 +97,7 @@ public class MainFrame extends javax.swing.JFrame {
 		logarithmicBoundedRange = new LogarithmicBoundedRange(timeMagnificationSlider.getModel());
 		timelineViewport = new TimelineViewport(uiTimeScale, timelineScrollPane.getViewport());
 		viewPreservingZoomer = new ViewPreservingZoomer(timelineViewport,
-				new ZoomFocusFinder(timelineCursor, timelineScrollPane.getViewport(), uiTimeScale));
+				new ZoomFocusFinder(timelineCursor, timelineScrollPane.getViewport(), uiTimeScale), logarithmicBoundedRange);
 		zoomFactorSlideUpdater = new ZoomFactorSlideUpdater(uiTimeScale, logarithmicBoundedRange, timelineScrollPane.getViewport());
 
 		uiTimeScale.setMillisecondsPerPixel(1000);
@@ -274,7 +271,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_fitInWindowMenuItemActionPerformed
 
     private void zoomOutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutMenuItemActionPerformed
-    	uiTimeScale.setMillisecondsPerPixel(uiTimeScale.getMillisecondsPerPixel() * 2);
+    	viewPreservingZoomer.zoomPreservingViewLocation(uiTimeScale.getMillisecondsPerPixel() * 2);
     }//GEN-LAST:event_zoomOutMenuItemActionPerformed
 
 	private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
@@ -290,7 +287,7 @@ public class MainFrame extends javax.swing.JFrame {
 	}
 
 	private void zoomInMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed
-		uiTimeScale.setMillisecondsPerPixel(uiTimeScale.getMillisecondsPerPixel() / 2);
+		viewPreservingZoomer.zoomPreservingViewLocation(uiTimeScale.getMillisecondsPerPixel() / 2);
 	}// GEN-LAST:event_jMenuItem1ActionPerformed
 
 	private void timeMagnificationSliderStateChanged(javax.swing.event.ChangeEvent evt) {// GEN-FIRST:event_timeMagnificationSliderStateChanged
