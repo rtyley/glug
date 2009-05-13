@@ -1,7 +1,6 @@
 package glug.gui;
 
 import static java.lang.Math.round;
-import glug.model.time.LogInterval;
 
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
