@@ -14,6 +14,8 @@ package glug.gui;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.KeyEvent.VK_ADD;
 import static java.awt.event.KeyEvent.VK_EQUALS;
+import static java.awt.event.KeyEvent.VK_PLUS;
+import static java.util.Arrays.asList;
 import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.KeyStroke.getKeyStroke;
@@ -38,6 +40,8 @@ import glug.parser.logmessages.LogMessageParserRegistry;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -69,10 +73,10 @@ public class MainFrame extends javax.swing.JFrame {
 	@SuppressWarnings("serial")
 	public MainFrame() {
 		initComponents();
-		hackCtrlPlus(zoomInMenuItem);
+		KeystrokeSupplementor keystrokeSupplementor = new KeystrokeSupplementor();
+		keystrokeSupplementor.hackCtrlPlus(zoomInMenuItem);
+		keystrokeSupplementor.hackCtrlMinus(zoomOutMenuItem);
 
-
-		
 		timelineCursor = new TimelineCursor();
 		threadScale = new UIThreadScale();
 		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadScale, threadedSystem, timelineCursor);
@@ -112,20 +116,7 @@ public class MainFrame extends javax.swing.JFrame {
 		});
 	}
 
-	private void hackCtrlPlus(JComponent component) {
-		InputMap inputMap = SwingUtilities.getUIInputMap(component, WHEN_IN_FOCUSED_WINDOW);
-		KeyStroke ctrlPlusKeyStroke = getKeyStroke(KeyEvent.VK_PLUS, CTRL_MASK);
-		Object ctrlPlusInputKey = inputMap.get(ctrlPlusKeyStroke);
-		
-		inputMap.put(getKeyStroke(VK_EQUALS, CTRL_MASK), ctrlPlusInputKey);  // + key in English keyboards
-		inputMap.put(getKeyStroke(VK_ADD, CTRL_MASK), ctrlPlusInputKey);  // + key on the numpad
-		
-//		inputMap.put(getKeyStroke(VK_EQUALS  , CTRL_DOWN_MASK), actionMapKeyPlus);  // + key in English keyboards
-//		inputMap.put(getKeyStroke(VK_PLUS    , CTRL_DOWN_MASK), actionMapKeyPlus);  // + key in non-English keyboards
-//		inputMap.put(getKeyStroke(VK_ADD     , CTRL_DOWN_MASK), actionMapKeyPlus);  // + key on the numpad
-//		inputMap.put(getKeyStroke(VK_MINUS   , CTRL_DOWN_MASK), actionMapKeyMinus); // - key
-//		inputMap.put(getKeyStroke(VK_SUBTRACT, CTRL_DOWN_MASK), actionMapKeyMinus); // - key on the numpad
-	}
+
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
