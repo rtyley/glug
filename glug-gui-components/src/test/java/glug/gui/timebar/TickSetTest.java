@@ -12,11 +12,11 @@ import static org.junit.Assert.assertThat;
 import org.joda.time.DateTimeFieldType;
 import org.junit.Test;
 
-public class TickIntervalSetTest {
+public class TickSetTest {
 
 	@Test
 	public void shouldReturnWhatIWantDammit() {
-		TickIntervalSet ticks = new TickIntervalSet(tick(1,dayOfMonth()), tick(10,minuteOfHour()), tick(5,secondOfMinute()));
+		TickSet ticks = new TickSet(tick(1,dayOfMonth()), tick(10,minuteOfHour()), tick(5,secondOfMinute()));
 		
 		assertThat(ticks.forRange(standardSeconds(4), standardMinutes(8)).lastEntry().getValue(),equalTo(tick(10,minuteOfHour())));
 		assertThat(ticks.forRange(standardSeconds(4), standardMinutes(8)).firstEntry().getValue(),equalTo(tick(5,secondOfMinute())));

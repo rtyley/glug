@@ -2,6 +2,7 @@ package glug.gui.timebar;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormatter;
 
 public class Tick {
@@ -49,6 +50,10 @@ public class Tick {
 		} else if (!tickInterval.equals(other.tickInterval))
 			return false;
 		return true;
+	}
+
+	public Tick with(DateTimeZone dateTimeZone) {
+		return new Tick(tickInterval,dateTimeFormatter.withZone(dateTimeZone));
 	}
 	
 }
