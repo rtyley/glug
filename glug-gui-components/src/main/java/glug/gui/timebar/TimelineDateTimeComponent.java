@@ -47,7 +47,7 @@ public class TimelineDateTimeComponent extends JComponent {
 	
 	int minTickPixelSpacing = 3;
 	int maxTickPixelSpacing = 160;
-	private static TickSet availableTicks = new TickSet(
+	private TickSet availableTicks = new TickSet(
 			tick(1,yearOfCentury(),forPattern("YYYY")),
 			tick(1,monthOfYear(),forPattern("YYYY-MM")),
 			tick(1,dayOfMonth(),forPattern("YYYY-MM-dd")),
@@ -55,7 +55,7 @@ public class TimelineDateTimeComponent extends JComponent {
 			tick(10,minuteOfHour(),forPattern("HH:mm")), tick(5,minuteOfHour(),forPattern("HH:mm")), tick(1,minuteOfHour(),forPattern("HH:mm")),
 			tick(10,secondOfMinute(),forPattern("HH:mm:ss")), tick(5,secondOfMinute(),forPattern("HH:mm:ss")), tick(1,secondOfMinute(),forPattern("HH:mm:ss")),
 			tick(100,millisOfSecond(),forPattern("HH:mm:ss.S")),tick(10,millisOfSecond(),forPattern("HH:mm:ss.SS")),tick(1,millisOfSecond(),forPattern("HH:mm:ss.SSS")))
-	.with(DateTimeZone.forID("Europe/London"));
+	;
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -75,6 +75,10 @@ public class TimelineDateTimeComponent extends JComponent {
 				}
 			}
 		});
+	}
+	
+	public void setTimeZone(DateTimeZone dateTimeZone) {
+		availableTicks = availableTicks.with(dateTimeZone);
 	}
 	
 	@Override

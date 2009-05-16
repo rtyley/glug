@@ -11,14 +11,7 @@
 
 package glug.gui;
 
-import static java.awt.event.InputEvent.CTRL_MASK;
-import static java.awt.event.KeyEvent.VK_ADD;
-import static java.awt.event.KeyEvent.VK_EQUALS;
-import static java.awt.event.KeyEvent.VK_PLUS;
-import static java.util.Arrays.asList;
-import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
-import static javax.swing.KeyStroke.getKeyStroke;
 import static javax.swing.SwingUtilities.invokeLater;
 import gchisto.gctrace.GCTrace;
 import gchisto.gctracegenerator.NopGCTraceGeneratorListener;
@@ -38,19 +31,13 @@ import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.BoxLayout;
-import javax.swing.InputMap;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
@@ -94,6 +81,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 		uiTimeScale.setFullInterval(new Interval(new Instant(), new Duration(1000000)));
 		timelineDateTimeComponent = new TimelineDateTimeComponent(uiTimeScale);
+		timelineDateTimeComponent.setTimeZone(DateTimeZone.forID("Europe/London"));
 		timelineScrollPane.setColumnHeaderView(timelineDateTimeComponent);
 
 		timelineScrollPane.validate();
