@@ -30,24 +30,11 @@ public abstract class TimelineComponent extends JComponent implements ChangeList
 			public void propertyChange(PropertyChangeEvent evt) {
 				setSize(getPreferredSize());
 				if (evt.getPropertyName().equals("millisecondsPerPixel")) {
-					//scrollViewToKeepCursorInSamePosition((Double)evt.getOldValue());
 					repaint();
 				}
 			}
 		});
 	}
-	
-//	protected void scrollViewToKeepCursorInSamePosition(double oldMillisecondsPerPixel) {
-//		LogInstant cursorDot = getTimelineCursor().getDot();
-//		if (cursorDot != null) {
-//			int originalCursorHorizontalPositionInComponent = uiTimeScale.modelToView(cursorDot.getRecordedInstant(), oldMillisecondsPerPixel);
-//			int updatedCursorHorizontalPositionInComponent = uiTimeScale.modelToView(cursorDot.getRecordedInstant());
-//			int differenceInCursorHorizontalPositionInComponent = updatedCursorHorizontalPositionInComponent - originalCursorHorizontalPositionInComponent;
-//			Rectangle visibleRectangle = getVisibleRect();
-//			visibleRectangle.translate(differenceInCursorHorizontalPositionInComponent, 0);
-//			scrollRectToVisible(visibleRectangle);
-//		}
-//	}
 
 	@Override
 	public void paintComponent(Graphics g) {
