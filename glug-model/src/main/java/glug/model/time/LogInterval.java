@@ -27,6 +27,10 @@ public class LogInterval implements Comparable<LogInterval> {
 		this.end = logInstantAtEnd;
 	}
 
+	public LogInterval(Interval interval) {
+		this(interval.toDuration(), new LogInstant(interval.getEnd().toInstant()));
+	}
+
 	public LogInstant getStart() {
 		return start;
 	}

@@ -8,6 +8,9 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 	private final ThreadModel threadModel;
 	
 	public SignificantInterval(ThreadModel threadModel, SignificantIntervalOccupier intervalOccupier, LogInterval logInterval) {
+//		if (logInterval.getStart().equals(logInterval.getEnd())) {
+//			throw new IllegalArgumentException("It took at least one log line, didn't it!?");
+//		}
 		this.threadModel = threadModel;
 		this.logInterval = logInterval;
 		this.intervalOccupier = intervalOccupier;

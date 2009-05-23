@@ -80,4 +80,19 @@ public class ThreadModel {
 		return getClass().getSimpleName()+"["+getInterval()+"]";
 	}
 
+
+	public Map<IntervalTypeDescriptor, Integer> countOccurencesDuring(LogInterval logInterval, IntervalTypeDescriptor... typesOfIntervalsToCount) {
+		Map<IntervalTypeDescriptor, Integer> countMap = new HashMap<IntervalTypeDescriptor, Integer>(typesOfIntervalsToCount.length);
+		for (IntervalTypeDescriptor intervalType : typesOfIntervalsToCount) {
+			SignificantInstants significantInstants = map.get(intervalType);
+			if (significantInstants!=null) {
+				int occurences = significantInstants.countOccurencesDuring(logInterval);
+				if (occurences>0) {
+					countMap.put(intervalType, occurences);
+				}
+			}
+		}
+		return countMap;
+	}
+
 }

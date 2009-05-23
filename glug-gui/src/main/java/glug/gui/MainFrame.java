@@ -11,6 +11,9 @@
 
 package glug.gui;
 
+import static glug.parser.logmessages.CompletedDatabaseQueryParser.DATABASE_QUERY;
+import static glug.parser.logmessages.CompletedHTTPRequestParser.HTTP_REQUEST;
+import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.SwingUtilities.invokeLater;
 import gchisto.gctrace.GCTrace;
@@ -25,14 +28,20 @@ import glug.gui.zoom.TimelineViewport;
 import glug.gui.zoom.ViewPreservingZoomer;
 import glug.gui.zoom.ZoomFactorSlideUpdater;
 import glug.gui.zoom.ZoomFocusFinder;
+import glug.model.IntervalTypeDescriptor;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
+import glug.parser.logmessages.CompletedDatabaseQueryParser;
+import glug.parser.logmessages.CompletedHTTPRequestParser;
+import glug.parser.logmessages.CompletedPageRequestParser;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -75,8 +84,21 @@ public class MainFrame extends javax.swing.JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				LogInterval selectedInterval = timelineCursor.getSelectedInterval();
-				String text = selectedInterval==null?"":selectedInterval.toJodaInterval().toDuration().toPeriod().toString(PeriodFormat.getDefault());;
-				selectedRegionLabel.setText(text);
+				String text = null;
+				if (selectedInterval!=null) {
+					text = selectedInterval.toJodaInterval().toPeriod().toString(PeriodFormat.getDefault());
+					Map<IntervalTypeDescriptor, Integer> occurences = threadedSystem.countOccurencesDuring(selectedInterval,DATABASE_QUERY, PAGE_REQUEST);
+					if (occurences.containsKey(DATABASE_QUERY) && occurences.containsKey(PAGE_REQUEST)) {
+						float dbQueries = occurences.get(DATABASE_QUERY);
+						int pageRequests = occurences.get(PAGE_REQUEST);
+						float ratio = dbQueries/pageRequests;
+						NumberFormat instance = NumberFormat.getInstance();
+						instance.setMinimumFractionDigits(2);
+						instance.setMaximumFractionDigits(2);
+						text=text+" " + instance.format(ratio)+" DB calls/Page req";
+					}
+				}
+				selectedRegionLabel.setText(text);					
 			}
 		});
 
@@ -141,6 +163,7 @@ public class MainFrame extends javax.swing.JFrame {
         zoomInMenuItem = new javax.swing.JMenuItem();
         zoomOutMenuItem = new javax.swing.JMenuItem();
         fitInWindowMenuItem = new javax.swing.JMenuItem();
+        selectVisibleMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutBoxMenuItem = new javax.swing.JMenuItem();
 
@@ -220,6 +243,15 @@ public class MainFrame extends javax.swing.JFrame {
         });
         viewMenu.add(fitInWindowMenuItem);
 
+        selectVisibleMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        selectVisibleMenuItem.setText("Select Visible");
+        selectVisibleMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectVisibleMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(selectVisibleMenuItem);
+
         menuBar.add(viewMenu);
 
         helpMenu.setMnemonic('H');
@@ -243,8 +275,9 @@ public class MainFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(selectedRegionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 352, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 340, Short.MAX_VALUE)
                 .addComponent(timeMagnificationSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(timelineScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
         );
@@ -268,6 +301,11 @@ public class MainFrame extends javax.swing.JFrame {
     private void zoomOutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutMenuItemActionPerformed
     	viewPreservingZoomer.zoomPreservingViewLocation(uiTimeScale.getMillisecondsPerPixel() * 2);
     }//GEN-LAST:event_zoomOutMenuItemActionPerformed
+
+    private void selectVisibleMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectVisibleMenuItemActionPerformed
+    	Interval visibleInterval = timelineViewport.getVisibleInterval();
+    	timelineCursor.setSelectedInterval(new LogInterval(visibleInterval));
+    }//GEN-LAST:event_selectVisibleMenuItemActionPerformed
 
 	private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
 		LogInterval selectedInterval = timelineCursor.getSelectedInterval();
@@ -345,6 +383,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openFileMenuItem;
+    private javax.swing.JMenuItem selectVisibleMenuItem;
     private javax.swing.JLabel selectedRegionLabel;
     private javax.swing.JSlider timeMagnificationSlider;
     private javax.swing.JScrollPane timelineScrollPane;

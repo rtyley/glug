@@ -1,11 +1,15 @@
 package glug.model;
 
 import glug.model.time.LogInterval;
-import glug.parser.ThreadIdCache;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import com.google.common.collect.MapMaker;
 
 public class ThreadedSystem {
 
@@ -47,6 +51,20 @@ public class ThreadedSystem {
 
 	public Uptime uptime() {
 		return uptime;
+	}
+
+	public Map<IntervalTypeDescriptor,Integer> countOccurencesDuring(LogInterval logInterval, IntervalTypeDescriptor... typesOfIntervalsToCount) {
+		Map<IntervalTypeDescriptor,Integer> countMap= new HashMap<IntervalTypeDescriptor, Integer>(typesOfIntervalsToCount.length);
+		for (ThreadModel threadModel : map.values()) { 
+			Map<IntervalTypeDescriptor,Integer> countsForThread = threadModel.countOccurencesDuring(logInterval, typesOfIntervalsToCount);
+			for (Entry<IntervalTypeDescriptor, Integer> entry : countsForThread.entrySet()) {
+				IntervalTypeDescriptor intervalType = entry.getKey();
+				Integer currentCount=countMap.get(intervalType);
+				int updatedCount = (currentCount==null?0:currentCount) +entry.getValue();
+				countMap.put(intervalType, updatedCount);
+			}
+		}
+		return countMap;
 	}
 
 }

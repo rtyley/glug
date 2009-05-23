@@ -4,6 +4,7 @@ import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
 import java.util.Collection;
+import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
@@ -26,7 +27,7 @@ public class SignificantInstants {
 	}
 	
 	Collection<SignificantInterval> getSignificantIntervalsDuring(LogInterval logInterval) {
-		return new TreeSet<SignificantInterval>(subMapFor(logInterval).values()); // Make SignificantInterval implement Comparable!
+		return new TreeSet<SignificantInterval>(subMapFor(logInterval,true,false).values()); // Make SignificantInterval implement Comparable!
 	}
 	
 	public SignificantInterval getLatestSignificantIntervalStartingAtOrBefore(Instant instant) {
@@ -86,15 +87,32 @@ public class SignificantInstants {
 		return significantInstants.subMap(interval.getStart(),interval.getEnd());
 	}
 	
-	private SortedMap<LogInstant, SignificantInterval> subMapFor(LogInterval interval) {
+	private NavigableMap<LogInstant, SignificantInterval> subMapFor(LogInterval interval, boolean fromInclusive,
+                                              boolean toInclusive) {
 		LogInstant start = significantInstants.floorKey(interval.getStart());
 		LogInstant end = significantInstants.ceilingKey(interval.getEnd());
 		
-		return significantInstants.subMap(start==null?interval.getStart():start, end==null?interval.getEnd():end);
+		return significantInstants.subMap(start==null?interval.getStart():start, fromInclusive, end==null?interval.getEnd():end, toInclusive);
 	}
 
 	public LogInterval getLogInterval() {
 		return significantInstants.isEmpty()?null:new LogInterval(significantInstants.firstKey(),significantInstants.lastKey());
+	}
+
+	public int countOccurencesDuring(LogInterval logInterval) {
+		NavigableMap<LogInstant, SignificantInterval> subMap = subMapFor(logInterval,true,true);
+		int uniqueCount=0;
+		SignificantInterval prior=null;
+		for (SignificantInterval significantInterval : subMap.values()) {
+			LogInterval spanOfThing = significantInterval.getLogInterval();
+			if (!(spanOfThing.isBefore(logInterval) || spanOfThing.isAfter(logInterval))) {
+				if (prior!=significantInterval) {
+					++uniqueCount;
+					prior=significantInterval;
+				}
+			}
+		}
+		return uniqueCount;
 	}
 
 

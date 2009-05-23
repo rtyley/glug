@@ -2,11 +2,15 @@ package glug.model;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
+import static org.joda.time.Duration.standardSeconds;
 import static org.junit.Assert.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
+import glug.model.time.LogInstant;
+import glug.model.time.LogInterval;
 
+import java.util.Map;
+
+import org.joda.time.Duration;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,8 +33,17 @@ public class ThreadedSystemTest {
 	public void shouldUnderstandThatThreadsAreDifferentDammit() {
 		threadedSystem.getOrCreateThread("Timeout guard");
 		threadedSystem.getOrCreateThread("timerFactory");
-		List<ThreadModel> threadList = new ArrayList<ThreadModel>(threadedSystem.getThreads());
-
-		assertThat(threadList.size(), equalTo(2));
+		assertThat(threadedSystem.getThreads().size(), equalTo(2));
 	}
+	
+	@Test
+	public void shouldCountStuff() { 
+		IntervalTypeDescriptor intervalType = null;
+		LogInterval logInterval = new LogInterval(standardSeconds(10),new LogInstant(15));
+		//threadedSystem.getOrCreateThread("a").add(significantInterval)
+		Map<IntervalTypeDescriptor, Integer> countMap = threadedSystem.countOccurencesDuring(logInterval, intervalType);
+		
+		
+	}
+	
 }

@@ -99,4 +99,26 @@ public class SignificantInstantsTest {
 		assertThat(significantInstants.getLatestSignificantIntervalStartingAtOrBefore(new Instant(3000)), equalTo(significantInterval));
 		assertThat(significantInstants.getLatestSignificantIntervalStartingAtOrBefore(new Instant(6000)), equalTo(significantInterval));
 	}
+	
+
+	@Test
+	public void shouldCountOccurences() {
+		LogInterval firstInterval = new LogInterval(standardSeconds(1),new LogInstant(3000));
+		LogInterval middleInterval = new LogInterval(standardSeconds(2),new LogInstant(6500));
+		LogInterval lastInterval = new LogInterval(standardSeconds(1),new LogInstant(9000));
+		significantInstants.add(new SignificantInterval(null, null, firstInterval));
+		significantInstants.add(new SignificantInterval(null, null, middleInterval));
+		significantInstants.add(new SignificantInterval(null, null, lastInterval));
+		
+		assertThat(significantInstants.countOccurencesDuring(new LogInterval(standardSeconds(3),new LogInstant(7000))), equalTo(1));
+		assertThat(significantInstants.countOccurencesDuring(new LogInterval(standardSeconds(1),new LogInstant(6000))), equalTo(1));
+		assertThat(significantInstants.countOccurencesDuring(firstInterval), equalTo(1));
+		assertThat(significantInstants.countOccurencesDuring(middleInterval), equalTo(1));
+		assertThat(significantInstants.countOccurencesDuring(lastInterval), equalTo(1));
+		assertThat(significantInstants.countOccurencesDuring(new LogInterval(firstInterval.getEnd(),middleInterval.getStart())), equalTo(0));
+		assertThat(significantInstants.countOccurencesDuring(new LogInterval(standardSeconds(8),new LogInstant(9500))), equalTo(3));
+		assertThat(significantInstants.countOccurencesDuring(new LogInterval(standardSeconds(7),new LogInstant(8500))), equalTo(3));
+		assertThat(significantInstants.countOccurencesDuring(new LogInterval(standardSeconds(1),new LogInstant(6000))), equalTo(1));
+		
+	}
 }

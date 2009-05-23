@@ -7,6 +7,7 @@ import java.awt.Point;
 import javax.swing.JViewport;
 
 import org.joda.time.Instant;
+import org.joda.time.Interval;
 
 public class TimelineViewport {
 
@@ -33,4 +34,8 @@ public class TimelineViewport {
 		viewport.setViewPosition(new Point(requiredLeftBoundInViewCoords, viewport.getViewPosition().y));
 	}
 
+	public Interval getVisibleInterval() {
+		return uiTimeScale.viewToModel(viewport.getViewRect());
+	}
+	
 }
