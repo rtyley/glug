@@ -21,10 +21,13 @@ Http request for REUTERS http://ris.rois.com/TPRjIia1148tDU*g4QbwCAfnc3bxoT7RDGD
  */
 
 public class CompletedHTTPRequestParser extends IntervalLogMessageParser {
-
 	public static final IntervalTypeDescriptor HTTP_REQUEST = new IntervalTypeDescriptor(6, GREEN.darker(), "HTTP Request");
-
+	
 	private static final Pattern httpRequestPattern = Pattern.compile("Http request for ([^ ]+) ([^ ]+) completed in (\\d+) ms");
+
+	public CompletedHTTPRequestParser() {
+		super("com.gu.r2.common.util.http.HttpConnection", httpRequestPattern);
+	}
 
 	@Override
 	SignificantIntervalOccupier intervalOccupierFor(Matcher matcher) {
@@ -36,15 +39,4 @@ public class CompletedHTTPRequestParser extends IntervalLogMessageParser {
 		String durationInMillisText = matcher.group(3);
 		return new Duration(parseInt(durationInMillisText));
 	}
-
-	@Override
-	public String getLoggerClassName() {
-		return "com.gu.r2.common.util.http.HttpConnection";
-	}
-
-	@Override
-	public Pattern getPattern() {
-		return httpRequestPattern;
-	}
-
 }

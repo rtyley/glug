@@ -7,10 +7,15 @@ import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.joda.time.Duration;
 
-public abstract class IntervalLogMessageParser implements LogMessageParser {
+public abstract class IntervalLogMessageParser extends LogMessageParser {
+
+	public IntervalLogMessageParser(String loggerClassName, Pattern pattern) {
+		super(loggerClassName, pattern);
+	}
 
 	@Override
 	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant) {

@@ -18,8 +18,12 @@ import org.joda.time.Duration;
 public class CompletedDatabaseQueryParser extends IntervalLogMessageParser {
 
 	public static final IntervalTypeDescriptor DATABASE_QUERY = new IntervalTypeDescriptor(2, BLACK, "Database Query");
-
+	
 	private static final Pattern databaseQueryPattern = Pattern.compile("Query \"(.+?)\" \\(component: (.+?)\\) completed in (\\d+?) ms");
+
+	public CompletedDatabaseQueryParser() {
+		super("com.gu.r2.common.diagnostic.database.PreparedStatementProxy", databaseQueryPattern);
+	}
 
 	@Override
 	SignificantIntervalOccupier intervalOccupierFor(Matcher matcher) {
@@ -30,16 +34,6 @@ public class CompletedDatabaseQueryParser extends IntervalLogMessageParser {
 	Duration durationFrom(Matcher matcher) {
 		String durationInMillisText = matcher.group(3);
 		return new Duration(parseInt(durationInMillisText));
-	}
-
-	@Override
-	public String getLoggerClassName() {
-		return "com.gu.r2.common.diagnostic.database.PreparedStatementProxy";
-	}
-
-	@Override
-	public Pattern getPattern() {
-		return databaseQueryPattern;
 	}
 
 }

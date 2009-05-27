@@ -45,7 +45,7 @@ public class LogLoadingTask extends SwingWorker<Void, LoadReport> {
 	}
 
 	private String format(LogInterval loadedLogInterval) {
-		return loadedLogInterval.toJodaInterval().toDuration().toPeriod().toString(PeriodFormat.getDefault());
+		return loadedLogInterval.toJodaInterval().toPeriod().toString(PeriodFormat.getDefault());
 	}
 
 	@Override

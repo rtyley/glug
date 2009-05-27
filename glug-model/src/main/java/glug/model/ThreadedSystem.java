@@ -9,8 +9,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.google.common.collect.MapMaker;
-
 public class ThreadedSystem {
 
 	private Uptime uptime = new Uptime();

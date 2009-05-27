@@ -20,6 +20,10 @@ public abstract class CompletedPageRequestParser extends IntervalLogMessageParse
 	
 	private static final Pattern requestCompletedPattern = Pattern.compile("^Request for ([^ ]+?) completed in (\\d+?) ms$");
 	
+	public CompletedPageRequestParser(String loggerClassName) {
+		super(loggerClassName, requestCompletedPattern);
+	}
+	
 	@Override
 	SignificantIntervalOccupier intervalOccupierFor(Matcher matcher) {
 		String pagePath = matcher.group(1);
@@ -29,11 +33,6 @@ public abstract class CompletedPageRequestParser extends IntervalLogMessageParse
 	Duration durationFrom(Matcher matcher) {
 		String durationInMillisText = matcher.group(2);
 		return new Duration(parseInt(durationInMillisText));
-	}
-
-	@Override
-	public Pattern getPattern() {
-		return requestCompletedPattern;
 	}
 
 }

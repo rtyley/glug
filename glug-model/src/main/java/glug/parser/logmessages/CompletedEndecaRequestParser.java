@@ -22,6 +22,10 @@ public abstract class CompletedEndecaRequestParser extends IntervalLogMessagePar
 	
 	private static final Pattern endecaRequestPattern = Pattern.compile(".*\\}\\s?\\[(.+?)\\].*completed in (\\d+?) ms");
 	
+	public CompletedEndecaRequestParser(String loggerClassName) {
+		super(loggerClassName, endecaRequestPattern);
+	}
+
 	@Override
 	SignificantIntervalOccupier intervalOccupierFor(Matcher matcher) {
 		String endecaRequest = matcher.group(1);
@@ -31,16 +35,6 @@ public abstract class CompletedEndecaRequestParser extends IntervalLogMessagePar
 	Duration durationFrom(Matcher matcher) {
 		String durationInMillisText = matcher.group(2);
 		return new Duration(parseInt(durationInMillisText));
-	}
-
-	@Override
-	public String getLoggerClassName() {
-		return "com.gu.endeca.data.bridge.AbstractBridge";
-	}
-
-	@Override
-	public Pattern getPattern() {
-		return endecaRequestPattern;
 	}
 
 }

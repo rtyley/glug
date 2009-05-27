@@ -1,17 +1,48 @@
 package glug.model;
 
 
+import glug.parser.GlugConfig;
+
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+@XmlRootElement(name="intervalType")
 public class IntervalTypeDescriptor implements Comparable<IntervalTypeDescriptor> {
-	private final Color colour;
-	private final int precedence;
-	private final String description;
+	private String id;
+	private int precedence;
+	
+	@XmlAttribute
+	@XmlJavaTypeAdapter(ColourAdapter.class)
+	private Color colour;
+
+	@XmlAttribute
+	private String description;
 	
 	private Map<String, SignificantIntervalOccupier> cache=new HashMap<String, SignificantIntervalOccupier>();
 
+	private IntervalTypeDescriptor() {
+	}
+	
+	@XmlID
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getId() {
+		return id;
+	}
+	
+	protected void afterUnmarshal(Unmarshaller unmarshaller, Object parent) {
+		GlugConfig config = (GlugConfig) parent;
+		
+	}
+	
 	public IntervalTypeDescriptor(int precedence, Color colour, String description) {
 		this.precedence = precedence;
 		this.colour = colour;

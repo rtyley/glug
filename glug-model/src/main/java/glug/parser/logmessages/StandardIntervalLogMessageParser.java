@@ -11,22 +11,17 @@ import org.joda.time.Duration;
 
 public class StandardIntervalLogMessageParser extends IntervalLogMessageParser {
 
-	private final Pattern pattern;
-	private final String loggerClassName;
 	private final int durationRegexGroupIndex;
 	private final int dataRegexGroupIndex;
 	private final IntervalTypeDescriptor intervalTypeDescriptor;
 
-
-	
 	public StandardIntervalLogMessageParser(
 			String loggerClassName,
 			Pattern pattern,
 			int durationRegexGroupIndex,
 			int dataRegexGroupIndex,
 			IntervalTypeDescriptor intervalTypeDescriptor) {
-		this.pattern = pattern;
-		this.loggerClassName = loggerClassName;
+		super(loggerClassName, pattern);
 		this.durationRegexGroupIndex = durationRegexGroupIndex;
 		this.dataRegexGroupIndex = dataRegexGroupIndex;
 		this.intervalTypeDescriptor = intervalTypeDescriptor;
@@ -43,15 +38,4 @@ public class StandardIntervalLogMessageParser extends IntervalLogMessageParser {
 		String data = matcher.group(dataRegexGroupIndex);
 		return intervalTypeDescriptor.with(data);
 	}
-
-	@Override
-	public String getLoggerClassName() {
-		return loggerClassName;
-	}
-
-	@Override
-	public Pattern getPattern() {
-		return pattern;
-	}
-
 }

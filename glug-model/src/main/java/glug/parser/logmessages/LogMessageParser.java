@@ -7,12 +7,27 @@ import glug.model.time.LogInstant;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public interface LogMessageParser {
+import javax.xml.bind.annotation.XmlSeeAlso;
 
-	public Pattern getPattern();
+@XmlSeeAlso( { StandardIntervalLogMessageParser.class })
+public abstract class LogMessageParser {
 
-	public String getLoggerClassName();
+	private String loggerClassName;
+	private Pattern pattern;
+	
+	public LogMessageParser(String loggerClassName, Pattern pattern) {
+		this.loggerClassName = loggerClassName;
+		this.pattern = pattern;
+	}
+	
+	public final Pattern getPattern() {
+		return pattern;
+	}
 
-	public SignificantInterval process(Matcher matcher,	ThreadModel threadModel, LogInstant logInstant);
+	public final String getLoggerClassName() {
+		return loggerClassName;
+	}
+
+	public abstract SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant);
 
 }
