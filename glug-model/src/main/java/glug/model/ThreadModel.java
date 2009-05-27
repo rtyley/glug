@@ -45,14 +45,9 @@ public class ThreadModel {
 		}
 		return interval;
 	}
-
-	public SortedMap<IntervalTypeDescriptor,Collection<SignificantInterval>> getSignificantIntervalsFor(LogInterval logInterval) {
-		SortedMap<IntervalTypeDescriptor,Collection<SignificantInterval>> significantIntervals = new TreeMap<IntervalTypeDescriptor,Collection<SignificantInterval>>();
-		for (Map.Entry<IntervalTypeDescriptor, SignificantInstants> entry : map.entrySet()) {
-			Collection<SignificantInterval> significantIntervalsDuringInterval = entry.getValue().getSignificantIntervalsDuring(logInterval);
-			significantIntervals.put(entry.getKey(), significantIntervalsDuringInterval);
-		}
-		return significantIntervals;
+	
+	public SignificantInstants getSignificantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor) {
+		return map.get(intervalTypeDescriptor);
 	}
 
 	public String getName() {
@@ -93,6 +88,11 @@ public class ThreadModel {
 			}
 		}
 		return countMap;
+	}
+
+
+	public Collection<IntervalTypeDescriptor> getIntervalTypes() {
+		return map.keySet();
 	}
 
 }

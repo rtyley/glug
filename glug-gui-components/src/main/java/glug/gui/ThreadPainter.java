@@ -25,12 +25,10 @@ public class ThreadPainter {
 		int threadGraphicsY = uiThreadScale.modelThreadIndexToView(threadIndex);
 		int threadGraphicsHeight = uiThreadScale.modelThreadIndexToView(threadIndex+1) - threadGraphicsY;
 		
-		for (Entry<IntervalTypeDescriptor, Collection<SignificantInterval>> blah : threadModel
-				.getSignificantIntervalsFor(visibleInterval).entrySet()) {
-			IntervalTypeDescriptor intervalTypeDescriptor = blah.getKey();
+		for (IntervalTypeDescriptor intervalTypeDescriptor : threadModel.getIntervalTypes()) {
 			g.setColor(intervalTypeDescriptor.getColour());
 
-			Collection<SignificantInterval> sigInts = blah.getValue();
+			Collection<SignificantInterval> sigInts = threadModel.getSignificantIntervalsFor(intervalTypeDescriptor).getSignificantIntervalsDuring(visibleInterval);
 			
 			LogInterval visibleIntervalToPlot = null;
 			

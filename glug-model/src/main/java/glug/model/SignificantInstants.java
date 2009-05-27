@@ -26,7 +26,7 @@ public class SignificantInstants {
 		return sigInt.getLogInterval().contains(instant) ? sigInt : null;
 	}
 	
-	Collection<SignificantInterval> getSignificantIntervalsDuring(LogInterval logInterval) {
+	public Collection<SignificantInterval> getSignificantIntervalsDuring(LogInterval logInterval) {
 		return new TreeSet<SignificantInterval>(subMapFor(logInterval,true,false).values()); // Make SignificantInterval implement Comparable!
 	}
 	
