@@ -3,6 +3,7 @@ package glug.model;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
+//Seriously?!
 public class Uptime {
 	SignificantInstants uptime = new SignificantInstants();
 	
