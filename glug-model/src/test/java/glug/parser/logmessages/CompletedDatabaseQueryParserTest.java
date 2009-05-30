@@ -25,7 +25,7 @@ public class CompletedDatabaseQueryParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(4567,1001));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(20L));
-		SignificantIntervalOccupier completedDatabaseQuery = sigInt.getType();
+		SignificantIntervalOccupier completedDatabaseQuery = sigInt.getOccupier();
 		assertThat(completedDatabaseQuery.getData(), equalTo("load com.gu.r2.common.model.page.LivePage"));
 	}
 }

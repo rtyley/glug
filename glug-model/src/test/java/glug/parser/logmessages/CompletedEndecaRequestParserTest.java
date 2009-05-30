@@ -27,7 +27,7 @@ public class CompletedEndecaRequestParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(4567,1001));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(7L));
-		SignificantIntervalOccupier completedEndecaRequest = sigInt.getType();
+		SignificantIntervalOccupier completedEndecaRequest = sigInt.getOccupier();
 		assertThat(completedEndecaRequest.getData(), equalTo("Go=Go&Ntk=DomainSearchInterface&Nr=OR%28P_RecordType%3AEDUCATION_LEAGUE_TABLE%29&FirstRow=0&Ns=P_EducationGuardianTeachingScore%7C1%7C%7CP_EducationInstitution%7C0&N=4294967238+4294967006&SearchBySubject=false&SortOrderColumn=GuardianTeachingScore"));
 		
 	}
@@ -42,7 +42,7 @@ public class CompletedEndecaRequestParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(4567,1001));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(21L));
-		SignificantIntervalOccupier completedEndecaRequest = sigInt.getType();
+		SignificantIntervalOccupier completedEndecaRequest = sigInt.getOccupier();
 		assertThat(completedEndecaRequest.getData(), equalTo("N=4294955867&Ns=P_PublicationDate%7c1&Ntk=APISearch&Ntt=%22Anthony+Abrahams%22&Ntx=mode+matchallpartial&Nty=1&D=%22Anthony+Abrahams%22"));
 		
 	}

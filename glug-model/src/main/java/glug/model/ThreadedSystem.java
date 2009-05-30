@@ -15,6 +15,13 @@ public class ThreadedSystem {
 
 	private ConcurrentMap<String, ThreadModel> map = new ConcurrentHashMap<String, ThreadModel>();
 
+	
+	
+	public void add(String threadName, SignificantIntervalOccupier intervalOccupier, LogInterval logInterval) {
+		ThreadModel thread = getOrCreateThread(threadName);
+		thread.add(new SignificantInterval(thread, intervalOccupier, logInterval ));
+	}
+		
 	public void add(String threadName, SignificantInterval significantInterval) {
 		getOrCreateThread(threadName).add(significantInterval);
 	}

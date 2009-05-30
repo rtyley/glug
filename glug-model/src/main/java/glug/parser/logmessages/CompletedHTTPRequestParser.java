@@ -21,7 +21,7 @@ Http request for REUTERS http://ris.rois.com/TPRjIia1148tDU*g4QbwCAfnc3bxoT7RDGD
  */
 
 public class CompletedHTTPRequestParser extends IntervalLogMessageParser {
-	public static final IntervalTypeDescriptor HTTP_REQUEST = new IntervalTypeDescriptor(6, GREEN.darker(), "HTTP Request");
+	public static final IntervalTypeDescriptor HTTP_REQUEST = new IntervalTypeDescriptor(GREEN.darker(), "HTTP Request");
 	
 	private static final Pattern httpRequestPattern = Pattern.compile("Http request for ([^ ]+) ([^ ]+) completed in (\\d+) ms");
 

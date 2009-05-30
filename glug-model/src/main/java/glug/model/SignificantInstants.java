@@ -5,7 +5,6 @@ import glug.model.time.LogInterval;
 
 import java.util.Collection;
 import java.util.NavigableMap;
-import java.util.SortedMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -17,7 +16,7 @@ import org.joda.time.Instant;
 public class SignificantInstants {
 	private ConcurrentNavigableMap<LogInstant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<LogInstant, SignificantInterval>();
 
-	SignificantInterval getSignificantIntervalAt(LogInstant instant) {
+	public SignificantInterval getSignificantIntervalAt(LogInstant instant) {
 		Entry<LogInstant, SignificantInterval> floorEntry = significantInstants.floorEntry(instant);
 		if (floorEntry==null) {
 			return null;

@@ -25,10 +25,12 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 		return this.getClass().hashCode() - otherSignificantInterval.getClass().hashCode(); // TODO Welcome to hackarama
 	}
 
-	public SignificantIntervalOccupier getType() {
+	public SignificantIntervalOccupier getOccupier() {
 		return intervalOccupier;
 	}
 
+	
+	// Do we really need this reference?
 	public ThreadModel getThread() {
 		return threadModel;
 	}

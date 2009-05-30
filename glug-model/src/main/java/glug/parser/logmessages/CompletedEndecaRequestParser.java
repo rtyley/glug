@@ -18,7 +18,7 @@ import org.joda.time.Duration;
  */
 public abstract class CompletedEndecaRequestParser extends IntervalLogMessageParser {
 	
-	private static final IntervalTypeDescriptor ENDECA_REQUEST = new IntervalTypeDescriptor(3,ORANGE,"Endeca Request");
+	public static final IntervalTypeDescriptor ENDECA_REQUEST = new IntervalTypeDescriptor(ORANGE,"Endeca Request");
 	
 	private static final Pattern endecaRequestPattern = Pattern.compile(".*\\}\\s?\\[(.+?)\\].*completed in (\\d+?) ms");
 	

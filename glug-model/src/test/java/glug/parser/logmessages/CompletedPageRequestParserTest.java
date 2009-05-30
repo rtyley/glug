@@ -30,7 +30,7 @@ public class CompletedPageRequestParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L,101));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(712L));
-		assertThat(sigInt.getType(), equalTo(PAGE_REQUEST.with("/pages/Guardian/lifeandstyle")));
+		assertThat(sigInt.getOccupier(), equalTo(PAGE_REQUEST.with("/pages/Guardian/lifeandstyle")));
 	}
 	
 	@Test
@@ -43,7 +43,7 @@ public class CompletedPageRequestParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L,101));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(1296L));
-		assertThat(sigInt.getType(), equalTo(PAGE_REQUEST.with("/search?search=guy+browning&No=10&sitesearch-radio=guardian&go-guardian=Search")));
+		assertThat(sigInt.getOccupier(), equalTo(PAGE_REQUEST.with("/search?search=guy+browning&No=10&sitesearch-radio=guardian&go-guardian=Search")));
 	
 	}
 }

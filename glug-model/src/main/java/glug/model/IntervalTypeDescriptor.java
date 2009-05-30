@@ -1,6 +1,5 @@
 package glug.model;
 
-
 import glug.parser.GlugConfig;
 
 import java.awt.Color;
@@ -14,9 +13,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement(name="intervalType")
-public class IntervalTypeDescriptor implements Comparable<IntervalTypeDescriptor> {
+public class IntervalTypeDescriptor {
 	private String id;
-	private int precedence;
 	
 	@XmlAttribute
 	@XmlJavaTypeAdapter(ColourAdapter.class)
@@ -43,15 +41,9 @@ public class IntervalTypeDescriptor implements Comparable<IntervalTypeDescriptor
 		
 	}
 	
-	public IntervalTypeDescriptor(int precedence, Color colour, String description) {
-		this.precedence = precedence;
+	public IntervalTypeDescriptor(Color colour, String description) {
 		this.colour = colour;
 		this.description = description;
-	}
-	
-	@Override
-	public int compareTo(IntervalTypeDescriptor o) {
-		return this.precedence - o.precedence;
 	}
 
 	public Color getColour() {
@@ -82,7 +74,6 @@ public class IntervalTypeDescriptor implements Comparable<IntervalTypeDescriptor
 		int result = 1;
 		result = prime * result + ((colour == null) ? 0 : colour.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + precedence;
 		return result;
 	}
 
@@ -104,8 +95,6 @@ public class IntervalTypeDescriptor implements Comparable<IntervalTypeDescriptor
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
-			return false;
-		if (precedence != other.precedence)
 			return false;
 		return true;
 	}

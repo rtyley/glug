@@ -2,22 +2,25 @@ package glug.gui;
 
 import static java.lang.Math.round;
 import glug.model.IntervalTypeDescriptor;
+import glug.model.SignificantInstants;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInterval;
+import glug.parser.GlugConfig;
 
 import java.awt.Graphics2D;
 import java.util.Collection;
-import java.util.Map.Entry;
 
 public class ThreadPainter {
 	
 	private final UILogTimeScale uiLogTimeScale;
 	private final UIThreadScale uiThreadScale;
+	private final GlugConfig glugConfig;
 
-	public ThreadPainter(UILogTimeScale uiLogTimeScale, UIThreadScale uiThreadScale) {
+	public ThreadPainter(UILogTimeScale uiLogTimeScale, UIThreadScale uiThreadScale, GlugConfig glugConfig) {
 		this.uiLogTimeScale = uiLogTimeScale;
 		this.uiThreadScale = uiThreadScale;
+		this.glugConfig = glugConfig;
 	}
 	
 	public void paintThread(ThreadModel threadModel, int threadIndex, LogInterval visibleInterval, Graphics2D g) {
@@ -25,30 +28,46 @@ public class ThreadPainter {
 		int threadGraphicsY = uiThreadScale.modelThreadIndexToView(threadIndex);
 		int threadGraphicsHeight = uiThreadScale.modelThreadIndexToView(threadIndex+1) - threadGraphicsY;
 		
-		for (IntervalTypeDescriptor intervalTypeDescriptor : threadModel.getIntervalTypes()) {
-			g.setColor(intervalTypeDescriptor.getColour());
+		
+		
+		for (IntervalTypeDescriptor intervalTypeDescriptor : glugConfig.getIntervalTypes()) {
+			plotIntervalsOfType(intervalTypeDescriptor, threadModel,
+					visibleInterval, g, durationFor1Pixel, threadGraphicsY,
+					threadGraphicsHeight);
+		}
+	}
 
-			Collection<SignificantInterval> sigInts = threadModel.getSignificantIntervalsFor(intervalTypeDescriptor).getSignificantIntervalsDuring(visibleInterval);
-			
-			LogInterval visibleIntervalToPlot = null;
-			
-			for (SignificantInterval significantInterval : sigInts) {
-				LogInterval visibleIntervalOfCurrentSigInt = significantInterval.getLogInterval().overlap(visibleInterval);
-				if (visibleIntervalOfCurrentSigInt!=null) {
-					if (visibleIntervalToPlot==null) {
-						visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;
-					} else if (close(visibleIntervalToPlot, durationFor1Pixel, visibleIntervalOfCurrentSigInt)) {
-						visibleIntervalToPlot = visibleIntervalToPlot.union(visibleIntervalOfCurrentSigInt);
-					} else {
-						plotBlock(visibleIntervalToPlot, threadGraphicsY,threadGraphicsHeight, g); // finish with the old block
-						visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;  // start the new block
-					}
+	private void plotIntervalsOfType(
+			IntervalTypeDescriptor intervalTypeDescriptor,
+			ThreadModel threadModel, LogInterval visibleInterval, Graphics2D g,
+			int durationFor1Pixel, int threadGraphicsY, int threadGraphicsHeight) {
+		g.setColor(intervalTypeDescriptor.getColour());
+
+		SignificantInstants significantIntervals = threadModel.getSignificantIntervalsFor(intervalTypeDescriptor);
+		
+		if (significantIntervals==null) {
+			return;
+		}
+		
+		Collection<SignificantInterval> sigInts = significantIntervals.getSignificantIntervalsDuring(visibleInterval);
+		
+		LogInterval visibleIntervalToPlot = null;
+		
+		for (SignificantInterval significantInterval : sigInts) {
+			LogInterval visibleIntervalOfCurrentSigInt = significantInterval.getLogInterval().overlap(visibleInterval);
+			if (visibleIntervalOfCurrentSigInt!=null) {
+				if (visibleIntervalToPlot==null) {
+					visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;
+				} else if (close(visibleIntervalToPlot, durationFor1Pixel, visibleIntervalOfCurrentSigInt)) {
+					visibleIntervalToPlot = visibleIntervalToPlot.union(visibleIntervalOfCurrentSigInt);
+				} else {
+					plotBlock(visibleIntervalToPlot, threadGraphicsY,threadGraphicsHeight, g); // finish with the old block
+					visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;  // start the new block
 				}
 			}
-			if (visibleIntervalToPlot != null) {
-				plotBlock(visibleIntervalToPlot, threadGraphicsY,threadGraphicsHeight, g);
-			}
-			
+		}
+		if (visibleIntervalToPlot != null) {
+			plotBlock(visibleIntervalToPlot, threadGraphicsY,threadGraphicsHeight, g);
 		}
 	}
 

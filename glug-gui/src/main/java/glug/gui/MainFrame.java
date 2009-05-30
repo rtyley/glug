@@ -12,8 +12,10 @@
 package glug.gui;
 
 import static glug.parser.logmessages.CompletedDatabaseQueryParser.DATABASE_QUERY;
+import static glug.parser.logmessages.CompletedEndecaRequestParser.ENDECA_REQUEST;
 import static glug.parser.logmessages.CompletedHTTPRequestParser.HTTP_REQUEST;
 import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
+import static java.util.Arrays.asList;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.SwingUtilities.invokeLater;
 import gchisto.gctrace.GCTrace;
@@ -31,15 +33,18 @@ import glug.gui.zoom.ZoomFocusFinder;
 import glug.model.IntervalTypeDescriptor;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
+import glug.parser.GlugConfig;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
 import glug.parser.logmessages.CompletedDatabaseQueryParser;
+import glug.parser.logmessages.CompletedEndecaRequestParser;
 import glug.parser.logmessages.CompletedHTTPRequestParser;
 import glug.parser.logmessages.CompletedPageRequestParser;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +83,10 @@ public class MainFrame extends javax.swing.JFrame {
 
 		timelineCursor = new TimelineCursor();
 		threadScale = new UIThreadScale();
-		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadScale, threadedSystem, timelineCursor);
+		
+		GlugConfig glugConfig = new GlugConfig();
+		glugConfig.getIntervalTypes().addAll(asList(PAGE_REQUEST, DATABASE_QUERY, HTTP_REQUEST, ENDECA_REQUEST));
+		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadScale, threadedSystem, timelineCursor, glugConfig);
 		
 		timelineCursor.addChangeListener(new ChangeListener() {
 			@Override

@@ -33,8 +33,8 @@ public class GlugConfigTest {
 	@Test
 	public void shouldBeLADeDa() throws JAXBException {
 		GlugConfig config = new GlugConfig();
-		config.getIntervalTypes().add(new IntervalTypeDescriptor(0,RED,"Thunder"));
-		config.getIntervalTypes().add(new IntervalTypeDescriptor(0,BLACK,"Strong"));
+		config.getIntervalTypes().add(new IntervalTypeDescriptor(RED,"Thunder"));
+		config.getIntervalTypes().add(new IntervalTypeDescriptor(BLACK,"Strong"));
 		StringWriter stringWriter = new StringWriter();
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty("jaxb.formatted.output",Boolean.TRUE);

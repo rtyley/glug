@@ -10,6 +10,7 @@ import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
+import glug.parser.GlugConfig;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -33,7 +34,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
 	private final UILogTimeScale uiLogTimeScale;
 
-	private final SwingHtmlStyleThreadReporter htmlStyleReporter = new SwingHtmlStyleThreadReporter();
+	private final SwingHtmlStyleThreadReporter htmlStyleReporter;
 	
 	private final ThreadPainter threadPainter;
 	
@@ -44,12 +45,13 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		}
 	};
 	
-	public ThreadedSystemViewComponent(UITimeScale timeScale, UIThreadScale threadScale, ThreadedSystem threadedSystem, TimelineCursor timelineCursor) {
+	public ThreadedSystemViewComponent(UITimeScale timeScale, UIThreadScale threadScale, ThreadedSystem threadedSystem, TimelineCursor timelineCursor, GlugConfig glugConfig) {
 		super(timeScale, timelineCursor);
 		this.threadScale = threadScale;
 		this.threadedSystem = threadedSystem;
 		uiLogTimeScale = new UILogTimeScale(timeScale);
-		threadPainter = new ThreadPainter(uiLogTimeScale,threadScale);
+		threadPainter = new ThreadPainter(uiLogTimeScale,threadScale, glugConfig);
+		htmlStyleReporter = new SwingHtmlStyleThreadReporter(glugConfig);
 		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
 		turnOnToolTips();
 		

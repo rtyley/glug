@@ -17,7 +17,7 @@ import org.joda.time.Duration;
  */
 public class CompletedDatabaseQueryParser extends IntervalLogMessageParser {
 
-	public static final IntervalTypeDescriptor DATABASE_QUERY = new IntervalTypeDescriptor(2, BLACK, "Database Query");
+	public static final IntervalTypeDescriptor DATABASE_QUERY = new IntervalTypeDescriptor(BLACK, "Database Query");
 	
 	private static final Pattern databaseQueryPattern = Pattern.compile("Query \"(.+?)\" \\(component: (.+?)\\) completed in (\\d+?) ms");
 

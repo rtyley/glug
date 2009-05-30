@@ -19,7 +19,7 @@ import org.joda.time.Duration;
 public class JVMUptimeParser extends LogMessageParser {
 	
 	private final static Pattern JVM_UPTIME_PATTERN = Pattern.compile("JVM uptime: (.*) seconds");
-	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(-1,YELLOW,"JVM Uptime");
+	private static final IntervalTypeDescriptor intervalTypeDescriptor = new IntervalTypeDescriptor(YELLOW,"JVM Uptime");
 	private final static SignificantIntervalOccupier jvmUptime = intervalTypeDescriptor.with(null);
 
 	public JVMUptimeParser() {

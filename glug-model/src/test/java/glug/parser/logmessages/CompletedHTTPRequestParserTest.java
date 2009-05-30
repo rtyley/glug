@@ -24,7 +24,7 @@ public class CompletedHTTPRequestParserTest {
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(4567,1001));
 		
 		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(242L));
-		SignificantIntervalOccupier completedDatabaseQuery = sigInt.getType();
+		SignificantIntervalOccupier completedDatabaseQuery = sigInt.getOccupier();
 		assertThat(completedDatabaseQuery.getData(), equalTo("http://sitelife.gutest.gnl/ver1.0/Direct/Process"));
 	}
 }

@@ -40,7 +40,7 @@ public class LogLineParserTest {
 		LogInterval interval = significantInterval.getLogInterval();
 		assertThat(interval.toDurationMillis(),equalTo(5L));
 		assertThat(interval.getStart().getRecordedInstant().toDateTime().getYear(),equalTo(2009));
-		assertThat(significantInterval.getType(),equalTo(PAGE_REQUEST.with("/pages/Guardian/world/rss")));
+		assertThat(significantInterval.getOccupier(),equalTo(PAGE_REQUEST.with("/pages/Guardian/world/rss")));
 	}
 	
 	@Test

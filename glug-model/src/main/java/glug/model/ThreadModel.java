@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 
 public class ThreadModel {
@@ -31,7 +30,7 @@ public class ThreadModel {
 	}
 	
 	public void add(SignificantInterval significantInterval) {
-		IntervalTypeDescriptor intervalTypeDescriptor = significantInterval.getType().getIntervalTypeDescriptor();
+		IntervalTypeDescriptor intervalTypeDescriptor = significantInterval.getOccupier().getIntervalTypeDescriptor();
         if (!map.containsKey(intervalTypeDescriptor)) {
 			map.put(intervalTypeDescriptor, new SignificantInstants());
         }
@@ -50,16 +49,25 @@ public class ThreadModel {
 		return map.get(intervalTypeDescriptor);
 	}
 
+	public SignificantInterval getSignificantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor, LogInstant instant) {
+		SignificantInstants significantInstants = getSignificantIntervalsFor(intervalTypeDescriptor);
+		if (significantInstants==null) {
+			return null;
+		}
+		return significantInstants.getSignificantIntervalAt(instant);
+	}
+
+
 	public String getName() {
 		return threadId.getName();
 	}
 
-	public SortedMap<IntervalTypeDescriptor, SignificantInterval> getSignificantIntervalsFor(LogInstant instant) {
-		SortedMap<IntervalTypeDescriptor, SignificantInterval> significantIntervals = new TreeMap<IntervalTypeDescriptor,SignificantInterval>();
+	public Map<IntervalTypeDescriptor, SignificantInterval> getSignificantIntervalsFor(LogInstant instant) {
+		Map<IntervalTypeDescriptor, SignificantInterval> significantIntervals = new HashMap<IntervalTypeDescriptor,SignificantInterval>();
 		for (SignificantInstants significantInstants : map.values()) {
 			SignificantInterval significantIntervalAtInstant = significantInstants.getSignificantIntervalAt(instant);
 			if (significantIntervalAtInstant!=null) {
-				significantIntervals.put(significantIntervalAtInstant.getType().getIntervalTypeDescriptor(),significantIntervalAtInstant);
+				significantIntervals.put(significantIntervalAtInstant.getOccupier().getIntervalTypeDescriptor(),significantIntervalAtInstant);
 			}
 		}
 		return significantIntervals;

@@ -9,17 +9,24 @@ import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
+import glug.parser.GlugConfig;
 
 import java.awt.Color;
 import java.text.NumberFormat;
-import java.util.SortedMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.Duration;
 
 public class SwingHtmlStyleThreadReporter {
 	
 	private static NumberFormat uptimeNumberFormat = uptimeNumberFormat();
+	private final GlugConfig glugConfig;
 	
+	public SwingHtmlStyleThreadReporter(GlugConfig glugConfig) {
+		this.glugConfig = glugConfig;
+	}
+
 	private static NumberFormat uptimeNumberFormat() {
 		NumberFormat nf = NumberFormat.getNumberInstance();
 		nf.setMinimumFractionDigits(3);
@@ -28,17 +35,25 @@ public class SwingHtmlStyleThreadReporter {
 	}
 	
 	public String htmlSyledReportFor(ThreadModel thread, LogInstant instant) {
-		SortedMap<IntervalTypeDescriptor, SignificantInterval> significantIntervalsForInstant = thread.getSignificantIntervalsFor(instant);
-		if (significantIntervalsForInstant.isEmpty()) {
+		List<SignificantInterval> intervalsToReport = new ArrayList<SignificantInterval>();
+		
+		for (IntervalTypeDescriptor intervalTypeDescriptor : glugConfig.getIntervalTypes()) {
+			SignificantInterval significantInterval = thread.getSignificantIntervalsFor(intervalTypeDescriptor, instant);
+			if (significantInterval!=null) {
+				intervalsToReport.add(significantInterval);
+			}
+		}
+		
+		if (intervalsToReport.isEmpty()) {
 			return null;
 		}
 		ThreadedSystem threadedSystem = thread.getThreadedSystem();
 		StringBuilder sb =new StringBuilder("<html>At " + instant.getRecordedInstant() + uptimeStringFor(threadedSystem,instant) + " on thread '"+thread.getName()+"':<ul>");
-		for (SignificantInterval significantInterval:significantIntervalsForInstant.values()) {
-			SignificantIntervalOccupier type = significantInterval.getType();
-			IntervalTypeDescriptor intervalTypeDescriptor = type.getIntervalTypeDescriptor();
+		for (SignificantInterval significantInterval : intervalsToReport) {
+			SignificantIntervalOccupier occupier = significantInterval.getOccupier();
+			IntervalTypeDescriptor intervalTypeDescriptor = occupier.getIntervalTypeDescriptor();
 			Color colour = intervalTypeDescriptor.getColour();
-			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+ escapeHtml(abbreviate(type.getData(),120))+" ("+durationStringFor(significantInterval)+")");
+			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+ escapeHtml(abbreviate(occupier.getData(),120))+" ("+durationStringFor(significantInterval)+")");
 		}
 		return sb.append("</ul></html>").toString();
 	}

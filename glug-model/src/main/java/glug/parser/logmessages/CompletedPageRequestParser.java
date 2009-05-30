@@ -16,7 +16,7 @@ Request for /pages/Guardian/lifeandstyle completed in 712 ms
  */
 public abstract class CompletedPageRequestParser extends IntervalLogMessageParser {
 	
-	public static final IntervalTypeDescriptor PAGE_REQUEST = new IntervalTypeDescriptor(1,RED,"Page Request");
+	public static final IntervalTypeDescriptor PAGE_REQUEST = new IntervalTypeDescriptor(RED,"Page Request");
 	
 	private static final Pattern requestCompletedPattern = Pattern.compile("^Request for ([^ ]+?) completed in (\\d+?) ms$");
 	
