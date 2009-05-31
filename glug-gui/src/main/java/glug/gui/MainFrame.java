@@ -36,15 +36,10 @@ import glug.model.time.LogInterval;
 import glug.parser.GlugConfig;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
-import glug.parser.logmessages.CompletedDatabaseQueryParser;
-import glug.parser.logmessages.CompletedEndecaRequestParser;
-import glug.parser.logmessages.CompletedHTTPRequestParser;
-import glug.parser.logmessages.CompletedPageRequestParser;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
 import java.io.File;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
