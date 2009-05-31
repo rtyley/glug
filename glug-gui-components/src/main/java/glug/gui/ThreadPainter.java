@@ -43,7 +43,7 @@ public class ThreadPainter {
 			int durationFor1Pixel, int threadGraphicsY, int threadGraphicsHeight) {
 		g.setColor(intervalTypeDescriptor.getColour());
 
-		SignificantInstants significantIntervals = threadModel.getSignificantIntervalsFor(intervalTypeDescriptor);
+		SignificantInstants significantIntervals = threadModel.significantIntervalsFor(intervalTypeDescriptor);
 		
 		if (significantIntervals==null) {
 			return;

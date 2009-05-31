@@ -5,13 +5,11 @@ import glug.model.time.LogInterval;
 public class SignificantInterval implements Comparable<SignificantInterval> {
 	private final LogInterval logInterval;
 	private final SignificantIntervalOccupier intervalOccupier;
-	private final ThreadModel threadModel;
 	
-	public SignificantInterval(ThreadModel threadModel, SignificantIntervalOccupier intervalOccupier, LogInterval logInterval) {
+	public SignificantInterval(SignificantIntervalOccupier intervalOccupier, LogInterval logInterval) {
 //		if (logInterval.getStart().equals(logInterval.getEnd())) {
 //			throw new IllegalArgumentException("It took at least one log line, didn't it!?");
 //		}
-		this.threadModel = threadModel;
 		this.logInterval = logInterval;
 		this.intervalOccupier = intervalOccupier;
 	}
@@ -29,12 +27,6 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 		return intervalOccupier;
 	}
 
-	
-	// Do we really need this reference?
-	public ThreadModel getThread() {
-		return threadModel;
-	}
-
 	public LogInterval getLogInterval() {
 		return logInterval;
 	}
@@ -48,8 +40,6 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 				+ ((intervalOccupier == null) ? 0 : intervalOccupier.hashCode());
 		result = prime * result
 				+ ((logInterval == null) ? 0 : logInterval.hashCode());
-		result = prime * result
-				+ ((threadModel == null) ? 0 : threadModel.hashCode());
 		return result;
 	}
 
@@ -71,11 +61,6 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 			if (other.logInterval != null)
 				return false;
 		} else if (!logInterval.equals(other.logInterval))
-			return false;
-		if (threadModel == null) {
-			if (other.threadModel != null)
-				return false;
-		} else if (!threadModel.equals(other.threadModel))
 			return false;
 		return true;
 	}

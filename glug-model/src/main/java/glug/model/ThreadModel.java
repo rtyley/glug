@@ -45,12 +45,12 @@ public class ThreadModel {
 		return interval;
 	}
 	
-	public SignificantInstants getSignificantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor) {
+	public SignificantInstants significantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor) {
 		return map.get(intervalTypeDescriptor);
 	}
 
 	public SignificantInterval getSignificantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor, LogInstant instant) {
-		SignificantInstants significantInstants = getSignificantIntervalsFor(intervalTypeDescriptor);
+		SignificantInstants significantInstants = significantIntervalsFor(intervalTypeDescriptor);
 		if (significantInstants==null) {
 			return null;
 		}

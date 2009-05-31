@@ -21,7 +21,7 @@ public abstract class IntervalLogMessageParser extends LogMessageParser {
 	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant) {
 		LogInterval interval = new LogInterval(durationFrom(matcher),logInstant);
 
-		SignificantInterval significantInterval = new SignificantInterval(threadModel,intervalOccupierFor(matcher),interval);
+		SignificantInterval significantInterval = new SignificantInterval(intervalOccupierFor(matcher),interval);
 		threadModel.add(significantInterval);
 		return significantInterval;
 	}

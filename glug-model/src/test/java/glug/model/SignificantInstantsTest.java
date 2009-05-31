@@ -37,7 +37,7 @@ public class SignificantInstantsTest {
 	@Test
 	public void shouldNotReturnASignificantIntervalMoreThanOnceInTheResultSet() {
 		LogInterval logIntervalForSignificantInterval = new LogInterval(standardSeconds(1),new LogInstant(3000,0));
-		SignificantInterval significantInterval = new SignificantInterval(thread, sio, logIntervalForSignificantInterval);
+		SignificantInterval significantInterval = new SignificantInterval(sio, logIntervalForSignificantInterval);
 		
 		significantInstants.add(significantInterval);
 		
@@ -53,9 +53,9 @@ public class SignificantInstantsTest {
 		Instant endOfACrowdedMillisecond = new Instant(1234L);
 		int logLine=345;
 		
-		SignificantInterval si1 = new SignificantInterval(null, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
-		SignificantInterval si2 = new SignificantInterval(null, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
-		SignificantInterval si3 = new SignificantInterval(null, sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
+		SignificantInterval si1 = new SignificantInterval(sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
+		SignificantInterval si2 = new SignificantInterval(sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
+		SignificantInterval si3 = new SignificantInterval(sio, new LogInterval(Duration.ZERO,new LogInstant(endOfACrowdedMillisecond,logLine++)));
 		
 		significantInstants.add(si1);
 		significantInstants.add(si2);
@@ -69,7 +69,7 @@ public class SignificantInstantsTest {
 	@Test
 	public void shouldReturnASignificantIntervalWhichStartsAndEndsOutsideOfTheRequestedBounds() {
 		LogInterval logIntervalForSignificantInterval = new LogInterval(standardSeconds(5),new LogInstant(5000,0));
-		SignificantInterval significantInterval = new SignificantInterval(thread, sio, logIntervalForSignificantInterval);
+		SignificantInterval significantInterval = new SignificantInterval(sio, logIntervalForSignificantInterval);
 		
 		significantInstants.add(significantInterval);
 		
@@ -80,10 +80,10 @@ public class SignificantInstantsTest {
 	
 	@Test
 	public void shouldOverrideOtherIntervals() throws Exception {
-		SignificantInterval si1 = new SignificantInterval(thread, sio, new LogInterval(standardSeconds(3),new LogInstant(3000,3)));
+		SignificantInterval si1 = new SignificantInterval(sio, new LogInterval(standardSeconds(3),new LogInstant(3000,3)));
 		
 		significantInstants.overrideWith(si1);
-		SignificantInterval si2 = new SignificantInterval(thread, sio, new LogInterval(standardSeconds(5),new LogInstant(5000,5)));
+		SignificantInterval si2 = new SignificantInterval(sio, new LogInterval(standardSeconds(5),new LogInstant(5000,5)));
 		significantInstants.overrideWith(si2);
 		
 		assertThat(significantInstants.getSignificantIntervalAt(new LogInstant(1000,1)), equalTo(si2));
@@ -91,7 +91,7 @@ public class SignificantInstantsTest {
 	
 	@Test
 	public void shouldGetLatestSignificantIntervalStartingAtOrBefore() {
-		SignificantInterval significantInterval = new SignificantInterval(null, null, new LogInterval(standardSeconds(3),new LogInstant(5000)));
+		SignificantInterval significantInterval = new SignificantInterval(null, new LogInterval(standardSeconds(3),new LogInstant(5000)));
 		significantInstants.add(significantInterval);
 		
 		assertThat(significantInstants.getLatestSignificantIntervalStartingAtOrBefore(new Instant(1000)), nullValue());
@@ -106,9 +106,9 @@ public class SignificantInstantsTest {
 		LogInterval firstInterval = new LogInterval(standardSeconds(1),new LogInstant(3000));
 		LogInterval middleInterval = new LogInterval(standardSeconds(2),new LogInstant(6500));
 		LogInterval lastInterval = new LogInterval(standardSeconds(1),new LogInstant(9000));
-		significantInstants.add(new SignificantInterval(null, null, firstInterval));
-		significantInstants.add(new SignificantInterval(null, null, middleInterval));
-		significantInstants.add(new SignificantInterval(null, null, lastInterval));
+		significantInstants.add(new SignificantInterval(null, firstInterval));
+		significantInstants.add(new SignificantInterval(null, middleInterval));
+		significantInstants.add(new SignificantInterval(null, lastInterval));
 		
 		assertThat(significantInstants.countOccurencesDuring(new LogInterval(standardSeconds(3),new LogInstant(7000))), equalTo(1));
 		assertThat(significantInstants.countOccurencesDuring(new LogInterval(standardSeconds(1),new LogInstant(6000))), equalTo(1));

@@ -19,7 +19,7 @@ public class ThreadedSystem {
 	
 	public void add(String threadName, SignificantIntervalOccupier intervalOccupier, LogInterval logInterval) {
 		ThreadModel thread = getOrCreateThread(threadName);
-		thread.add(new SignificantInterval(thread, intervalOccupier, logInterval ));
+		thread.add(new SignificantInterval(intervalOccupier, logInterval ));
 	}
 		
 	public void add(String threadName, SignificantInterval significantInterval) {
@@ -46,12 +46,16 @@ public class ThreadedSystem {
 	}
 
 	public ThreadModel getOrCreateThread(String threadName) {
-		ThreadModel thread = map.get(threadName);
+		ThreadModel thread = getThread(threadName);
 		if (thread==null) {
 			thread = new ThreadModel(threadName, this);
 			map.put(threadName, thread);
 		}
 		return thread;
+	}
+	
+	public ThreadModel getThread(String threadName) {
+		return map.get(threadName);
 	}
 
 	public Uptime uptime() {
@@ -71,5 +75,6 @@ public class ThreadedSystem {
 		}
 		return countMap;
 	}
+
 
 }

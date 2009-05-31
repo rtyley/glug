@@ -31,7 +31,7 @@ public class JVMUptimeParser extends LogMessageParser {
 		String uptimeText = matcher.group(1);
 		Duration d = new Duration(round((parseDouble(uptimeText)*1000)));
 		
-		SignificantInterval significantInterval = new SignificantInterval(threadModel,jvmUptime,new LogInterval(d,logInstant));
+		SignificantInterval significantInterval = new SignificantInterval(jvmUptime,new LogInterval(d,logInstant));
 		threadModel.getThreadedSystem().uptime().addUptime(significantInterval);
 		return significantInterval;
 	}
