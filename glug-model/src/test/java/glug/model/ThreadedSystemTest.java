@@ -4,13 +4,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.joda.time.Duration.standardSeconds;
 import static org.junit.Assert.assertThat;
-
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
 import java.util.Map;
 
-import org.joda.time.Duration;
 import org.junit.Before;
 import org.junit.Test;
 

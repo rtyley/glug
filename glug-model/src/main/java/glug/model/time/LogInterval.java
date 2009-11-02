@@ -1,11 +1,15 @@
 package glug.model.time;
 
+import static com.madgag.interval.IntervalClosure.OPEN_CLOSED;
 import static java.lang.Math.min;
 
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
-public class LogInterval implements Comparable<LogInterval> {
+import com.madgag.interval.AbstractInterval;
+import com.madgag.interval.IntervalClosure;
+
+public class LogInterval extends AbstractInterval<LogInstant> {
 
 	private final LogInstant start,end;
 
@@ -13,12 +17,13 @@ public class LogInterval implements Comparable<LogInterval> {
 		if (a==null || b==null) {
 			throw new IllegalArgumentException();
 		}
-		if (a.isBefore(b)) {
-			this.start = a;
-			this.end = b;
-		} else {
+		if (a.isAfter(b)) {
+			//throw new IllegalArgumentException();
 			this.start = b;
 			this.end = a;
+		} else {
+			this.start = a;
+			this.end = b;
 		}
 	}
 
@@ -66,21 +71,8 @@ public class LogInterval implements Comparable<LogInterval> {
 	public boolean isBefore(LogInterval otherInterval) {
 		return isBefore(otherInterval.getStart());
 	}
-	
-    /**
-     * Does this time interval contain the specified instant.
-     * <p>
-     * Non-zero duration intervals are inclusive of the start instant and
-     * exclusive of the end. A zero duration interval cannot contain anything.
-     * <p>
-     */
-    public boolean contains(LogInstant otherInstant) {
-    	return !otherInstant.isBefore(start) && otherInstant.isBefore(end);
-    }
     
-    public boolean contains(LogInterval otherInterval) {
-    	return contains(otherInterval.start) && !otherInterval.end.isAfter(end);
-    }
+
     
 	public LogInterval union(LogInterval otherInterval) {
 		if (otherInterval==null) {
@@ -152,15 +144,6 @@ public class LogInterval implements Comparable<LogInterval> {
 		return new Interval(start.getMillis(),end.getMillis());
 	}
 
-	@Override
-	public int compareTo(LogInterval otherLogInterval) {
-		int startCompare = start.compareTo(otherLogInterval.start);
-		if (startCompare!=0) {
-			return startCompare;
-		}
-		return end.compareTo(otherLogInterval.end);
-	}
-
 	public LogInterval overlap(LogInterval otherLogInterval) {
         if (!overlaps(otherLogInterval)) {
             return null;
@@ -176,10 +159,6 @@ public class LogInterval implements Comparable<LogInterval> {
         return new LogInterval(overlapStart,overlapEnd);
 	}
 
-	private boolean overlaps(LogInterval otherLogInterval) {
-		return start.isBefore(otherLogInterval.end) && otherLogInterval.start.isBefore(end);
-	}
-
 	public static LogInterval intervalContainingDeltaFor(LogInterval intervalA, LogInterval intervalB) {
 		if (intervalA==null || intervalB==null) {
 			return intervalA!=null?intervalA:intervalB;
@@ -192,5 +171,11 @@ public class LogInterval implements Comparable<LogInterval> {
 		}
 		return intervalA.union(intervalB);
 	}
+
+	@Override
+	public IntervalClosure getClosure() {
+		return OPEN_CLOSED;
+	}
+
 	
 }

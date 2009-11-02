@@ -2,12 +2,8 @@ package glug.parser;
 
 import static java.awt.Color.BLACK;
 import static java.awt.Color.RED;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
 import glug.model.IntervalTypeDescriptor;
 
-import java.awt.Color;
 import java.io.StringReader;
 import java.io.StringWriter;
 

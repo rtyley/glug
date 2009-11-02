@@ -1,8 +1,16 @@
 package glug.model;
 
+import java.util.Comparator;
+
+import com.madgag.interval.Interval;
+import com.madgag.interval.StartThenEndComparator;
+
+import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
 public class SignificantInterval implements Comparable<SignificantInterval> {
+	private final static Comparator<Interval<LogInstant>> intervalComparator = StartThenEndComparator.<LogInstant>instance();
+
 	private final LogInterval logInterval;
 	private final SignificantIntervalOccupier intervalOccupier;
 	
@@ -16,7 +24,7 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 
 	@Override
 	public int compareTo(SignificantInterval otherSignificantInterval) {
-		int logIntervalCompare = logInterval.compareTo(otherSignificantInterval.logInterval);
+		int logIntervalCompare = intervalComparator.compare(logInterval, otherSignificantInterval.logInterval);
 		if (logIntervalCompare!=0) {
 			return logIntervalCompare;
 		}
