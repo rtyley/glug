@@ -1,5 +1,10 @@
 package glug.model;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import com.madgag.interval.Interval;
+import com.madgag.interval.SimpleInterval;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.ThreadId;
@@ -7,6 +12,9 @@ import glug.parser.ThreadId;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.google.common.collect.Collections2.transform;
+import static com.madgag.interval.SimpleInterval.union;
 
 
 public class ThreadModel {
@@ -36,12 +44,13 @@ public class ThreadModel {
 		map.get(intervalTypeDescriptor).add(significantInterval);
 	}
 
-	public LogInterval getInterval() {
-		LogInterval interval = null;
-		for (SignificantInstants significantInstants : map.values()) {
-			interval = significantInstants.getLogInterval().union(interval);
-		}
-		return interval;
+	public Interval<LogInstant> getInterval() {
+        return union(transform(map.values(), new Function<SignificantInstants, Interval<LogInstant>>() {
+            public Interval<LogInstant> apply(SignificantInstants significantInstants) {
+                return significantInstants.getLogInterval();
+            }
+        }
+        ));
 	}
 	
 	public SignificantInstants significantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor) {

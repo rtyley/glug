@@ -1,5 +1,8 @@
 package glug.model;
 
+import com.google.common.base.Function;
+import com.madgag.interval.Interval;
+import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
 import java.util.Collection;
@@ -8,6 +11,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import static com.google.common.collect.Collections2.transform;
+import static com.madgag.interval.SimpleInterval.union;
 
 public class ThreadedSystem {
 
@@ -26,15 +32,13 @@ public class ThreadedSystem {
 		getOrCreateThread(threadName).add(significantInterval);
 	}
 
-	public LogInterval getIntervalCoveredByAllThreads() {
-		LogInterval logIntervalCoveredByAllThreads = null;
-		for (ThreadModel threadModel : map.values()) {
-			LogInterval threadModelInterval = threadModel.getInterval();
-			if (threadModelInterval != null) {
-				logIntervalCoveredByAllThreads = threadModelInterval.union(logIntervalCoveredByAllThreads);
-			}
-		}
-		return logIntervalCoveredByAllThreads;
+	public Interval<LogInstant> getIntervalCoveredByAllThreads() {
+        return union(transform(map.values(), new Function<ThreadModel, Interval<LogInstant>>() {
+            public Interval<LogInstant> apply(ThreadModel threadModel) {
+                return threadModel.getInterval();
+            }
+        }
+        ));
 	}
 
 	public int getNumThreads() {

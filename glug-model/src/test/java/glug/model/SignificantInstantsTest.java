@@ -16,10 +16,12 @@ import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class SignificantInstantsTest {
 
 	ThreadModel thread;
@@ -29,7 +31,6 @@ public class SignificantInstantsTest {
 	
 	@Before
 	public void setUp() {
-		initMocks(this);
 		thread = new ThreadModel("blahThread", null);
 		significantInstants = new SignificantInstants();
 	}

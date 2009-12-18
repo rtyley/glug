@@ -1,5 +1,7 @@
 package glug.model;
 
+import com.madgag.interval.Interval;
+import com.madgag.interval.collections.IntervalMap;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
@@ -12,106 +14,44 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import org.joda.time.Instant;
 
+import static com.madgag.interval.collections.IntervalMap.newConcurrentIntervalMap;
+import static com.madgag.interval.collections.IntervalMap.newIntervalMapBasedOn;
+
 
 public class SignificantInstants {
-	private ConcurrentNavigableMap<LogInstant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<LogInstant, SignificantInterval>();
+	//private ConcurrentNavigableMap<LogInstant, SignificantInterval> significantInstants = new ConcurrentSkipListMap<LogInstant, SignificantInterval>();
+    private IntervalMap<LogInstant, SignificantInterval> significantInstants = newConcurrentIntervalMap();
 
 	public SignificantInterval getSignificantIntervalAt(LogInstant instant) {
-		Entry<LogInstant, SignificantInterval> floorEntry = significantInstants.floorEntry(instant);
-		if (floorEntry==null) {
-			return null;
-		}
-		SignificantInterval sigInt = floorEntry.getValue();
-		return sigInt.getLogInterval().contains(instant) ? sigInt : null;
+		return significantInstants.getEventAt(instant);
 	}
 	
 	public Collection<SignificantInterval> getSignificantIntervalsDuring(LogInterval logInterval) {
-		return new TreeSet<SignificantInterval>(subMapFor(logInterval,true,false).values()); // Make SignificantInterval implement Comparable!
+        return significantInstants.getEventsDuring(logInterval);
 	}
 	
 	public SignificantInterval getLatestSignificantIntervalStartingAtOrBefore(Instant instant) {
-		Entry<LogInstant, SignificantInterval> entry = significantInstants.floorEntry(new LogInstant(instant));
-		return entry==null?null:entry.getValue();
+        return significantInstants.getLatestEventStartingAtOrBefore(new LogInstant(instant));
 	}
 	
 	public void add(SignificantInterval significantInterval) {
-		checkCanAdd(significantInterval);
-		addWithoutChecking(significantInterval);
+        significantInstants.put(significantInterval.getLogInterval(),significantInterval);
 	}
-
-	private void checkCanAdd(SignificantInterval significantInterval) {
-		LogInterval interval = significantInterval.getLogInterval();
-		if (significantInstants.containsKey(interval.getStart()) ||
-			significantInstants.containsKey(interval.getEnd())) {
-			throw new IllegalArgumentException();
-		}
-		ConcurrentNavigableMap<LogInstant, SignificantInterval> eventsDuringInterval = eventsDuring(interval);
-		if (!eventsDuringInterval.isEmpty()) {
-			TreeSet<SignificantInterval> currentTenants = new TreeSet<SignificantInterval>(eventsDuringInterval.values());
-			throw new IllegalArgumentException("Can't add "+interval+" to interval already occupied by "+currentTenants);
-		}
-	}
-
-	private void addWithoutChecking(SignificantInterval significantInterval) {
-		LogInterval interval = significantInterval.getLogInterval();
-		significantInstants.put(interval.getStart(), significantInterval);
-		significantInstants.put(interval.getEnd(), significantInterval);
-	}
-	
 
 	public void overrideWith(SignificantInterval significantInterval) {
-		Collection<SignificantInterval> otherSigIntsDuringInterval = getSignificantIntervalsDuring(significantInterval.getLogInterval());
-		for (SignificantInterval otherSignificantInterval : otherSigIntsDuringInterval) {
-			remove(otherSignificantInterval);
-		}
-		addWithoutChecking(significantInterval);
-	}
-
-	private void remove(SignificantInterval significantInterval) {
-		LogInterval otherLogInterval = significantInterval.getLogInterval();
-		LogInstant start = otherLogInterval.getStart(), end = otherLogInterval.getEnd();
-		if (significantInstants.get(start)==significantInterval) {
-			significantInstants.remove(start);
-		}
-		if (significantInstants.get(end)==significantInterval) {
-			significantInstants.remove(end);
-		}
+		significantInstants.overrideWith(significantInterval.getLogInterval(),significantInterval);
 	}
 
 	private boolean containsSignificantInstantsDuring(LogInterval interval) {
-		return !eventsDuring(interval).isEmpty();
+		return !significantInstants.getEventsDuring(interval).isEmpty();
 	}
 
-	private ConcurrentNavigableMap<LogInstant, SignificantInterval> eventsDuring(LogInterval interval) {
-		return significantInstants.subMap(interval.getStart(),interval.getEnd());
-	}
-	
-	private NavigableMap<LogInstant, SignificantInterval> subMapFor(LogInterval interval, boolean fromInclusive,
-                                              boolean toInclusive) {
-		LogInstant start = significantInstants.floorKey(interval.getStart());
-		LogInstant end = significantInstants.ceilingKey(interval.getEnd());
-		
-		return significantInstants.subMap(start==null?interval.getStart():start, fromInclusive, end==null?interval.getEnd():end, toInclusive);
-	}
-
-	public LogInterval getLogInterval() {
-		return significantInstants.isEmpty()?null:new LogInterval(significantInstants.firstKey(),significantInstants.lastKey());
+	public Interval<LogInstant> getLogInterval() {
+        return significantInstants.getSpannedInterval();
 	}
 
 	public int countOccurencesDuring(LogInterval logInterval) {
-		NavigableMap<LogInstant, SignificantInterval> subMap = subMapFor(logInterval,true,true);
-		int uniqueCount=0;
-		SignificantInterval prior=null;
-		for (SignificantInterval significantInterval : subMap.values()) {
-			LogInterval spanOfThing = significantInterval.getLogInterval();
-			if (!(spanOfThing.isBefore(logInterval) || spanOfThing.isAfter(logInterval))) {
-				if (prior!=significantInterval) {
-					++uniqueCount;
-					prior=significantInterval;
-				}
-			}
-		}
-		return uniqueCount;
+        return significantInstants.getEventsDuring(logInterval).size();
 	}
 
 
