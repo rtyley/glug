@@ -23,7 +23,8 @@
 		<module>glug-gui-components</module>
 		<module>glug-model</module>
 		<module>gchisto</module>
-	</modules>
+        <module>glug-ssh</module>
+    </modules>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
