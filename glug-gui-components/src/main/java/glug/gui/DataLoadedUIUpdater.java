@@ -20,7 +20,7 @@ public class DataLoadedUIUpdater {
 	}
 	
 	public void updateUI(LogInterval updatedLogInterval) {
-		uiTimeScale.setFullInterval(toJodaInterval(updatedLogInterval));
+		uiTimeScale.setFullInterval(toJodaInterval(threadedSystem.getIntervalCoveredByAllThreads()));
 		threadScale.setNumThreads(threadedSystem.getNumThreads());
 		zoomFactorSlideUpdater.updateSliderMax();
 	}
