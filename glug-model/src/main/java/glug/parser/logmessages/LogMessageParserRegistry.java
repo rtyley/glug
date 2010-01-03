@@ -14,9 +14,7 @@ public class LogMessageParserRegistry {
 				new JVMUptimeParser(),
 				new CompletedR2PageRequestParser(),
 				new CompletedPageRequestDiagnosticParser(),
-				new CompletedDatabaseQueryParser(), 
-				new CompletedSearchEndecaRequestParser(), 
-				new CompletedOpenApiEndecaRequestParser(),
+				new CompletedDatabaseQueryParser(),
 				new CompletedHTTPRequestParser());
 	
 	public static final LogMessageParserRegistry EXAMPLE = new LogMessageParserRegistry(ALL_PARSERS);

@@ -1,5 +1,6 @@
 package glug.parser.logmessages;
 
+import static glug.model.time.LogInterval.durationInMillisOf;
 import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -29,7 +30,7 @@ public class CompletedPageRequestParserTest {
 		assertThat(matcher.find(), is(true));
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L,101));
 		
-		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(712L));
+		assertThat(durationInMillisOf(sigInt.getLogInterval()), equalTo(712L));
 		assertThat(sigInt.getOccupier(), equalTo(PAGE_REQUEST.with("/pages/Guardian/lifeandstyle")));
 	}
 	
@@ -42,7 +43,7 @@ public class CompletedPageRequestParserTest {
 		assertThat(matcher.find(), is(true));
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(345L,101));
 		
-		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(1296L));
+		assertThat(durationInMillisOf(sigInt.getLogInterval()), equalTo(1296L));
 		assertThat(sigInt.getOccupier(), equalTo(PAGE_REQUEST.with("/search?search=guy+browning&No=10&sitesearch-radio=guardian&go-guardian=Search")));
 	
 	}

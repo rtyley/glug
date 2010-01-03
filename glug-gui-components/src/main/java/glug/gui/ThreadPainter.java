@@ -1,10 +1,18 @@
 package glug.gui;
 
+import static com.madgag.interval.Bound.MAX;
+import static com.madgag.interval.Bound.MIN;
+import static com.madgag.interval.SimpleInterval.overlap;
+import static com.madgag.interval.SimpleInterval.union;
 import static java.lang.Math.round;
+
+import com.madgag.interval.Bound;
+import com.madgag.interval.Interval;
 import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantInstants;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
+import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.GlugConfig;
 
@@ -51,15 +59,15 @@ public class ThreadPainter {
 		
 		Collection<SignificantInterval> sigInts = significantIntervals.getSignificantIntervalsDuring(visibleInterval);
 		
-		LogInterval visibleIntervalToPlot = null;
+		Interval<LogInstant> visibleIntervalToPlot = null;
 		
 		for (SignificantInterval significantInterval : sigInts) {
-			LogInterval visibleIntervalOfCurrentSigInt = significantInterval.getLogInterval().overlap(visibleInterval);
+			Interval<LogInstant> visibleIntervalOfCurrentSigInt =  overlap(significantInterval.getLogInterval(),visibleInterval);
 			if (visibleIntervalOfCurrentSigInt!=null) {
 				if (visibleIntervalToPlot==null) {
 					visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;
 				} else if (close(visibleIntervalToPlot, durationFor1Pixel, visibleIntervalOfCurrentSigInt)) {
-					visibleIntervalToPlot = visibleIntervalToPlot.union(visibleIntervalOfCurrentSigInt);
+					visibleIntervalToPlot = union(visibleIntervalToPlot,visibleIntervalOfCurrentSigInt);
 				} else {
 					plotBlock(visibleIntervalToPlot, threadGraphicsY,threadGraphicsHeight, g); // finish with the old block
 					visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;  // start the new block
@@ -71,13 +79,13 @@ public class ThreadPainter {
 		}
 	}
 
-	private boolean close(LogInterval visibleIntervalToPlot, int durationFor1Pixel, LogInterval visibleIntervalOfCurrentSigInt) {
-		return (visibleIntervalOfCurrentSigInt.getStart().getMillis()-visibleIntervalToPlot.getEnd().getMillis())<durationFor1Pixel;
+	private boolean close(Interval<LogInstant> visibleIntervalToPlot, int durationFor1Pixel, Interval<LogInstant> visibleIntervalOfCurrentSigInt) {
+		return (visibleIntervalOfCurrentSigInt.get(MIN).getMillis()-visibleIntervalToPlot.get(MAX).getMillis())<durationFor1Pixel;
 	}
 
-	private void plotBlock(LogInterval visibleIntervalOfLine, int threadYStart, int threadGraphicsHeight, Graphics2D g) {
-		int startX = uiLogTimeScale.modelToView(visibleIntervalOfLine.getStart());
-		int endX = uiLogTimeScale.modelToView(visibleIntervalOfLine.getEnd());
+	private void plotBlock(Interval<LogInstant> visibleIntervalOfLine, int threadYStart, int threadGraphicsHeight, Graphics2D g) {
+		int startX = uiLogTimeScale.modelToView(visibleIntervalOfLine.get(MIN));
+		int endX = uiLogTimeScale.modelToView(visibleIntervalOfLine.get(MAX));
 		g.fillRect(startX, threadYStart, endX - startX,threadGraphicsHeight);
 	}
 }

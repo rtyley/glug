@@ -1,7 +1,9 @@
 package glug.model.time;
 
+import static com.madgag.interval.Bound.*;
 import static com.madgag.interval.Bound.MAX;
 import static com.madgag.interval.Bound.MIN;
+import static com.madgag.interval.IntervalClosure.CLOSED_OPEN;
 import static com.madgag.interval.IntervalClosure.OPEN_CLOSED;
 import static java.lang.Math.min;
 
@@ -98,6 +100,10 @@ public class LogInterval extends AbstractInterval<LogInstant> {
 		return end.getMillis()-start.getMillis();
 	}
 
+    public static long durationInMillisOf(com.madgag.interval.Interval<LogInstant> interval) {
+        return interval.get(MAX).getMillis() - interval.get(MIN).getMillis();
+    }
+
 	@Override
 	public String toString() {
 		String diffString = diff(start.getRecordedInstant().toString(),end.getRecordedInstant().toString());
@@ -149,7 +155,7 @@ public class LogInterval extends AbstractInterval<LogInstant> {
 	}
 
     public static Interval toJodaInterval(com.madgag.interval.Interval<LogInstant> interval) {
-		return new LogInterval(interval.get(Bound.MIN),interval.get(Bound.MAX)).toJodaInterval();
+		return new LogInterval(interval.get(MIN),interval.get(MAX)).toJodaInterval();
 	}
 
 	public LogInterval overlap(LogInterval otherLogInterval) {
@@ -187,7 +193,7 @@ public class LogInterval extends AbstractInterval<LogInstant> {
 
     @Override
 	public IntervalClosure getClosure() {
-		return OPEN_CLOSED;
+		return CLOSED_OPEN;
 	}
 
 	

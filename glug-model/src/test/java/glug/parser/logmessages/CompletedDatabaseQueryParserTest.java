@@ -1,5 +1,6 @@
 package glug.parser.logmessages;
 
+import static glug.model.time.LogInterval.durationInMillisOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -24,7 +25,7 @@ public class CompletedDatabaseQueryParserTest {
 		assertThat(matcher.find(), is(true));
 		SignificantInterval sigInt = parser.process(matcher, mock(ThreadModel.class), new LogInstant(4567,1001));
 		
-		assertThat(sigInt.getLogInterval().toDurationMillis(), equalTo(20L));
+		assertThat(durationInMillisOf(sigInt.getLogInterval()), equalTo(20L));
 		SignificantIntervalOccupier completedDatabaseQuery = sigInt.getOccupier();
 		assertThat(completedDatabaseQuery.getData(), equalTo("load com.gu.r2.common.model.page.LivePage"));
 	}

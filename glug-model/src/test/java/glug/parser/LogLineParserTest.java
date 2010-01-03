@@ -1,5 +1,7 @@
 package glug.parser;
 
+import static com.madgag.interval.Bound.MIN;
+import static glug.model.time.LogInterval.durationInMillisOf;
 import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -11,9 +13,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import com.madgag.interval.Bound;
+import com.madgag.interval.Interval;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
+import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
@@ -39,9 +45,9 @@ public class LogLineParserTest {
 	public void shouldParsePageRequest() throws ParseException {
 		String testInput = "2009-02-25 00:00:05,979 [resin-tcp-connection-respub.gul3.gnl:6802-197] INFO  com.gu.r2.common.webutil.RequestLoggingFilter - Request for /pages/Guardian/world/rss completed in 5 ms";
 		SignificantInterval significantInterval = logLineParser.parse(testInput, 1001);
-		LogInterval interval = significantInterval.getLogInterval();
-		assertThat(interval.toDurationMillis(),equalTo(5L));
-		assertThat(interval.getStart().getRecordedInstant().toDateTime().getYear(),equalTo(2009));
+		Interval<LogInstant> interval = significantInterval.getLogInterval();
+		assertThat(durationInMillisOf(interval),equalTo(5L));
+		assertThat(interval.get(MIN).getRecordedInstant().toDateTime().getYear(),equalTo(2009));
 		assertThat(significantInterval.getOccupier(),equalTo(PAGE_REQUEST.with("/pages/Guardian/world/rss")));
 	}
 	
@@ -59,9 +65,9 @@ public class LogLineParserTest {
 	public void shouldParsePageRequestWithoutThrowingADamnRuntimeException() throws ParseException {
 		String testInput = "2009-02-25 00:00:00,539 [resin-tcp-connection-*:8080-631] INFO  com.gu.r2.common.webutil.RequestLoggingFilter - Request for /management/cache/clear completed in 470 ms";
 		SignificantInterval significantInterval = logLineParser.parse(testInput, 1001);
-		LogInterval interval = significantInterval.getLogInterval();
-		assertThat(interval.toDurationMillis(),equalTo(470L));
-		assertThat(interval.getStart().getRecordedInstant().toDateTime().getYear(),equalTo(2009));
+		Interval<LogInstant> interval = significantInterval.getLogInterval();
+		assertThat(durationInMillisOf(interval),equalTo(470L));
+		assertThat(interval.get(MIN).getRecordedInstant().toDateTime().getYear(),equalTo(2009));
 	}
 	
 	@Test

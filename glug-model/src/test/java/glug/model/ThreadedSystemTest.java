@@ -1,5 +1,6 @@
 package glug.model;
 
+import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.joda.time.Duration.standardSeconds;
@@ -9,6 +10,7 @@ import glug.model.time.LogInterval;
 
 import java.util.Map;
 
+import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,8 +42,13 @@ public class ThreadedSystemTest {
 		LogInterval logInterval = new LogInterval(standardSeconds(10),new LogInstant(15));
 		//threadedSystem.getOrCreateThread("a").add(significantInterval)
 		Map<IntervalTypeDescriptor, Integer> countMap = threadedSystem.countOccurencesDuring(logInterval, intervalType);
-		
-		
 	}
-	
+
+    @Test
+	public void shouldHandleGettingTotalIntervalEvenIfSomeThreadsHaveNoIntervalData() {
+        com.madgag.interval.Interval<LogInstant> interval = new LogInterval(new Interval(3000, 7000));
+        threadedSystem.getOrCreateThread("Populated").add(new SignificantInterval(new SignificantIntervalOccupier(PAGE_REQUEST,null), interval));
+		threadedSystem.getOrCreateThread("Empty");
+        assertThat(threadedSystem.getIntervalCoveredByAllThreads(), equalTo(interval));
+	}
 }

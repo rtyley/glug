@@ -1,6 +1,11 @@
 package glug.gui;
 
+import static com.madgag.interval.SimpleInterval.union;
+import static glug.model.time.LogInterval.toJodaInterval;
 import static java.lang.System.currentTimeMillis;
+
+import com.madgag.interval.Interval;
+import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.LogLoader;
 import glug.parser.LogLoader.LoadReport;
@@ -27,12 +32,12 @@ public class LogLoadingTask extends SwingWorker<Void, LoadReport> {
 	@Override
 	public Void doInBackground() {
 		long startLoadTime=currentTimeMillis();
-		LoadReport loadReport;LogInterval loadedLogInterval=null;
+		LoadReport loadReport;Interval<LogInstant> loadedLogInterval=null;
 		try {
 			do {
 				loadReport=logLoader.loadLines(numLinesLoadedBetweenUIUpdates);
 				publish(loadReport);
-				loadedLogInterval=loadReport.getUpdatedInterval().union(loadedLogInterval);
+				loadedLogInterval=union(loadedLogInterval,loadReport.getUpdatedInterval());
 				//System.out.print(".");
 			} while (!isCancelled() && !loadReport.endOfStreamReached());
 		} catch (Throwable e) {
@@ -44,21 +49,21 @@ public class LogLoadingTask extends SwingWorker<Void, LoadReport> {
 		return null;
 	}
 
-	private String format(LogInterval loadedLogInterval) {
-		return loadedLogInterval.toJodaInterval().toPeriod().toString(PeriodFormat.getDefault());
+	private String format(Interval<LogInstant> loadedLogInterval) {
+		return toJodaInterval(loadedLogInterval).toPeriod().toString(PeriodFormat.getDefault());
 	}
 
 	@Override
 	protected void process(List<LoadReport> loadReports) {
-		LogInterval totalLogIntervalCoveredByLoadReports = totalLogIntervalCoveredBy(loadReports);
+		Interval<LogInstant> totalLogIntervalCoveredByLoadReports = totalLogIntervalCoveredBy(loadReports);
 		System.out.println("Just loaded "+ totalLogIntervalCoveredByLoadReports);
 		uiUpdater.updateUI(totalLogIntervalCoveredByLoadReports);
 	}
 
-	private LogInterval totalLogIntervalCoveredBy(Iterable<LoadReport> loadReports) {
-		LogInterval interval = null;
+	private Interval<LogInstant> totalLogIntervalCoveredBy(Iterable<LoadReport> loadReports) {
+		Interval<LogInstant> interval = null;
 		for (LoadReport loadReport : loadReports) {
-			interval = loadReport.getUpdatedInterval().union(interval);
+			interval = union(interval,loadReport.getUpdatedInterval());
 		}
 		return interval;
 	}

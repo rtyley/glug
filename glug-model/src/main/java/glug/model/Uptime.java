@@ -1,7 +1,10 @@
 package glug.model;
 
+import com.madgag.interval.Bound;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
+
+import static com.madgag.interval.Bound.MIN;
 
 //Seriously?!
 public class Uptime {
@@ -16,7 +19,7 @@ public class Uptime {
 		if (uptimeInterval==null) {
 			return null;
 		}
-		return new Duration(uptimeInterval.getLogInterval().getStart().getMillis(),instant.getMillis());
+		return new Duration(uptimeInterval.getLogInterval().get(MIN).getMillis(),instant.getMillis());
 	}
 
 	public Instant startPreceding(Instant instant) {

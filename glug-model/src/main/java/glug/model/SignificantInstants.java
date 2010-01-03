@@ -26,7 +26,7 @@ public class SignificantInstants {
 		return significantInstants.getEventAt(instant);
 	}
 	
-	public Collection<SignificantInterval> getSignificantIntervalsDuring(LogInterval logInterval) {
+	public Collection<SignificantInterval> getSignificantIntervalsDuring(Interval<LogInstant> logInterval) {
         return significantInstants.getEventsDuring(logInterval);
 	}
 	

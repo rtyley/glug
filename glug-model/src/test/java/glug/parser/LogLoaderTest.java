@@ -1,10 +1,14 @@
 package glug.parser;
 
+import static com.madgag.interval.SimpleInterval.interval;
 import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import com.madgag.interval.Interval;
+import com.madgag.interval.SimpleInterval;
 import glug.model.SignificantInterval;
 import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
@@ -37,22 +41,24 @@ public class LogLoaderTest {
 		LogLoader logLoader=new LogLoader(reader);
 		LoadReport loadReport = logLoader.loadLines(2);
 
-		assertThat(loadReport.getUpdatedInterval(), equalTo(new LogInterval(new LogInstant(1000,1),new LogInstant(4000,4))));
+		assertThat(loadReport.getUpdatedInterval(), equalTo((Interval<LogInstant>)interval(new LogInstant(1000,1),new LogInstant(4000,4))));
 	}
-	
+
+    //@Test
 	public void shouldLoadExampleFile() throws Exception {
-		File file = new File("/home/roberto/development/glug-sample-logs/gtlogglugger/lunchtime.log.gz");
-		LineNumberReader reader = new LineNumberReader(new InputStreamReader( new GZIPInputStream(new FileInputStream(file))));
-		
+		File file = new File("/home/roberto/development/glug-logs/respubs/r2frontend.log.2009-12-18.respub01.gz");
+
 		ThreadedSystem threadedSystem = new ThreadedSystem();
-		LogLoader logLoader=new LogLoader(new LogParsingReader(reader,new LogLineParser(new LogCoordinateParser(threadedSystem),LogMessageParserRegistry.EXAMPLE)));
-		LoadReport lr;
+
+        LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
+        LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, LogMessageParserRegistry.EXAMPLE);
+        LoadReport lr;
 		do {
 			lr=logLoader.loadLines(100000);
 			System.out.println(lr);
 		} while (!lr.endOfStreamReached());
 		System.out.println(threadedSystem.getIntervalCoveredByAllThreads());
 	}
-	
+
 
 }

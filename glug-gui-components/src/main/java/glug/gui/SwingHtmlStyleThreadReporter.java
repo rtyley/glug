@@ -1,5 +1,6 @@
 package glug.gui;
 
+import static glug.model.time.LogInterval.durationInMillisOf;
 import static java.lang.Integer.toHexString;
 import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import static org.apache.commons.lang.StringUtils.abbreviate;
@@ -64,7 +65,7 @@ public class SwingHtmlStyleThreadReporter {
 	}
 
 	private String durationStringFor(SignificantInterval significantInterval) {
-		return significantInterval.getLogInterval().toDurationMillis()+" ms";
+		return durationInMillisOf(significantInterval.getLogInterval())+" ms";
 	}
 
 	String hexFor(Color colour) {

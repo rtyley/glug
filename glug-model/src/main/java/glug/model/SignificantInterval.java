@@ -11,10 +11,10 @@ import glug.model.time.LogInterval;
 public class SignificantInterval implements Comparable<SignificantInterval> {
 	private final static Comparator<Interval<LogInstant>> intervalComparator = StartThenEndComparator.<LogInstant>instance();
 
-	private final LogInterval logInterval;
+	private final Interval<LogInstant> logInterval;
 	private final SignificantIntervalOccupier intervalOccupier;
 	
-	public SignificantInterval(SignificantIntervalOccupier intervalOccupier, LogInterval logInterval) {
+	public SignificantInterval(SignificantIntervalOccupier intervalOccupier, Interval<LogInstant> logInterval) {
 //		if (logInterval.getStart().equals(logInterval.getEnd())) {
 //			throw new IllegalArgumentException("It took at least one log line, didn't it!?");
 //		}
@@ -35,7 +35,7 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 		return intervalOccupier;
 	}
 
-	public LogInterval getLogInterval() {
+	public Interval<LogInstant> getLogInterval() {
 		return logInterval;
 	}
 
