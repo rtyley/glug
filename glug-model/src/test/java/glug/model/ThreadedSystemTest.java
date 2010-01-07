@@ -47,8 +47,9 @@ public class ThreadedSystemTest {
     @Test
 	public void shouldHandleGettingTotalIntervalEvenIfSomeThreadsHaveNoIntervalData() {
         com.madgag.interval.Interval<LogInstant> interval = new LogInterval(new Interval(3000, 7000));
-        threadedSystem.getOrCreateThread("Populated").add(new SignificantInterval(new SignificantIntervalOccupier(PAGE_REQUEST,null), interval));
-		threadedSystem.getOrCreateThread("Empty");
+        threadedSystem.getOrCreateThread("A1");
+        threadedSystem.getOrCreateThread("B2").add(new SignificantInterval(new SignificantIntervalOccupier(PAGE_REQUEST,null), interval));
+		threadedSystem.getOrCreateThread("C3");
         assertThat(threadedSystem.getIntervalCoveredByAllThreads(), equalTo(interval));
 	}
 }
