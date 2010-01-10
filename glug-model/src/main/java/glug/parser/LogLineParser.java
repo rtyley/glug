@@ -38,10 +38,10 @@ public class LogLineParser {
 	public SignificantInterval parse(String line, int lineNumber) throws ParseException {
 		int messageSplitIndex = line.indexOf(" - ", lengthOfLogStringJustUpToBeforeDash);
 		
-		if (messageSplitIndex==-1) {
+		if (logCoordinateParser.coordinateTextIsInvalid(line)) {
 			return null;
 		}
-		if (logCoordinateParser.coordinateTextIsInvalid(line)) {
+        if (messageSplitIndex==-1) {
 			return null;
 		}
 		

@@ -17,7 +17,7 @@ public class LogLoaderFactory {
 		// System.out.println("Processing "+logFile);
 		LineNumberReader reader;
 		try {
-			reader = new LineNumberReader(new InputStreamReader(streamForFile(logFile)));
+			reader = new LineNumberReader(new InputStreamReader(streamForFile(logFile)),8192*2);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

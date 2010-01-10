@@ -42,6 +42,6 @@ public class LogCoordinateParser {
 	}
 
 	public boolean coordinateTextIsInvalid(String line) {
-		return line.charAt(DATETIME_FIELD_LENGTH)!=' ';
+		return line.length()>DATETIME_FIELD_LENGTH && line.charAt(DATETIME_FIELD_LENGTH)!=' ';
 	}
 }
