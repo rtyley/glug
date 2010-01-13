@@ -44,7 +44,7 @@ public class LogLoaderTest {
 		assertThat(loadReport.getUpdatedInterval(), equalTo((Interval<LogInstant>)interval(new LogInstant(1000,1),new LogInstant(4000,4))));
 	}
 
-    @Test
+    //@Test
 	public void shouldLoadExampleFile() throws Exception {
 		File file = new File("/home/roberto/development/glug-logs/respubs/r2frontend.log.2009-12-18.respub01.gz");
 

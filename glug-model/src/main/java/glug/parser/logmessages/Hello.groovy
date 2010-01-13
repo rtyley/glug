@@ -1,14 +1,6 @@
-import glug.parser.logmessages.LogMessageParser
-import glug.model.SignificantInterval
-import java.util.regex.Matcher
-import glug.model.ThreadModel
-import glug.model.time.LogInstant
-import org.joda.time.Duration
-import glug.parser.logmessages.SomethingGroovy
-
 //def durInMil = { new Duration(Integer.parseInt(durationInMillisText)) }
 /*
-new SomethingGroovy(
+new ParserDef(
     eventType: 'Page Request',
     pattern:'Request for ([^ ]+?) completed in (\d+?) ms$',
     data: [ "Page Path" : { group(1) } ],

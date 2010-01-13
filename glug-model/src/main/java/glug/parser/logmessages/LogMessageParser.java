@@ -4,6 +4,8 @@ import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 
+import java.util.Collection;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,11 +14,11 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 @XmlSeeAlso( { StandardIntervalLogMessageParser.class })
 public abstract class LogMessageParser {
 
-	private String loggerClassName;
-	private Pattern pattern;
+	private final Set<String> loggerClassNames;
+	private final Pattern pattern;
 	
-	public LogMessageParser(String loggerClassName, Pattern pattern) {
-		this.loggerClassName = loggerClassName;
+	public LogMessageParser(Set<String> loggerClassNames, Pattern pattern) {
+		this.loggerClassNames = loggerClassNames;
 		this.pattern = pattern;
 	}
 	
@@ -24,8 +26,8 @@ public abstract class LogMessageParser {
 		return pattern;
 	}
 
-	public final String getLoggerClassName() {
-		return loggerClassName;
+	public final Set<String> getLoggerClassNames() {
+		return loggerClassNames;
 	}
 
 	public abstract SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant);

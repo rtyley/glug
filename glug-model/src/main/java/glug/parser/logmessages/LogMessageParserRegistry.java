@@ -1,5 +1,12 @@
 package glug.parser.logmessages;
 
+import com.google.common.base.Function;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
+
+import static com.google.common.collect.Multimaps.index;
+import static com.google.common.collect.Multimaps.newListMultimap;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
@@ -19,22 +26,16 @@ public class LogMessageParserRegistry {
 	
 	public static final LogMessageParserRegistry EXAMPLE = new LogMessageParserRegistry(ALL_PARSERS);
 	
-	private final Map<String,List<LogMessageParser>> parsersByLoggerName = new HashMap<String, List<LogMessageParser>>();
+	private final ListMultimap<String,LogMessageParser> parsersByLoggerName = ArrayListMultimap.create();
 	
 	public LogMessageParserRegistry(List<LogMessageParser> parsers) {
-		for (LogMessageParser parser : parsers) {
-			storeParserByLoggerClassName(parser);
-		}
+        for (LogMessageParser parser : parsers) {
+            for (String loggerClassName : parser.getLoggerClassNames()) {
+                parsersByLoggerName.put(loggerClassName,parser);
+            }
+        }
 	}
 
-	private void storeParserByLoggerClassName(LogMessageParser parser) {
-		List <LogMessageParser> parsersWithLoggerName = parsersByLoggerName.get(parser.getLoggerClassName());
-		if (parsersWithLoggerName==null) {
-			parsersWithLoggerName = new ArrayList<LogMessageParser>();
-			parsersByLoggerName.put(parser.getLoggerClassName(), parsersWithLoggerName);
-		}
-		parsersWithLoggerName.add(parser);
-	}
 
 	public List<LogMessageParser> getMessageParsersFor(String loggerName) {
 		return parsersByLoggerName.get(loggerName);
