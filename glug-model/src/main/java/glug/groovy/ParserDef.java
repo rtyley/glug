@@ -1,4 +1,4 @@
-package glug.parser.logmessages;
+package glug.groovy;
 
 import glug.parser.LoggedDurationExtractor;
 import groovy.lang.Closure;
@@ -20,10 +20,10 @@ def pageRequestParser = [
   ]
 ]
  */
-public class SomethingGroovy {
+public class ParserDef {
     String eventType;
     Pattern pattern;
-    Map<String,?> data;
+    Closure data;
     Closure duration;
     Set<String> logger;
 }
