@@ -1,6 +1,7 @@
 package glug.model;
 
 import java.util.Comparator;
+import java.util.Map;
 
 import com.madgag.interval.Interval;
 import com.madgag.interval.StartThenEndComparator;
@@ -12,9 +13,9 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 	private final static Comparator<Interval<LogInstant>> intervalComparator = StartThenEndComparator.<LogInstant>instance();
 
 	private final Interval<LogInstant> logInterval;
-	private final SignificantIntervalOccupier intervalOccupier;
+	private final Map<String,?> intervalOccupier;
 	
-	public SignificantInterval(SignificantIntervalOccupier intervalOccupier, Interval<LogInstant> logInterval) {
+	public SignificantInterval(Map<String,?> intervalOccupier, Interval<LogInstant> logInterval) {
 //		if (logInterval.getStart().equals(logInterval.getEnd())) {
 //			throw new IllegalArgumentException("It took at least one log line, didn't it!?");
 //		}
@@ -31,7 +32,7 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 		return this.getClass().hashCode() - otherSignificantInterval.getClass().hashCode(); // TODO Welcome to hackarama
 	}
 
-	public SignificantIntervalOccupier getOccupier() {
+	public Map<String,?> getOccupier() {
 		return intervalOccupier;
 	}
 
@@ -77,5 +78,8 @@ public class SignificantInterval implements Comparable<SignificantInterval> {
 	public String toString() {
 		return logInterval+":"+intervalOccupier;
 	}
-	
+
+    public Object getIntervalTypeDescriptor() {
+        return intervalOccupier.get("type");
+    }
 }

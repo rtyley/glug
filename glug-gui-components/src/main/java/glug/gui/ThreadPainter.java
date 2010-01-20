@@ -1,23 +1,22 @@
 package glug.gui;
 
-import static com.madgag.interval.Bound.MAX;
-import static com.madgag.interval.Bound.MIN;
-import static com.madgag.interval.SimpleInterval.overlap;
-import static com.madgag.interval.SimpleInterval.union;
-import static java.lang.Math.round;
-
-import com.madgag.interval.Bound;
 import com.madgag.interval.Interval;
+import com.madgag.interval.collections.IntervalMap;
 import glug.model.IntervalTypeDescriptor;
-import glug.model.SignificantInstants;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.GlugConfig;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.util.Collection;
+
+import static com.madgag.interval.Bound.MAX;
+import static com.madgag.interval.Bound.MIN;
+import static com.madgag.interval.SimpleInterval.overlap;
+import static com.madgag.interval.SimpleInterval.union;
+import static java.lang.Math.round;
 
 public class ThreadPainter {
 	
@@ -51,13 +50,13 @@ public class ThreadPainter {
 			int durationFor1Pixel, int threadGraphicsY, int threadGraphicsHeight) {
 		g.setColor(intervalTypeDescriptor.getColour());
 
-		SignificantInstants significantIntervals = threadModel.significantIntervalsFor(intervalTypeDescriptor);
+		IntervalMap<LogInstant, SignificantInterval> significantIntervals = threadModel.significantIntervalsFor(intervalTypeDescriptor);
 		
 		if (significantIntervals==null) {
 			return;
 		}
 		
-		Collection<SignificantInterval> sigInts = significantIntervals.getSignificantIntervalsDuring(visibleInterval);
+		Collection<SignificantInterval> sigInts = significantIntervals.getEventsDuring(visibleInterval);
 		
 		Interval<LogInstant> visibleIntervalToPlot = null;
 		

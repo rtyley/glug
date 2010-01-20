@@ -1,106 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.gu</groupId>
-	<version>1.5-SNAPSHOT</version>
-	<artifactId>glug</artifactId>
-	<name>Glug Parent Project</name>
-	<packaging>pom</packaging>
-	<scm>
-		<url>scm:git:git://github.com/rtyley/glug.git</url>
-		<connection>scm:git:git://github.com/rtyley/glug.git</connection>
-	</scm>
-	<distributionManagement>
-		<downloadUrl>http://code.google.com/p/glug/downloads/list</downloadUrl>
-	</distributionManagement>
-	<organization>
-		<name>Roberto Tyley</name>
-	</organization>
-	<url>http://code.google.com/p/glug/</url>
-	<modules>
-		<module>glug-executable</module>
-		<module>glug-gui</module>
-		<module>glug-gui-components</module>
-		<module>glug-model</module>
-		<module>gchisto</module>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.gu</groupId>
+    <version>1.5-SNAPSHOT</version>
+    <artifactId>glug</artifactId>
+    <name>Glug Parent Project</name>
+    <packaging>pom</packaging>
+    <scm>
+        <url>scm:git:git://github.com/rtyley/glug.git</url>
+        <connection>scm:git:git://github.com/rtyley/glug.git</connection>
+    </scm>
+    <distributionManagement>
+        <downloadUrl>http://code.google.com/p/glug/downloads/list</downloadUrl>
+        <repository>
+            <id>releases</id>
+            <url>http://madgag.com:8081/nexus/content/repositories/releases</url>
+        </repository>
+    </distributionManagement>
+    <organization>
+        <name>Roberto Tyley</name>
+    </organization>
+    <url>http://code.google.com/p/glug/</url>
+    <modules>
+        <module>glug-executable</module>
+        <module>glug-gui</module>
+        <module>glug-gui-components</module>
+        <module>glug-model</module>
+        <module>gchisto</module>
         <module>glug-ssh</module>
     </modules>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.7</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<version>1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>1.8.2</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.scm</groupId>
-						<artifactId>maven-scm-provider-gitexe</artifactId>
-						<version>1.2</version>
-					</dependency>
-                  <dependency>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.2</version>
+                    </dependency>
+                    <dependency>
                         <groupId>org.codehaus.plexus</groupId>
                         <artifactId>plexus-utils</artifactId>
                         <version>1.5.6</version>
                     </dependency>
-				</dependencies>
+                </dependencies>
 
 
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-scm-plugin</artifactId>
-<!-- Required?
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.scm</groupId>
-						<artifactId>maven-scm-provider-gitexe</artifactId>
-						<version>1.2</version>
-					</dependency>
-				</dependencies>
--->
-			</plugin>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <!-- Required?
+                                <dependencies>
+                                    <dependency>
+                                        <groupId>org.apache.maven.scm</groupId>
+                                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                                        <version>1.2</version>
+                                    </dependency>
+                                </dependencies>
+                -->
+            </plugin>
 
 
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<target>1.6</target>
-					<source>1.6</source>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <target>1.6</target>
+                    <source>1.6</source>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

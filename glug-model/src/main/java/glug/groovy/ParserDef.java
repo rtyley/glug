@@ -21,9 +21,8 @@ def pageRequestParser = [
 ]
  */
 public class ParserDef {
-    String eventType;
-    Pattern pattern;
-    Closure data;
-    Closure duration;
-    Set<String> logger;
+    public Pattern pattern;
+    public Closure data;
+    public Closure duration;
+    public Set<String> logger;
 }

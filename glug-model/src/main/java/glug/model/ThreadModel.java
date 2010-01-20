@@ -3,8 +3,10 @@ package glug.model;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.madgag.interval.Interval;
 import com.madgag.interval.SimpleInterval;
+import com.madgag.interval.collections.IntervalMap;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.ThreadId;
@@ -14,13 +16,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.collect.Collections2.transform;
+import static com.google.common.collect.Maps.newHashMap;
 import static com.madgag.interval.SimpleInterval.union;
+import static com.madgag.interval.collections.IntervalMap.newConcurrentIntervalMap;
 
 
 public class ThreadModel {
 	
-	private Map<IntervalTypeDescriptor, SignificantInstants> map =
-		new HashMap<IntervalTypeDescriptor, SignificantInstants>();
+	private Map<Object, IntervalMap<LogInstant, SignificantInterval>> map =
+		new HashMap<Object, IntervalMap<LogInstant, SignificantInterval>>();
 	
 	private final ThreadedSystem threadedSystem;
 
@@ -37,32 +41,29 @@ public class ThreadModel {
 	}
 	
 	public void add(SignificantInterval significantInterval) {
-		IntervalTypeDescriptor intervalTypeDescriptor = significantInterval.getOccupier().getIntervalTypeDescriptor();
+		Object intervalTypeDescriptor = significantInterval.getIntervalTypeDescriptor();
         if (!map.containsKey(intervalTypeDescriptor)) {
-			map.put(intervalTypeDescriptor, new SignificantInstants());
+			map.put(intervalTypeDescriptor, IntervalMap.<LogInstant, SignificantInterval>newConcurrentIntervalMap());
         }
-		map.get(intervalTypeDescriptor).add(significantInterval);
+		map.get(intervalTypeDescriptor).put(significantInterval.getLogInterval(),significantInterval);
 	}
 
 	public Interval<LogInstant> getInterval() {
-        return union(transform(map.values(), new Function<SignificantInstants, Interval<LogInstant>>() {
-            public Interval<LogInstant> apply(SignificantInstants significantInstants) {
-                return significantInstants.getLogInterval();
+        return union(transform(map.values(), new Function<IntervalMap<LogInstant, SignificantInterval>, Interval<LogInstant>>() {
+            public Interval<LogInstant> apply(IntervalMap<LogInstant, SignificantInterval> significantInstants) {
+                return significantInstants.getSpannedInterval();
             }
         }
         ));
 	}
 	
-	public SignificantInstants significantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor) {
+	public IntervalMap<LogInstant, SignificantInterval> significantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor) {
 		return map.get(intervalTypeDescriptor);
 	}
 
 	public SignificantInterval getSignificantIntervalsFor(IntervalTypeDescriptor intervalTypeDescriptor, LogInstant instant) {
-		SignificantInstants significantInstants = significantIntervalsFor(intervalTypeDescriptor);
-		if (significantInstants==null) {
-			return null;
-		}
-		return significantInstants.getSignificantIntervalAt(instant);
+		IntervalMap<LogInstant, SignificantInterval> significantInstants = significantIntervalsFor(intervalTypeDescriptor);
+		return significantInstants==null?null:significantInstants.getEventAt(instant);
 	}
 
 
@@ -70,12 +71,12 @@ public class ThreadModel {
 		return threadId.getName();
 	}
 
-	public Map<IntervalTypeDescriptor, SignificantInterval> getSignificantIntervalsFor(LogInstant instant) {
-		Map<IntervalTypeDescriptor, SignificantInterval> significantIntervals = new HashMap<IntervalTypeDescriptor,SignificantInterval>();
-		for (SignificantInstants significantInstants : map.values()) {
-			SignificantInterval significantIntervalAtInstant = significantInstants.getSignificantIntervalAt(instant);
+	public Map<Object, SignificantInterval> getSignificantIntervalsFor(final LogInstant instant) {
+		Map<Object, SignificantInterval> significantIntervals = newHashMap();
+		for (IntervalMap<LogInstant, SignificantInterval> significantInstants : map.values()) {
+			SignificantInterval significantIntervalAtInstant = significantInstants.getEventAt(instant);
 			if (significantIntervalAtInstant!=null) {
-				significantIntervals.put(significantIntervalAtInstant.getOccupier().getIntervalTypeDescriptor(),significantIntervalAtInstant);
+				significantIntervals.put(significantIntervalAtInstant.getIntervalTypeDescriptor(),significantIntervalAtInstant);
 			}
 		}
 		return significantIntervals;
@@ -92,12 +93,12 @@ public class ThreadModel {
 	}
 
 
-	public Map<IntervalTypeDescriptor, Integer> countOccurencesDuring(LogInterval logInterval, IntervalTypeDescriptor... typesOfIntervalsToCount) {
-		Map<IntervalTypeDescriptor, Integer> countMap = new HashMap<IntervalTypeDescriptor, Integer>(typesOfIntervalsToCount.length);
-		for (IntervalTypeDescriptor intervalType : typesOfIntervalsToCount) {
-			SignificantInstants significantInstants = map.get(intervalType);
+	public Map<Object, Integer> countOccurencesDuring(LogInterval logInterval, Object... typesOfIntervalsToCount) {
+		Map<Object, Integer> countMap = new HashMap<Object, Integer>(typesOfIntervalsToCount.length);
+		for (Object intervalType : typesOfIntervalsToCount) {
+			IntervalMap<LogInstant, SignificantInterval> significantInstants = map.get(intervalType);
 			if (significantInstants!=null) {
-				int occurences = significantInstants.countOccurencesDuring(logInterval);
+				int occurences = significantInstants.getEventsDuring(logInterval).size();
 				if (occurences>0) {
 					countMap.put(intervalType, occurences);
 				}
@@ -107,7 +108,7 @@ public class ThreadModel {
 	}
 
 
-	public Collection<IntervalTypeDescriptor> getIntervalTypes() {
+	public Collection<Object> getIntervalTypes() {
 		return map.keySet();
 	}
 

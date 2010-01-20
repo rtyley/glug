@@ -1,18 +1,18 @@
 package glug.model;
 
-import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
+import glug.model.time.LogInstant;
+import glug.model.time.LogInterval;
+import org.joda.time.Interval;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Map;
+
+import static com.google.common.collect.ImmutableMap.of;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.joda.time.Duration.standardSeconds;
 import static org.junit.Assert.assertThat;
-import glug.model.time.LogInstant;
-import glug.model.time.LogInterval;
-
-import java.util.Map;
-
-import org.joda.time.Interval;
-import org.junit.Before;
-import org.junit.Test;
 
 public class ThreadedSystemTest {
 	private ThreadedSystem threadedSystem;
@@ -41,14 +41,14 @@ public class ThreadedSystemTest {
 		IntervalTypeDescriptor intervalType = null;
 		LogInterval logInterval = new LogInterval(standardSeconds(10),new LogInstant(15));
 		//threadedSystem.getOrCreateThread("a").add(significantInterval)
-		Map<IntervalTypeDescriptor, Integer> countMap = threadedSystem.countOccurencesDuring(logInterval, intervalType);
+		Map<Object, Integer> countMap = threadedSystem.countOccurencesDuring(logInterval, intervalType);
 	}
 
     @Test
 	public void shouldHandleGettingTotalIntervalEvenIfSomeThreadsHaveNoIntervalData() {
         com.madgag.interval.Interval<LogInstant> interval = new LogInterval(new Interval(3000, 7000));
         threadedSystem.getOrCreateThread("A1");
-        threadedSystem.getOrCreateThread("B2").add(new SignificantInterval(new SignificantIntervalOccupier(PAGE_REQUEST,null), interval));
+        threadedSystem.getOrCreateThread("B2").add(new SignificantInterval(of("type","My Type"), interval));
 		threadedSystem.getOrCreateThread("C3");
         assertThat(threadedSystem.getIntervalCoveredByAllThreads(), equalTo(interval));
 	}

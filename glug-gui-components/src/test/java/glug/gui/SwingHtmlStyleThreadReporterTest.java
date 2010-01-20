@@ -1,21 +1,18 @@
 package glug.gui;
 
-import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
-import static java.awt.Color.RED;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.equalToIgnoringCase;
-import static org.joda.time.Duration.standardSeconds;
-import static org.junit.Assert.assertThat;
-import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import glug.parser.GlugConfig;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
+import static java.awt.Color.RED;
+import static org.hamcrest.Matchers.*;
+import static org.joda.time.Duration.standardSeconds;
+import static org.junit.Assert.assertThat;
 
 
 public class SwingHtmlStyleThreadReporterTest {
@@ -40,7 +37,7 @@ public class SwingHtmlStyleThreadReporterTest {
 	
 	@Test
 	public void shouldIncludeUptimeIfKnown() {
-		threadedSystem.uptime().addUptime(new SignificantInterval(null,new LogInterval(standardSeconds(3),new LogInstant(3000))));
+		threadedSystem.uptime().addUptime(new LogInterval(standardSeconds(3),new LogInstant(3000)));
 		assertThat(reporter.uptimeStringFor(threadedSystem, new LogInstant(1000)),containsString("uptime: 1.000 s"));
 	}
 	

@@ -6,6 +6,9 @@ import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,21 +16,21 @@ import org.joda.time.Duration;
 
 public abstract class IntervalLogMessageParser extends LogMessageParser {
 
-	public IntervalLogMessageParser(String loggerClassName, Pattern pattern) {
-		super(loggerClassName, pattern);
+	public IntervalLogMessageParser(Set<String> loggerClassNames, Pattern pattern) {
+		super(loggerClassNames, pattern);
 	}
 
 	@Override
-	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant) {
-		LogInterval interval = new LogInterval(durationFrom(matcher),logInstant);
+	public SignificantInterval process(MatchResult matchResult, ThreadModel threadModel, LogInstant logInstant) {
+		LogInterval interval = new LogInterval(durationFrom(matchResult),logInstant);
 
-		SignificantInterval significantInterval = new SignificantInterval(intervalOccupierFor(matcher),interval);
+		SignificantInterval significantInterval = new SignificantInterval(intervalOccupierFor(matchResult),interval);
 		threadModel.add(significantInterval);
 		return significantInterval;
 	}
 
-	abstract SignificantIntervalOccupier intervalOccupierFor(Matcher matcher);
+	abstract Map<String,?> intervalOccupierFor(MatchResult matchResult);
 
-	abstract Duration durationFrom(Matcher matcher);
+	abstract Duration durationFrom(MatchResult matchResult);
 
 }

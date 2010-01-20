@@ -3,6 +3,8 @@ package glug.parser.logmessages;
 import static java.awt.Color.YELLOW;
 import static java.lang.Double.parseDouble;
 import static java.lang.Math.round;
+
+import com.google.common.collect.Sets;
 import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantInterval;
 import glug.model.SignificantIntervalOccupier;
@@ -10,7 +12,7 @@ import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
-import java.util.regex.Matcher;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import org.joda.time.Duration;
@@ -23,17 +25,16 @@ public class JVMUptimeParser extends LogMessageParser {
 	private final static SignificantIntervalOccupier jvmUptime = intervalTypeDescriptor.with(null);
 
 	public JVMUptimeParser() {
-		super("com.gu.r2.common.diagnostic.CacheStatisticsLoggingTimerTask", JVM_UPTIME_PATTERN);
+		super(Sets.newHashSet("com.gu.r2.common.diagnostic.CacheStatisticsLoggingTimerTask"), JVM_UPTIME_PATTERN);
 	}
 
 	@Override
-	public SignificantInterval process(Matcher matcher, ThreadModel threadModel, LogInstant logInstant) {
+	public SignificantInterval process(MatchResult matcher, ThreadModel threadModel, LogInstant logInstant) {
 		String uptimeText = matcher.group(1);
 		Duration d = new Duration(round((parseDouble(uptimeText)*1000)));
 		
-		SignificantInterval significantInterval = new SignificantInterval(jvmUptime,new LogInterval(d,logInstant));
-		threadModel.getThreadedSystem().uptime().addUptime(significantInterval);
-		return significantInterval;
+		threadModel.getThreadedSystem().uptime().addUptime(new LogInterval(d,logInstant));
+		return null;
 	}
 	
 }

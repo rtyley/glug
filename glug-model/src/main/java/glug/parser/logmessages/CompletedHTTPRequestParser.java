@@ -20,16 +20,15 @@ Http request for ENDECA_SEARCH_GUI http://browse.gutest.co.uk/education/componen
 Http request for REUTERS http://ris.rois.com/TPRjIia1148tDU*g4QbwCAfnc3bxoT7RDGD-*62*GNEzs/CTIB/POWERSEARCH3XML?CMD=NameGrouped&SearchName=banco+santader&Precision=including&StartRow=1&FORMAT=XML completed in 5352 ms
  */
 
-public class CompletedHTTPRequestParser extends IntervalLogMessageParser {
+public class CompletedHTTPRequestParser {
 	public static final IntervalTypeDescriptor HTTP_REQUEST = new IntervalTypeDescriptor(GREEN.darker(), "HTTP Request");
 	
 	private static final Pattern httpRequestPattern = Pattern.compile("Http request for ([^ ]+) ([^ ]+) completed in (\\d+) ms");
 
 	public CompletedHTTPRequestParser() {
-		super("com.gu.r2.common.util.http.HttpConnection", httpRequestPattern);
+		//super("com.gu.r2.common.util.http.HttpConnection", httpRequestPattern);
 	}
 
-	@Override
 	SignificantIntervalOccupier intervalOccupierFor(Matcher matcher) {
 		String dbQuery = matcher.group(2);
 		return HTTP_REQUEST.with(dbQuery);

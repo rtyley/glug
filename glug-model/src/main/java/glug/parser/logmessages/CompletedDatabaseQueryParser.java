@@ -15,25 +15,14 @@ import org.joda.time.Duration;
 
  Query "load com.gu.r2.common.model.page.LivePage" (component: slotMachineWithConstantHeading) completed in 20 ms
  */
-public class CompletedDatabaseQueryParser extends IntervalLogMessageParser {
+public class CompletedDatabaseQueryParser {
 
 	public static final IntervalTypeDescriptor DATABASE_QUERY = new IntervalTypeDescriptor(BLACK, "Database Query");
 	
 	private static final Pattern databaseQueryPattern = Pattern.compile("Query \"(.+?)\" \\(component: (.+?)\\) completed in (\\d+?) ms");
 
 	public CompletedDatabaseQueryParser() {
-		super("com.gu.r2.common.diagnostic.database.PreparedStatementProxy", databaseQueryPattern);
-	}
-
-	@Override
-	SignificantIntervalOccupier intervalOccupierFor(Matcher matcher) {
-		String dbQuery = matcher.group(1);
-		return DATABASE_QUERY.with(dbQuery);
-	}
-
-	Duration durationFrom(Matcher matcher) {
-		String durationInMillisText = matcher.group(3);
-		return new Duration(parseInt(durationInMillisText));
+		//super("com.gu.r2.common.diagnostic.database.PreparedStatementProxy", databaseQueryPattern);
 	}
 
 }

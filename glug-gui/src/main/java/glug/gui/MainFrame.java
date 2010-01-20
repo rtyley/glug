@@ -15,6 +15,7 @@ import gchisto.gctrace.GCTrace;
 import gchisto.gctracegenerator.NopGCTraceGeneratorListener;
 import gchisto.gctracegenerator.file.FileGCTrace;
 import gchisto.gctracegenerator.file.hotspot.GCLogFileReader;
+import glug.groovy.ParserDefLoader;
 import glug.gui.gc.GCTraceView;
 import glug.gui.model.LogarithmicBoundedRange;
 import glug.gui.timebar.TimelineDateTimeComponent;
@@ -30,6 +31,7 @@ import glug.parser.GlugConfig;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
 import glug.parser.logmessages.LogMessageParserRegistry;
+import groovy.lang.GroovyCodeSource;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -40,6 +42,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +80,7 @@ public class MainFrame extends javax.swing.JFrame {
 		threadScale = new UIThreadScale();
 		
 		GlugConfig glugConfig = new GlugConfig();
-		glugConfig.getIntervalTypes().addAll(asList(PAGE_REQUEST, DATABASE_QUERY, HTTP_REQUEST));
+
 		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadScale, threadedSystem, timelineCursor, glugConfig);
 		
 		timelineCursor.addChangeListener(new ChangeListener() {
@@ -87,7 +90,7 @@ public class MainFrame extends javax.swing.JFrame {
 				String text = null;
 				if (selectedInterval!=null) {
 					text = selectedInterval.toJodaInterval().toPeriod().toString(PeriodFormat.getDefault());
-					Map<IntervalTypeDescriptor, Integer> occurences = threadedSystem.countOccurencesDuring(selectedInterval,DATABASE_QUERY, PAGE_REQUEST);
+					Map<Object, Integer> occurences = threadedSystem.countOccurencesDuring(selectedInterval,"DB Query", "Page Request");
 					if (occurences.containsKey(DATABASE_QUERY) && occurences.containsKey(PAGE_REQUEST)) {
 						float dbQueries = occurences.get(DATABASE_QUERY);
 						int pageRequests = occurences.get(PAGE_REQUEST);
@@ -346,9 +349,15 @@ public class MainFrame extends javax.swing.JFrame {
 	private void loadJavaProcessLogFile(File file) {
 		System.out.println("Loading Java process log...");
 		LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
-		LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, LogMessageParserRegistry.EXAMPLE);
-		new LogLoadingTask(logLoader, new DataLoadedUIUpdater( threadedSystem, uiTimeScale, threadScale, zoomFactorSlideUpdater),50000).execute();
-	}
+        try {
+            LogMessageParserRegistry registry = new ParserDefLoader().load(new GroovyCodeSource(new File("/home/roberto/development/glug/glug-model/src/main/java/glug/parser/logmessages/Chunk.groovy")));
+
+            LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, registry);
+            new LogLoadingTask(logLoader, new DataLoadedUIUpdater( threadedSystem, uiTimeScale, threadScale, zoomFactorSlideUpdater),50000).execute();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
 	private void loadGarbageCollectionLogFile(File file) {
 		System.out.println("Loading Garbage Collection file...");

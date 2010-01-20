@@ -1,5 +1,6 @@
 package glug.parser;
 
+import static com.google.common.collect.ImmutableMap.of;
 import static com.madgag.interval.SimpleInterval.interval;
 import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,8 +8,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableMap;
 import com.madgag.interval.Interval;
 import com.madgag.interval.SimpleInterval;
+import glug.groovy.ParserDefLoader;
 import glug.model.SignificantInterval;
 import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
@@ -24,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.zip.GZIPInputStream;
 
+import groovy.lang.GroovyCodeSource;
 import org.junit.Test;
 
 public class LogLoaderTest {
@@ -36,8 +40,8 @@ public class LogLoaderTest {
 		
 		SignificantIntervalOccupier significantIntervalOccupierStub = PAGE_REQUEST.with("blah");
 		when(reader.parseNext()).thenReturn(
-				new SignificantInterval(significantIntervalOccupierStub, new LogInterval(new LogInstant(1000,1),new LogInstant(2000,2))),
-				new SignificantInterval(significantIntervalOccupierStub, new LogInterval(new LogInstant(3000,3),new LogInstant(4000,4))));
+				new SignificantInterval(of("type","My Type"), new LogInterval(new LogInstant(1000,1),new LogInstant(2000,2))),
+				new SignificantInterval(of("type","My Type"), new LogInterval(new LogInstant(3000,3),new LogInstant(4000,4))));
 		LogLoader logLoader=new LogLoader(reader);
 		LoadReport loadReport = logLoader.loadLines(2);
 
@@ -51,7 +55,8 @@ public class LogLoaderTest {
 		ThreadedSystem threadedSystem = new ThreadedSystem();
 
         LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
-        LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, LogMessageParserRegistry.EXAMPLE);
+        LogMessageParserRegistry registry = new ParserDefLoader().load(new GroovyCodeSource(new File("/home/roberto/development/glug/glug-model/src/main/java/glug/parser/logmessages/Chunk.groovy")));
+        LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, registry);
         LoadReport lr;
 		do {
 			lr=logLoader.loadLines(100000);

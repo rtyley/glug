@@ -1,23 +1,23 @@
 package glug.gui;
 
-import static glug.model.time.LogInterval.durationInMillisOf;
-import static java.lang.Integer.toHexString;
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
-import static org.apache.commons.lang.StringUtils.abbreviate;
 import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantInterval;
-import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.parser.GlugConfig;
+import org.joda.time.Duration;
 
-import java.awt.Color;
+import java.awt.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.joda.time.Duration;
+import static glug.model.time.LogInterval.durationInMillisOf;
+import static java.lang.Integer.toHexString;
+import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
+import static org.apache.commons.lang.StringUtils.abbreviate;
 
 public class SwingHtmlStyleThreadReporter {
 	
@@ -51,15 +51,19 @@ public class SwingHtmlStyleThreadReporter {
 		ThreadedSystem threadedSystem = thread.getThreadedSystem();
 		StringBuilder sb =new StringBuilder("<html>At " + instant.getRecordedInstant() + uptimeStringFor(threadedSystem,instant) + " on thread '"+thread.getName()+"':<ul>");
 		for (SignificantInterval significantInterval : intervalsToReport) {
-			SignificantIntervalOccupier occupier = significantInterval.getOccupier();
-			IntervalTypeDescriptor intervalTypeDescriptor = occupier.getIntervalTypeDescriptor();
-			Color colour = intervalTypeDescriptor.getColour();
-			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor.getDescription()+"</font>  : "+ escapeHtml(abbreviate(occupier.getData(),120))+" ("+durationStringFor(significantInterval)+")");
+			Map<String, ?> occupier = significantInterval.getOccupier();
+			Object intervalTypeDescriptor = significantInterval.getIntervalTypeDescriptor();
+			Color colour = colourFor(intervalTypeDescriptor);
+			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor+"</font>  : "+ escapeHtml(abbreviate(occupier.toString(),120))+" ("+durationStringFor(significantInterval)+")");
 		}
 		return sb.append("</ul></html>").toString();
 	}
 
-	String uptimeStringFor(ThreadedSystem threadedSystem, LogInstant instant) {
+    private Color colourFor(Object intervalTypeDescriptor) {
+        return new Color(intervalTypeDescriptor.hashCode());
+    }
+
+    String uptimeStringFor(ThreadedSystem threadedSystem, LogInstant instant) {
 		Duration uptime = threadedSystem.uptime().at(instant.getRecordedInstant());
 		return uptime==null?"":" (uptime: "+uptimeNumberFormat.format(uptime.getMillis()/1000d)+" s)";
 	}
