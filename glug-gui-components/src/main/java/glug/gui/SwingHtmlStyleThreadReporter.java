@@ -5,7 +5,6 @@ import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
-import glug.parser.GlugConfig;
 import org.joda.time.Duration;
 
 import java.awt.*;
@@ -22,11 +21,6 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
 public class SwingHtmlStyleThreadReporter {
 	
 	private static NumberFormat uptimeNumberFormat = uptimeNumberFormat();
-	private final GlugConfig glugConfig;
-	
-	public SwingHtmlStyleThreadReporter(GlugConfig glugConfig) {
-		this.glugConfig = glugConfig;
-	}
 
 	private static NumberFormat uptimeNumberFormat() {
 		NumberFormat nf = NumberFormat.getNumberInstance();
@@ -37,8 +31,9 @@ public class SwingHtmlStyleThreadReporter {
 	
 	public String htmlSyledReportFor(ThreadModel thread, LogInstant instant) {
 		List<SignificantInterval> intervalsToReport = new ArrayList<SignificantInterval>();
-		
-		for (IntervalTypeDescriptor intervalTypeDescriptor : glugConfig.getIntervalTypes()) {
+
+
+		for (Object intervalTypeDescriptor : thread.getIntervalTypes()) {
 			SignificantInterval significantInterval = thread.getSignificantIntervalsFor(intervalTypeDescriptor, instant);
 			if (significantInterval!=null) {
 				intervalsToReport.add(significantInterval);

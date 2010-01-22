@@ -4,11 +4,9 @@ import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
-import glug.parser.GlugConfig;
 import org.junit.Before;
 import org.junit.Test;
 
-import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static java.awt.Color.RED;
 import static org.hamcrest.Matchers.*;
 import static org.joda.time.Duration.standardSeconds;
@@ -22,14 +20,12 @@ public class SwingHtmlStyleThreadReporterTest {
 
 	@Before
 	public void setUp() {
-		GlugConfig glugConfig = new GlugConfig();
-		glugConfig.getIntervalTypes().add(PAGE_REQUEST);
-		reporter = new SwingHtmlStyleThreadReporter(glugConfig);		
+		reporter = new SwingHtmlStyleThreadReporter();		
 		threadedSystem = new ThreadedSystem();
 	}
 
 	@Test
-	public void shouldCopeWithAbsentntervalTypesForRequestedInstant() {
+	public void shouldCopeWithAbsentIntervalTypesForRequestedInstant() {
 		ThreadModel thread = threadedSystem.getOrCreateThread("my-thread");
 		reporter.htmlSyledReportFor(thread, new LogInstant(1000));
 	}

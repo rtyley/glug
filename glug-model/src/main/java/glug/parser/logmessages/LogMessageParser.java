@@ -4,13 +4,9 @@ import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.bind.annotation.XmlSeeAlso;
 
 public abstract class LogMessageParser {
 

@@ -2,12 +2,10 @@ package glug.gui;
 
 import com.madgag.interval.Interval;
 import com.madgag.interval.collections.IntervalMap;
-import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
-import glug.parser.GlugConfig;
 
 import java.awt.*;
 import java.util.Collection;
@@ -22,33 +20,34 @@ public class ThreadPainter {
 	
 	private final UILogTimeScale uiLogTimeScale;
 	private final UIThreadScale uiThreadScale;
-	private final GlugConfig glugConfig;
 
-	public ThreadPainter(UILogTimeScale uiLogTimeScale, UIThreadScale uiThreadScale, GlugConfig glugConfig) {
+	public ThreadPainter(UILogTimeScale uiLogTimeScale, UIThreadScale uiThreadScale) {
 		this.uiLogTimeScale = uiLogTimeScale;
 		this.uiThreadScale = uiThreadScale;
-		this.glugConfig = glugConfig;
 	}
 	
 	public void paintThread(ThreadModel threadModel, int threadIndex, LogInterval visibleInterval, Graphics2D g) {
 		int durationFor1Pixel = (int) round(uiLogTimeScale.getMillisecondsPerPixel());
 		int threadGraphicsY = uiThreadScale.modelThreadIndexToView(threadIndex);
 		int threadGraphicsHeight = uiThreadScale.modelThreadIndexToView(threadIndex+1) - threadGraphicsY;
-		
-		
-		
-		for (IntervalTypeDescriptor intervalTypeDescriptor : glugConfig.getIntervalTypes()) {
+
+
+		for (Object intervalTypeDescriptor : threadModel.getIntervalTypes()) {
 			plotIntervalsOfType(intervalTypeDescriptor, threadModel,
 					visibleInterval, g, durationFor1Pixel, threadGraphicsY,
 					threadGraphicsHeight);
 		}
 	}
 
+    private Color colourFor(Object intervalTypeDescriptor) {
+        return new Color(intervalTypeDescriptor.hashCode());
+    }
+
 	private void plotIntervalsOfType(
-			IntervalTypeDescriptor intervalTypeDescriptor,
+			Object intervalTypeDescriptor,
 			ThreadModel threadModel, LogInterval visibleInterval, Graphics2D g,
 			int durationFor1Pixel, int threadGraphicsY, int threadGraphicsHeight) {
-		g.setColor(intervalTypeDescriptor.getColour());
+		g.setColor(colourFor(intervalTypeDescriptor));
 
 		IntervalMap<LogInstant, SignificantInterval> significantIntervals = threadModel.significantIntervalsFor(intervalTypeDescriptor);
 		

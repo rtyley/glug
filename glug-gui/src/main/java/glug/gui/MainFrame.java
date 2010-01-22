@@ -24,10 +24,8 @@ import glug.gui.zoom.TimelineViewport;
 import glug.gui.zoom.ViewPreservingZoomer;
 import glug.gui.zoom.ZoomFactorSlideUpdater;
 import glug.gui.zoom.ZoomFocusFinder;
-import glug.model.IntervalTypeDescriptor;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
-import glug.parser.GlugConfig;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
 import glug.parser.logmessages.LogMessageParserRegistry;
@@ -48,9 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import static glug.parser.logmessages.CompletedDatabaseQueryParser.DATABASE_QUERY;
-import static glug.parser.logmessages.CompletedHTTPRequestParser.HTTP_REQUEST;
 import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
-import static java.util.Arrays.asList;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.SwingUtilities.invokeLater;
 
@@ -78,10 +74,8 @@ public class MainFrame extends javax.swing.JFrame {
 
 		timelineCursor = new TimelineCursor();
 		threadScale = new UIThreadScale();
-		
-		GlugConfig glugConfig = new GlugConfig();
 
-		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadScale, threadedSystem, timelineCursor, glugConfig);
+		threadedSystemViewPanel = new ThreadedSystemViewComponent(uiTimeScale, threadScale, threadedSystem, timelineCursor);
 		
 		timelineCursor.addChangeListener(new ChangeListener() {
 			@Override

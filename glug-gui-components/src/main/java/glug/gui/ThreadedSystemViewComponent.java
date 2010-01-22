@@ -1,28 +1,24 @@
 package glug.gui;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-import static java.lang.System.currentTimeMillis;
-import static java.util.Collections.sort;
 import glug.gui.mousecursor.FineCrosshairMouseCursorFactory;
 import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
-import glug.parser.GlugConfig;
+import org.joda.time.Interval;
 
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.ToolTipManager;
-
-import org.joda.time.Interval;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.sort;
 
 public class ThreadedSystemViewComponent extends TimelineComponent {
 
@@ -45,13 +41,13 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 		}
 	};
 	
-	public ThreadedSystemViewComponent(UITimeScale timeScale, UIThreadScale threadScale, ThreadedSystem threadedSystem, TimelineCursor timelineCursor, GlugConfig glugConfig) {
+	public ThreadedSystemViewComponent(UITimeScale timeScale, UIThreadScale threadScale, ThreadedSystem threadedSystem, TimelineCursor timelineCursor) {
 		super(timeScale, timelineCursor);
 		this.threadScale = threadScale;
 		this.threadedSystem = threadedSystem;
 		uiLogTimeScale = new UILogTimeScale(timeScale);
-		threadPainter = new ThreadPainter(uiLogTimeScale,threadScale, glugConfig);
-		htmlStyleReporter = new SwingHtmlStyleThreadReporter(glugConfig);
+		threadPainter = new ThreadPainter(uiLogTimeScale,threadScale);
+		htmlStyleReporter = new SwingHtmlStyleThreadReporter();
 		setCursor(new FineCrosshairMouseCursorFactory().createFineCrosshairMouseCursor());
 		turnOnToolTips();
 		
