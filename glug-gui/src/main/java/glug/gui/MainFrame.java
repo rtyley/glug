@@ -41,6 +41,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
@@ -344,11 +346,13 @@ public class MainFrame extends javax.swing.JFrame {
 		System.out.println("Loading Java process log...");
 		LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
         try {
-            LogMessageParserRegistry registry = new ParserDefLoader().load(new GroovyCodeSource(new File("/home/roberto/development/glug/glug-model/src/main/java/glug/parser/logmessages/Chunk.groovy")));
+            InputStream stream = ParserDefLoader.class.getResourceAsStream("DefaultParsers.groovy");
+            //System.out.println("Groovy resource at "+resource);
+            LogMessageParserRegistry registry = new ParserDefLoader().load(new GroovyCodeSource(new InputStreamReader(stream),"foo","bar"));
 
             LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, registry);
             new LogLoadingTask(logLoader, new DataLoadedUIUpdater( threadedSystem, uiTimeScale, threadScale, zoomFactorSlideUpdater),50000).execute();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }

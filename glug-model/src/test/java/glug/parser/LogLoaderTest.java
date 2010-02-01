@@ -8,9 +8,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableMap;
 import com.madgag.interval.Interval;
-import com.madgag.interval.SimpleInterval;
 import glug.groovy.ParserDefLoader;
 import glug.model.SignificantInterval;
 import glug.model.SignificantIntervalOccupier;
@@ -22,10 +20,6 @@ import glug.parser.LogLoader.LoadReport;
 import glug.parser.logmessages.LogMessageParserRegistry;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.util.zip.GZIPInputStream;
 
 import groovy.lang.GroovyCodeSource;
 import org.junit.Test;
@@ -55,7 +49,7 @@ public class LogLoaderTest {
 		ThreadedSystem threadedSystem = new ThreadedSystem();
 
         LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
-        LogMessageParserRegistry registry = new ParserDefLoader().load(new GroovyCodeSource(new File("/home/roberto/development/glug/glug-model/src/main/java/glug/parser/logmessages/Chunk.groovy")));
+        LogMessageParserRegistry registry = new ParserDefLoader().load(new GroovyCodeSource(new File("/home/roberto/development/glug/glug-model/src/main/java/glug/parser/logmessages/DefaultParsers.groovy")));
         LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, registry);
         LoadReport lr;
 		do {

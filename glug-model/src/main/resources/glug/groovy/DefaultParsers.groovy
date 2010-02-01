@@ -18,9 +18,9 @@ register(
     logger:[ 'com.gu.pluck.http.PluckHttpClient' ]
   ),
   new ParserDef(
-    pattern:~/(Http request for \w+) .* completed in (\d+?) ms/,
-    data: { [type: it.group(1)] },
-    duration: { durationInMillis(it.group(2)) },
+    pattern:~/(Http request for \w+) (.*) completed in (\d+?) ms/,
+    data: { [type: it.group(1), params:urlParams(it.group(2))] },
+    duration: { durationInMillis(it.group(3)) },
     logger:[ 'com.gu.r2.common.util.http.HttpConnection' ]
   ),
   new ParserDef(
@@ -35,5 +35,5 @@ register(
     duration: { durationInMillis(it.group(2)) },
     logger:[ 'com.gu.r2.frontend.controller.page.rss.RssFeedFactory' ]
   )
-
 )
+
