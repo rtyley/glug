@@ -5,22 +5,22 @@
 	<name>Glug GUI</name>
 	<description>A log visualizer for multi-threaded systems</description>
 	<packaging>jar</packaging>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.6</version>
 	<parent>
 		<groupId>com.gu</groupId>
 		<artifactId>glug</artifactId>
-		<version>1.5-SNAPSHOT</version>
+		<version>1.6</version>
 	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>com.gu</groupId>
 			<artifactId>gchisto</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gu</groupId>
 			<artifactId>glug-gui-components</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.6</version>
 		</dependency>
 	</dependencies>
 </project>

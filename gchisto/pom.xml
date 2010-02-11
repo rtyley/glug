@@ -4,11 +4,11 @@
 	<artifactId>gchisto</artifactId>
 	<name>GChisto</name>
 	<packaging>jar</packaging>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.6</version>
 	<parent>
 		<groupId>com.gu</groupId>
 		<artifactId>glug</artifactId>
-		<version>1.5-SNAPSHOT</version>
+		<version>1.6</version>
 	</parent>
 
 
