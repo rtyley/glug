@@ -6,7 +6,6 @@ import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,5 +74,16 @@ public class ThreadedSystem {
 		return countMap;
 	}
 
+    private Map<Map<String, ?>,Map<String, ?>> cache=newHashMap();
 
+
+
+    public Map<String, ?> intern(Map<String, ?> intervalOcc) {
+        Map<String, ?> flyw = cache.get(intervalOcc);
+        if (flyw!=null) {
+            return flyw;
+        }
+        cache.put(intervalOcc,intervalOcc);
+        return intervalOcc;
+    }
 }

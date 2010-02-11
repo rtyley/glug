@@ -1,18 +1,15 @@
 package glug.parser.logmessages;
 
 import glug.model.SignificantInterval;
-import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
+import org.joda.time.Duration;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.joda.time.Duration;
 
 public abstract class IntervalLogMessageParser extends LogMessageParser {
 
@@ -24,7 +21,9 @@ public abstract class IntervalLogMessageParser extends LogMessageParser {
 	public SignificantInterval process(MatchResult matchResult, ThreadModel threadModel, LogInstant logInstant) {
 		LogInterval interval = new LogInterval(durationFrom(matchResult),logInstant);
 
-		SignificantInterval significantInterval = new SignificantInterval(intervalOccupierFor(matchResult),interval);
+        Map<String, ?> intervalOcc = intervalOccupierFor(matchResult);
+        intervalOcc = threadModel.getThreadedSystem().intern(intervalOcc);
+        SignificantInterval significantInterval = new SignificantInterval(intervalOcc,interval);
 		threadModel.add(significantInterval);
 		return significantInterval;
 	}
