@@ -2,13 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gu</groupId>
 	<artifactId>glug-executable</artifactId>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.5</version>
 	<name>Glug Executable Jar</name>
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>com.gu</groupId>
 		<artifactId>glug</artifactId>
-		<version>1.5-SNAPSHOT</version>
+		<version>1.5</version>
 	</parent>
 	<url>http://glug.googlecode.com/</url>
 	<description>A log visualizer for multi-threaded systems</description>
@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>com.gu</groupId>
 			<artifactId>glug-gui</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.5</version>
 		</dependency>
 	</dependencies>
 </project>
