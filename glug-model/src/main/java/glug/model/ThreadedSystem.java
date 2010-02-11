@@ -22,13 +22,6 @@ public class ThreadedSystem {
 	private Uptime uptime = new Uptime();
 
 	private ConcurrentMap<String, ThreadModel> map = new ConcurrentHashMap<String, ThreadModel>();
-
-	
-	
-	public void add(String threadName, Map<String,?> intervalOccupier, LogInterval logInterval) {
-		ThreadModel thread = getOrCreateThread(threadName);
-		thread.add(new SignificantInterval(intervalOccupier, logInterval ));
-	}
 		
 	public void add(String threadName, SignificantInterval significantInterval) {
 		getOrCreateThread(threadName).add(significantInterval);
