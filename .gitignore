@@ -7,4 +7,7 @@ temp-testng-customsuite.xml
 **pom.xml.releaseBackup
 release.properties
 *.iws
+*/.classpath
+*/.project
+*/.settings
 
