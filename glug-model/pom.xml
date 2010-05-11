@@ -4,11 +4,11 @@
 	<artifactId>glug-model</artifactId>
 	<name>Glug Model</name>
 	<packaging>jar</packaging>
-	<version>1.8</version>
+	<version>1.9-SNAPSHOT</version>
 	<parent>
 		<groupId>com.gu</groupId>
 		<artifactId>glug</artifactId>
-		<version>1.8</version>
+		<version>1.9-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
