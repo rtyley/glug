@@ -15,8 +15,8 @@ import java.util.Map;
 
 import static glug.model.time.LogInterval.durationInMillisOf;
 import static java.lang.Integer.toHexString;
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
-import static org.apache.commons.lang.StringUtils.abbreviate;
+import static org.apache.commons.text.StringEscapeUtils.escapeHtml3;
+import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 public class SwingHtmlStyleThreadReporter {
 	
@@ -49,7 +49,7 @@ public class SwingHtmlStyleThreadReporter {
 			Map<String, ?> occupier = significantInterval.getOccupier();
 			Object intervalTypeDescriptor = significantInterval.getIntervalTypeDescriptor();
 			Color colour = colourFor(intervalTypeDescriptor);
-			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor+"</font>  : "+ escapeHtml(abbreviate(occupier.toString(),120))+" ("+durationStringFor(significantInterval)+")");
+			sb.append("<li><font color=\"#"+ hexFor(colour)+"\">"+intervalTypeDescriptor+"</font>  : "+ escapeHtml3(abbreviate(occupier.toString(),120))+" ("+durationStringFor(significantInterval)+")");
 		}
 		return sb.append("</ul></html>").toString();
 	}

@@ -11,12 +11,7 @@
 
 package glug.gui;
 
-import gchisto.gctrace.GCTrace;
-import gchisto.gctracegenerator.NopGCTraceGeneratorListener;
-import gchisto.gctracegenerator.file.FileGCTrace;
-import gchisto.gctracegenerator.file.hotspot.GCLogFileReader;
 import glug.groovy.ParserDefLoader;
-import glug.gui.gc.GCTraceView;
 import glug.gui.model.LogarithmicBoundedRange;
 import glug.gui.timebar.TimelineDateTimeComponent;
 import glug.gui.timelinecursor.TimelineCursor;
@@ -335,11 +330,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private void loadFile(File file) {
 		System.out.println("You chose to open this file: " + file.getName());
-		if (file.getName().toLowerCase().contains("jvm")) {
-			loadGarbageCollectionLogFile(file);
-		} else {
-			loadJavaProcessLogFile(file);
-		}
+        loadJavaProcessLogFile(file);
 	}
 
 	private void loadJavaProcessLogFile(File file) {
@@ -356,22 +347,6 @@ public class MainFrame extends javax.swing.JFrame {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
-
-	private void loadGarbageCollectionLogFile(File file) {
-		System.out.println("Loading Garbage Collection file...");
-		new FileGCTrace(file, new GCLogFileReader()).init(new NopGCTraceGeneratorListener() {
-			@Override
-			public void finished(final GCTrace gcTrace) {
-				System.out.println("Finished loading Garbage Collection file");
-				invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						innerPanel.add(new GCTraceView(gcTrace, uiTimeScale, threadedSystem, timelineCursor));
-					}
-				});
-			}
-		});
-	}
 
 	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
 		System.exit(0);
