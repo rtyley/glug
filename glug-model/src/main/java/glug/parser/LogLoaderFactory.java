@@ -1,13 +1,13 @@
 package glug.parser;
 
+import glug.FooLogLineParser;
 import glug.model.ThreadedSystem;
-import glug.parser.logmessages.LogMessageParserRegistry;
 
 import java.io.*;
 import java.util.zip.GZIPInputStream;
 
 public class LogLoaderFactory {
-    public LogLoader createLoaderFor(File logFile, ThreadedSystem threadedSystem, LogMessageParserRegistry logMessageParserRegistry) {
+    public LogLoader createLoaderFor(File logFile, ThreadedSystem threadedSystem) {
         // System.out.println("Processing "+logFile);
         LineNumberReader reader;
         try {
@@ -17,7 +17,9 @@ public class LogLoaderFactory {
             throw new RuntimeException(e);
         }
 
-        LogLoader logLoader = new LogLoader(new LogParsingReader(reader, new LogLineParser(new LogCoordinateParser(threadedSystem), logMessageParserRegistry)));
+        LogLoader logLoader = new LogLoader(new LogParsingReader(reader,
+                new FooLogLineParser(threadedSystem)
+        ));
         System.out.println("woo");
         return logLoader;
     }

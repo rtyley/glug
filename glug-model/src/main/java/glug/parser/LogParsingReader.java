@@ -1,5 +1,6 @@
 package glug.parser;
 
+import glug.FooLogLineParser;
 import glug.model.SignificantInterval;
 
 import java.io.IOException;
@@ -10,10 +11,10 @@ import java.text.ParseException;
 public class LogParsingReader {
 
     private final LineNumberReader lineNumberReader;
-    private final LogLineParser logLineParser;
+    private final FooLogLineParser logLineParser;
     private boolean endOfStream = false;
 
-    public LogParsingReader(LineNumberReader lineNumberReader, LogLineParser logLineParser) {
+    public LogParsingReader(LineNumberReader lineNumberReader, FooLogLineParser logLineParser) {
         this.lineNumberReader = lineNumberReader;
         this.logLineParser = logLineParser;
     }
