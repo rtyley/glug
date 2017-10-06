@@ -1,7 +1,8 @@
 package glug.gui.zoom;
 
 import glug.gui.model.LogarithmicBoundedRange;
-import org.joda.time.Instant;
+
+import java.time.Instant;
 
 public class ViewPreservingZoomer {
 

@@ -1,8 +1,7 @@
 package glug.gui.timebar;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-
+import java.time.Duration;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
@@ -27,10 +26,10 @@ public class TickSet {
         return largestDuration == null ? largeDuration : largestDuration;
     }
 
-    public TickSet with(DateTimeZone dateTimeZone) {
+    public TickSet with(ZoneId zoneId) {
         List<Tick> ticksWithUpdatedTimeZone = new ArrayList<Tick>(tickIntervalsByDuration.size());
         for (Tick tick : tickIntervalsByDuration.values()) {
-            ticksWithUpdatedTimeZone.add(tick.with(dateTimeZone));
+            ticksWithUpdatedTimeZone.add(tick.with(zoneId));
         }
         return new TickSet(ticksWithUpdatedTimeZone.toArray(new Tick[tickIntervalsByDuration.size()]));
     }

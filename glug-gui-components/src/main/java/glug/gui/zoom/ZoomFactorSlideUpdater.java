@@ -2,7 +2,7 @@ package glug.gui.zoom;
 
 import glug.gui.UITimeScale;
 import glug.gui.model.LogarithmicBoundedRange;
-import org.joda.time.Interval;
+import org.threeten.extra.Interval;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
@@ -56,7 +56,7 @@ public class ZoomFactorSlideUpdater {
     }
 
     private double millisPerPixelRequredToShowEntireIntervalInViewPort(Interval interval) {
-        return ((double) interval.toDurationMillis()) / viewport.getExtentSize().width;
+        return ((double) interval.toDuration().toMillis()) / viewport.getExtentSize().width;
     }
 
 }

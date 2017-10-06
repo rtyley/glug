@@ -3,8 +3,9 @@ package glug.model;
 import com.madgag.interval.Interval;
 import com.madgag.interval.collections.IntervalSet;
 import glug.model.time.LogInstant;
-import org.joda.time.Duration;
-import org.joda.time.Instant;
+
+import java.time.Duration;
+import java.time.Instant;
 
 import static com.madgag.interval.Bound.MIN;
 
@@ -21,7 +22,7 @@ public class Uptime {
         if (uptimeInterval == null) {
             return null;
         }
-        return new Duration(uptimeInterval.get(MIN).getMillis(), instant.getMillis());
+        return Duration.between(uptimeInterval.get(MIN).getRecordedInstant(), instant);
     }
 
     public Instant startPreceding(Instant instant) {

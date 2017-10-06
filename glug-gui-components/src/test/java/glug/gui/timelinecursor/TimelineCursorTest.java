@@ -8,10 +8,10 @@ import org.junit.Test;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
-import static org.joda.time.Duration.standardSeconds;
 
 
 public class TimelineCursorTest {
@@ -19,7 +19,7 @@ public class TimelineCursorTest {
     @Test
     public void shouldFireAChangeEventThatContainsCorrectOldAndNewState() {
         TimelineCursor cursor = new TimelineCursor();
-        LogInterval intervalSelected = new LogInterval(standardSeconds(5), new LogInstant(8000));
+        LogInterval intervalSelected = new LogInterval(ofSeconds(5), new LogInstant(8000));
         cursor.setDot(intervalSelected.getStart());
         cursor.moveDot(intervalSelected.getEnd());
 

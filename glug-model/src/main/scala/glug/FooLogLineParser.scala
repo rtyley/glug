@@ -9,7 +9,6 @@ import fastparse.all._
 
 import scala.collection.JavaConverters._
 
-
 //2017-10-04 09:08:00,037 [application-akka.actor.default-dispatcher-745] INFO  lib.DashboardData$ - completed lib.DashboardData$::topPagesQueryNonContentAgg in 121 ms elapsed, 116 ms elasticsearch
 //2017-10-04 09:08:00,113 [application-akka.actor.default-dispatcher-745] INFO  lib.OnwardTraffic$ - completed lib.OnwardTraffic$::simpleDataForPaths in 75 ms elapsed, 74 ms elasticsearch
 //2017-10-04 09:08:00,119 [application-akka.actor.default-dispatcher-745] INFO  lib.OnwardTraffic$ - completed lib.OnwardTraffic$::simpleDataForPaths in 82 ms elapsed, 80 ms elasticsearch
@@ -51,14 +50,12 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
         val logInstantAtEnd = new LogInstant(lls.instant.toEpochMilli, lineNumber)
         val threadModel = threadedSystem.getThread(lls.threadName)
 
-        val logInterval = new LogInterval(org.joda.time.Duration.millis(elapsedDuration.toMillis), logInstantAtEnd)
+        val logInterval = new LogInterval(elapsedDuration, logInstantAtEnd)
         val significantInterval = new SignificantInterval(Map("type" -> "ES Request").asJava,
           logInterval)
         threadModel.add(significantInterval)
         significantInterval
     }
     )
-
-
   }
 }

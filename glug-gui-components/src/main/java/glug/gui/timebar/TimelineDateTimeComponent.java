@@ -1,16 +1,16 @@
 package glug.gui.timebar;
 
 import glug.gui.UITimeScale;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
+import org.threeten.extra.Interval;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.font.TextLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,21 +24,21 @@ import static java.awt.Font.SANS_SERIF;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.lang.Math.*;
-import static org.joda.time.DateTimeFieldType.*;
-import static org.joda.time.format.DateTimeFormat.forPattern;
+import static java.time.format.DateTimeFormatter.ofPattern;
+import static java.time.temporal.ChronoField.*;
+
 
 public class TimelineDateTimeComponent extends JComponent {
 
     int minTickPixelSpacing = 3;
     int maxTickPixelSpacing = 160;
     private TickSet availableTicks = new TickSet(
-            tick(1, yearOfCentury(), forPattern("YYYY")),
-            tick(1, monthOfYear(), forPattern("YYYY-MM")),
-            tick(1, dayOfMonth(), forPattern("YYYY-MM-dd")),
-            tick(4, hourOfDay(), forPattern("YYYY-MM-dd HH:mm")), tick(1, hourOfDay(), forPattern("HH:mm")),
-            tick(10, minuteOfHour(), forPattern("HH:mm")), tick(5, minuteOfHour(), forPattern("HH:mm")), tick(1, minuteOfHour(), forPattern("HH:mm")),
-            tick(10, secondOfMinute(), forPattern("HH:mm:ss")), tick(5, secondOfMinute(), forPattern("HH:mm:ss")), tick(1, secondOfMinute(), forPattern("HH:mm:ss")),
-            tick(100, millisOfSecond(), forPattern("HH:mm:ss.S")), tick(10, millisOfSecond(), forPattern("HH:mm:ss.SS")), tick(1, millisOfSecond(), forPattern("HH:mm:ss.SSS")));
+            tick(1, MONTH_OF_YEAR, ofPattern("YYYY-MM")),
+            tick(1, DAY_OF_MONTH, ofPattern("YYYY-MM-dd")),
+            tick(4, HOUR_OF_DAY, ofPattern("YYYY-MM-dd HH:mm")), tick(1, HOUR_OF_DAY, ofPattern("HH:mm")),
+            tick(10, MINUTE_OF_HOUR, ofPattern("HH:mm")), tick(5, MINUTE_OF_HOUR, ofPattern("HH:mm")), tick(1, MINUTE_OF_HOUR, ofPattern("HH:mm")),
+            tick(10, SECOND_OF_MINUTE, ofPattern("HH:mm:ss")), tick(5, SECOND_OF_MINUTE, ofPattern("HH:mm:ss")), tick(1, SECOND_OF_MINUTE, ofPattern("HH:mm:ss")),
+            tick(100, MILLI_OF_SECOND, ofPattern("HH:mm:ss.S")), tick(10, MILLI_OF_SECOND, ofPattern("HH:mm:ss.SS")), tick(1, MILLI_OF_SECOND, ofPattern("HH:mm:ss.SSS")));
 
     private static final long serialVersionUID = 1L;
 
@@ -60,8 +60,8 @@ public class TimelineDateTimeComponent extends JComponent {
         });
     }
 
-    public void setTimeZone(DateTimeZone dateTimeZone) {
-        availableTicks = availableTicks.with(dateTimeZone);
+    public void setTimeZone(ZoneId zoneId) {
+        availableTicks = availableTicks.with(zoneId);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class TimelineDateTimeComponent extends JComponent {
 
     private void paintTicksFor(Interval visibleInterval, Graphics2D graphics2D) {
         NavigableMap<Duration, Tick> availableTicks = tickIntervalsAtCurrentScale();
-        Map<DateTime, Tick> tickMap = new HashMap<DateTime, Tick>();
+        Map<ZonedDateTime, Tick> tickMap = new HashMap<>();
         Map<Tick, Float> tickWeight = new HashMap<Tick, Float>();
         for (Tick tick : availableTicks.values()) {
             int pixelsForTickDuration = timeScale.modelDurationToViewPixels(tick.getInterval().getDuration());
@@ -96,29 +96,29 @@ public class TimelineDateTimeComponent extends JComponent {
                 proportionOfRange = (float) pow(proportionOfRange, 0.7);
             }
             tickWeight.put(tick, proportionOfRange);
-            Iterator<DateTime> tickIterator = tick.getInterval().ticksFor(visibleInterval);
+            Iterator<ZonedDateTime> tickIterator = tick.getInterval().ticksFor(visibleInterval, ZoneId.systemDefault());
             while (tickIterator.hasNext()) {
-                DateTime tickDateTime = tickIterator.next();
+                ZonedDateTime tickDateTime = tickIterator.next();
                 tickMap.put(tickDateTime, tick);
             }
         }
         paintTicksFor(tickMap, tickWeight, graphics2D);
     }
 
-    private void paintTicksFor(Map<DateTime, Tick> tickMap,
+    private void paintTicksFor(Map<ZonedDateTime, Tick> tickMap,
                                Map<Tick, Float> tickWeight, Graphics2D graphics2D) {
         int tickHeight;
         int bottom = getHeight() - 1;
         graphics2D.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
         Font baseFont = new Font(SANS_SERIF, PLAIN, 16);
-        for (Entry<DateTime, Tick> entry : tickMap.entrySet()) {
+        for (Entry<ZonedDateTime, Tick> entry : tickMap.entrySet()) {
             Tick tick = entry.getValue();
             float proportionOfRange = tickWeight.get(tick);
             int col = round(255 * (1f - proportionOfRange));
             graphics2D.setColor(new Color(col, col, col));
             float punchSize = (float) (16f * exp(proportionOfRange - 1));
             tickHeight = (int) round(punchSize);
-            DateTime tickDateTime = entry.getKey();
+            ZonedDateTime tickDateTime = entry.getKey();
             int graphicsX = timeScale.modelToView(tickDateTime.toInstant());
             graphics2D.drawLine(graphicsX, bottom, graphicsX, bottom - tickHeight);
             if (proportionOfRange > 0.3) {

@@ -33,7 +33,7 @@ public class DataLoadedUIUpdaterTest {
 
         dataLoadedUIUpdater.updateUI(smallIntervalThatHasJustBeenUpdated);
 
-        verify(uiTimeScale).setFullInterval(totalSpanningLogInterval.toJodaInterval());
+        verify(uiTimeScale).setFullInterval(totalSpanningLogInterval.toTimeInterval());
 
     }
 }

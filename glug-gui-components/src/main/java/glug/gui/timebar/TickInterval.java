@@ -1,20 +1,24 @@
 package glug.gui.timebar;
 
-import org.joda.time.*;
-import org.joda.time.MutableDateTime.Property;
+import org.threeten.extra.Interval;
 
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalField;
 import java.util.Iterator;
 
 public class TickInterval {
 
     private final int value;
-    private final DateTimeFieldType dateTimeFieldType;
+    private final TemporalField temporalField;
     private final Duration duration;
 
-    public TickInterval(int value, DateTimeFieldType dateTimeFieldType) {
+    public TickInterval(int value, TemporalField temporalField) {
         this.value = value;
-        this.dateTimeFieldType = dateTimeFieldType;
-        this.duration = new Period().withField(dateTimeFieldType.getDurationType(), value).toDurationFrom(new Instant());
+        this.temporalField = temporalField;
+        this.duration = temporalField.getBaseUnit().getDuration().multipliedBy(value);
+//		this.duration = new Period().withField(dateTimeFieldType.getDurationType(), value).toDurationFrom(Instant.ofEpochMilli());
     }
 
     public int getValue() {
@@ -25,20 +29,15 @@ public class TickInterval {
         return duration;
     }
 
-    public DateTime floor(DateTime dateTime) {
-        MutableDateTime mutableDateTime = dateTime.toMutableDateTime();
-        Property fieldProperty = mutableDateTime.property(dateTimeFieldType);
-        fieldProperty.roundFloor();
-        int fieldMinimumValue = fieldProperty.getMinimumValue();
-        fieldProperty.set((((fieldProperty.get() - fieldMinimumValue) / value) * value) + fieldMinimumValue);
-        return mutableDateTime.toDateTime();
+    public ZonedDateTime floor(ZonedDateTime dateTime) {
+        return dateTime.truncatedTo(temporalField.getBaseUnit());
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((dateTimeFieldType == null) ? 0 : dateTimeFieldType.hashCode());
+        result = prime * result + ((temporalField == null) ? 0 : temporalField.hashCode());
         result = prime * result + value;
         return result;
     }
@@ -52,20 +51,20 @@ public class TickInterval {
         if (getClass() != obj.getClass())
             return false;
         TickInterval other = (TickInterval) obj;
-        if (dateTimeFieldType == null) {
-            if (other.dateTimeFieldType != null)
+        if (temporalField == null) {
+            if (other.temporalField != null)
                 return false;
-        } else if (!dateTimeFieldType.equals(other.dateTimeFieldType))
+        } else if (!temporalField.equals(other.temporalField))
             return false;
         if (value != other.value)
             return false;
         return true;
     }
 
-    public Iterator<DateTime> ticksFor(final Interval interval) {
-        return new Iterator<DateTime>() {
+    public Iterator<ZonedDateTime> ticksFor(final Interval interval, ZoneId zoneId) {
+        return new Iterator<ZonedDateTime>() {
 
-            DateTime dateTime = floor(interval.getStart());
+            ZonedDateTime dateTime = floor(interval.getStart().atZone(zoneId));
 
             @Override
             public boolean hasNext() {
@@ -73,11 +72,11 @@ public class TickInterval {
             }
 
             @Override
-            public DateTime next() {
-                DateTime dateTimeToReturn = dateTime;
-                dateTime = dateTime.property(dateTimeFieldType).addToCopy(value);
-                if (dateTimeToReturn.isAfter(interval.getEnd())) {
-                    dateTime = null;
+            public ZonedDateTime next() {
+                ZonedDateTime dateTimeToReturn = dateTime.plus(value, temporalField.getBaseUnit());
+
+                if (interval.isBefore(dateTimeToReturn.toInstant())) {
+                    dateTimeToReturn = null;
                 }
                 return dateTimeToReturn;
             }

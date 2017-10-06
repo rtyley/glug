@@ -2,12 +2,13 @@ package glug.gui.zoom;
 
 import glug.gui.UITimeScale;
 import glug.gui.model.LogarithmicBoundedRange;
-import org.joda.time.Instant;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.time.Instant;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,7 +34,7 @@ public class ViewPreservingZoomerTest {
 
     @Test
     public void shouldEnsureThatZoomFocusIsInSamePlaceInViewportAfterZoom() {
-        Instant instantToZoomAround = new Instant(5000);
+        Instant instantToZoomAround = Instant.ofEpochMilli(5000);
         int viewportPositionForInstant = 300;
 
         when(zoomFocusFinder.instantToZoomAround()).thenReturn(instantToZoomAround);

@@ -3,8 +3,9 @@ package glug.model.time;
 import com.madgag.interval.AbstractInterval;
 import com.madgag.interval.Bound;
 import com.madgag.interval.IntervalClosure;
-import org.joda.time.Duration;
-import org.joda.time.Interval;
+import org.threeten.extra.Interval;
+
+import java.time.Duration;
 
 import static com.madgag.interval.Bound.MAX;
 import static com.madgag.interval.Bound.MIN;
@@ -30,12 +31,12 @@ public class LogInterval extends AbstractInterval<LogInstant> {
     }
 
     public LogInterval(Duration duration, LogInstant logInstantAtEnd) {
-        this.start = new LogInstant(logInstantAtEnd.getMillis() - duration.getMillis(), logInstantAtEnd.getLogLine()); // TODO De-hack?
+        this.start = new LogInstant(logInstantAtEnd.getMillis() - duration.toMillis(), logInstantAtEnd.getLogLine()); // TODO De-hack?
         this.end = logInstantAtEnd;
     }
 
     public LogInterval(Interval interval) {
-        this(interval.toDuration(), new LogInstant(interval.getEnd().toInstant()));
+        this(interval.toDuration(), new LogInstant(interval.getEnd()));
     }
 
     public LogInstant getStart() {
@@ -145,12 +146,12 @@ public class LogInterval extends AbstractInterval<LogInstant> {
         return true;
     }
 
-    public Interval toJodaInterval() {
-        return new Interval(start.getMillis(), end.getMillis());
+    public org.threeten.extra.Interval toTimeInterval() {
+        return Interval.of(start.getRecordedInstant(), end.getRecordedInstant());
     }
 
-    public static Interval toJodaInterval(com.madgag.interval.Interval<LogInstant> interval) {
-        return new LogInterval(interval.get(MIN), interval.get(MAX)).toJodaInterval();
+    public static org.threeten.extra.Interval toTimeInterval(com.madgag.interval.Interval<LogInstant> interval) {
+        return new LogInterval(interval.get(MIN), interval.get(MAX)).toTimeInterval();
     }
 
     public LogInterval overlap(LogInterval otherLogInterval) {

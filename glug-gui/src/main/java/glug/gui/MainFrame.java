@@ -27,11 +27,15 @@ import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.joda.time.format.PeriodFormat;
+import org.threeten.extra.Interval;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.io.File;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
@@ -72,7 +76,7 @@ public class MainFrame extends javax.swing.JFrame {
                 LogInterval selectedInterval = timelineCursor.getSelectedInterval();
                 String text = null;
                 if (selectedInterval != null) {
-                    text = selectedInterval.toJodaInterval().toPeriod().toString(PeriodFormat.getDefault());
+                    text = selectedInterval.toTimeInterval().toString();
                     Map<Object, Integer> occurences = threadedSystem.countOccurencesDuring(selectedInterval, "DB Query", "Page Request");
 //                    if (occurences.containsKey(DATABASE_QUERY) && occurences.containsKey(PAGE_REQUEST)) {
 //                        float dbQueries = occurences.get(DATABASE_QUERY);
@@ -99,9 +103,9 @@ public class MainFrame extends javax.swing.JFrame {
         // });
         timelineScrollPane.getViewport().add(threadedSystemViewPanel);
 
-        uiTimeScale.setFullInterval(new Interval(new Instant(), new Duration(1000000)));
+        uiTimeScale.setFullInterval(Interval.of(Instant.now(), Duration.ofSeconds(1000000)));
         timelineDateTimeComponent = new TimelineDateTimeComponent(uiTimeScale);
-        timelineDateTimeComponent.setTimeZone(DateTimeZone.forID("Europe/London"));
+        timelineDateTimeComponent.setTimeZone(ZoneId.of("Europe/London"));
         timelineScrollPane.setColumnHeaderView(timelineDateTimeComponent);
 
         timelineScrollPane.validate();
@@ -295,13 +299,13 @@ public class MainFrame extends javax.swing.JFrame {
     private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed
         LogInterval selectedInterval = timelineCursor.getSelectedInterval();
         if (selectedInterval != null) {
-            fitWindowTo(selectedInterval.toJodaInterval());
+            fitWindowTo(selectedInterval.toTimeInterval());
         }
     }// GEN-LAST:event_zoomToSelectionMenuItemActionPerformed
 
     private void fitWindowTo(Interval interval) {
         uiTimeScale.setMillisecondsPerPixelToFit(interval, timelineScrollPane.getViewport().getExtentSize().width);
-        timelineViewport.setViewPosition(interval.getStart().toInstant(), 0);
+        timelineViewport.setViewPosition(interval.getStart(), 0);
     }
 
     private void zoomInMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jMenuItem1ActionPerformed

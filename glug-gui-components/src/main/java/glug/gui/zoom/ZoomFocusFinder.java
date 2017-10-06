@@ -3,10 +3,10 @@ package glug.gui.zoom;
 import glug.gui.UITimeScale;
 import glug.gui.timelinecursor.TimelineCursor;
 import glug.model.time.LogInstant;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
+import org.threeten.extra.Interval;
 
 import javax.swing.*;
+import java.time.Instant;
 
 public class ZoomFocusFinder {
 
@@ -28,8 +28,8 @@ public class ZoomFocusFinder {
             instantToZoomAround = dot.getRecordedInstant();
         }
         if (instantToZoomAround == null) {
-            instantToZoomAround = new Instant(visibleInterval.getStartMillis()
-                    + visibleInterval.toDurationMillis() / 2);
+            instantToZoomAround = Instant.ofEpochMilli(visibleInterval.getStart().toEpochMilli()
+                    + visibleInterval.toDuration().toMillis() / 2);
         }
         return instantToZoomAround;
     }

@@ -4,13 +4,12 @@ import com.madgag.interval.Interval;
 import glug.model.time.LogInstant;
 import glug.parser.LogLoader;
 import glug.parser.LogLoader.LoadReport;
-import org.joda.time.format.PeriodFormat;
 
 import javax.swing.*;
 import java.util.List;
 
 import static com.madgag.interval.SimpleInterval.union;
-import static glug.model.time.LogInterval.toJodaInterval;
+import static glug.model.time.LogInterval.toTimeInterval;
 import static java.lang.System.currentTimeMillis;
 
 
@@ -48,7 +47,7 @@ public class LogLoadingTask extends SwingWorker<Void, LoadReport> {
     }
 
     private String format(Interval<LogInstant> loadedLogInterval) {
-        return toJodaInterval(loadedLogInterval).toPeriod().toString(PeriodFormat.getDefault());
+        return toTimeInterval(loadedLogInterval).toDuration().toString();
     }
 
     @Override

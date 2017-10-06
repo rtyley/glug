@@ -7,8 +7,8 @@ import glug.model.SignificantIntervalOccupier;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
-import org.joda.time.Duration;
 
+import java.time.Duration;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -30,7 +30,7 @@ public class JVMUptimeParser extends LogMessageParser {
     @Override
     public SignificantInterval process(MatchResult matcher, ThreadModel threadModel, LogInstant logInstant) {
         String uptimeText = matcher.group(1);
-        Duration d = new Duration(round((parseDouble(uptimeText) * 1000)));
+        Duration d = Duration.ofMillis(round((parseDouble(uptimeText) * 1000)));
 
         threadModel.getThreadedSystem().uptime().addUptime(new LogInterval(d, logInstant));
         return null;

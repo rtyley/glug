@@ -1,9 +1,9 @@
 package glug.gui.timebar;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
 
 public class Tick {
 
@@ -15,16 +15,16 @@ public class Tick {
         this.dateTimeFormatter = dateTimeFormatter;
     }
 
-    public static Tick tick(int value, DateTimeFieldType dateTimeFieldType, DateTimeFormatter dateTimeFormatter) {
-        return new Tick(new TickInterval(value, dateTimeFieldType), dateTimeFormatter);
+    public static Tick tick(int value, TemporalField temporalField, DateTimeFormatter dateTimeFormatter) {
+        return new Tick(new TickInterval(value, temporalField), dateTimeFormatter);
     }
 
     public TickInterval getInterval() {
         return tickInterval;
     }
 
-    public String format(DateTime tickDateTime) {
-        return tickDateTime.toString(dateTimeFormatter);
+    public String format(ZonedDateTime tickDateTime) {
+        return dateTimeFormatter.format(tickDateTime);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class Tick {
         return true;
     }
 
-    public Tick with(DateTimeZone dateTimeZone) {
-        return new Tick(tickInterval, dateTimeFormatter.withZone(dateTimeZone));
+    public Tick with(ZoneId zoneId) {
+        return new Tick(tickInterval, dateTimeFormatter.withZone(zoneId));
     }
 
 }

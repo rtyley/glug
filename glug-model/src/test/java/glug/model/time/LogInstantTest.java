@@ -1,7 +1,8 @@
 package glug.model.time;
 
-import org.joda.time.Instant;
 import org.junit.Test;
+
+import java.time.Instant;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -11,7 +12,7 @@ public class LogInstantTest {
 
     @Test
     public void shouldCorrentlyReturnBeforeAndAfterIfInstantsHaveIdenticalRecordedInstantsButDifferentLineNumbers() {
-        Instant recordedInstant = new Instant(1234L);
+        Instant recordedInstant = Instant.ofEpochMilli(1234L);
         LogInstant earlyLogInstant = new LogInstant(recordedInstant, 344);
         LogInstant laterLogInstant = new LogInstant(recordedInstant, 345);
 
@@ -24,7 +25,7 @@ public class LogInstantTest {
 
     @Test
     public void shouldCorrectlyDetermineEquality() {
-        Instant instant = new Instant(1234L);
+        Instant instant = Instant.ofEpochMilli(1234L);
         LogInstant logInstant = new LogInstant(instant, 344);
         LogInstant sameLogInstant = new LogInstant(instant, 344);
         LogInstant differentLogInstant = new LogInstant(instant, 345);

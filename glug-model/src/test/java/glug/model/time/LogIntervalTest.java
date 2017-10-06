@@ -1,7 +1,8 @@
 package glug.model.time;
 
-import org.joda.time.Instant;
 import org.junit.Test;
+
+import java.time.Instant;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -10,7 +11,7 @@ import static org.hamcrest.Matchers.is;
 public class LogIntervalTest {
     @Test
     public void shouldCorrectlyReturnBeforeAndAfterForZeroDurationIntervalsForSameInstantWithDifferentLineNumbers() {
-        Instant recordedInstant = new Instant(1234L);
+        Instant recordedInstant = Instant.ofEpochMilli(1234L);
         LogInstant logInstantA = new LogInstant(recordedInstant, 344);
         LogInstant logInstantB = new LogInstant(recordedInstant, 345);
         LogInterval logIntervalAtA = new LogInterval(logInstantA, logInstantA);

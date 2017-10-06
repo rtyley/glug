@@ -1,6 +1,6 @@
 package glug.model.time;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 public class LogInstant implements Comparable<LogInstant> {
     private final long recordedInstantMillis;
@@ -16,7 +16,7 @@ public class LogInstant implements Comparable<LogInstant> {
     }
 
     public LogInstant(Instant recordedInstant, int logLineNumber) {
-        this.recordedInstantMillis = recordedInstant.getMillis();
+        this.recordedInstantMillis = recordedInstant.toEpochMilli();
         this.logLineNumber = logLineNumber;
     }
 
@@ -38,7 +38,7 @@ public class LogInstant implements Comparable<LogInstant> {
     }
 
     public Instant getRecordedInstant() {
-        return new Instant(getMillis());
+        return Instant.ofEpochMilli(getMillis());
     }
 
     public int getLogLine() {

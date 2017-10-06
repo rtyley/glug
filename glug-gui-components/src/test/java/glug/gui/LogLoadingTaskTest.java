@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.joda.time.Duration.standardSeconds;
+import static java.time.Duration.ofSeconds;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +25,7 @@ public class LogLoadingTaskTest {
 
         int numLinesLoadedBetweenUIUpdates = 2;
 
-        LogInterval intervalUpdated = new LogInterval(standardSeconds(1), new LogInstant(2000));
+        LogInterval intervalUpdated = new LogInterval(ofSeconds(1), new LogInstant(2000));
         LogLoader.LoadReport endOfStreamLogReport = new LogLoader.LoadReport(true, intervalUpdated);
 
         when(logLoader.loadLines(numLinesLoadedBetweenUIUpdates)).thenReturn(endOfStreamLogReport);

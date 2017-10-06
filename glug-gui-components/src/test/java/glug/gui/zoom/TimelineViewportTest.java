@@ -1,13 +1,14 @@
 package glug.gui.zoom;
 
 import glug.gui.UITimeScale;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
 import org.junit.Test;
+import org.threeten.extra.Interval;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Instant;
 
+import static java.time.Instant.ofEpochMilli;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -18,7 +19,7 @@ public class TimelineViewportTest {
     @Test
     public void shouldMoveViewSoThatInstantIsAtRequiredLocationInViewport() {
         UITimeScale uiTimeScale = new UITimeScale();
-        uiTimeScale.setFullInterval(new Interval(4000, 7000));
+        uiTimeScale.setFullInterval(Interval.of(ofEpochMilli(4000), ofEpochMilli(7000)));
         uiTimeScale.setMillisecondsPerPixel(100);
         JViewport viewport = new JViewport();
         viewport.setView(viewOfSize(new Dimension(10000, 100)));
@@ -27,7 +28,7 @@ public class TimelineViewportTest {
 
         TimelineViewport timelineViewport = new TimelineViewport(uiTimeScale, viewport);
 
-        Instant instant = new Instant(5000);
+        Instant instant = ofEpochMilli(5000);
 
         timelineViewport.setViewPosition(instant, 200);
 

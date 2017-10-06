@@ -8,9 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static java.awt.Color.RED;
+import static java.time.Duration.ofSeconds;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.joda.time.Duration.standardSeconds;
 
 
 public class SwingHtmlStyleThreadReporterTest {
@@ -33,7 +33,7 @@ public class SwingHtmlStyleThreadReporterTest {
 
     @Test
     public void shouldIncludeUptimeIfKnown() {
-        threadedSystem.uptime().addUptime(new LogInterval(standardSeconds(3), new LogInstant(3000)));
+        threadedSystem.uptime().addUptime(new LogInterval(ofSeconds(3), new LogInstant(3000)));
         assertThat(reporter.uptimeStringFor(threadedSystem, new LogInstant(1000)), containsString("uptime: 1.000 s"));
     }
 

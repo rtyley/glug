@@ -4,8 +4,8 @@ import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
-import org.joda.time.Duration;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.MatchResult;

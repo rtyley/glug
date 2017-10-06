@@ -4,10 +4,10 @@ import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
-import org.joda.time.Duration;
 
 import java.awt.*;
 import java.text.NumberFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class SwingHtmlStyleThreadReporter {
 
     String uptimeStringFor(ThreadedSystem threadedSystem, LogInstant instant) {
         Duration uptime = threadedSystem.uptime().at(instant.getRecordedInstant());
-        return uptime == null ? "" : " (uptime: " + uptimeNumberFormat.format(uptime.getMillis() / 1000d) + " s)";
+        return uptime == null ? "" : " (uptime: " + uptimeNumberFormat.format(uptime.toMillis() / 1000d) + " s)";
     }
 
     private String durationStringFor(SignificantInterval significantInterval) {

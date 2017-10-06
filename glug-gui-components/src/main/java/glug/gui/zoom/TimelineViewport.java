@@ -1,11 +1,11 @@
 package glug.gui.zoom;
 
 import glug.gui.UITimeScale;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
+import org.threeten.extra.Interval;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Instant;
 
 public class TimelineViewport {
 

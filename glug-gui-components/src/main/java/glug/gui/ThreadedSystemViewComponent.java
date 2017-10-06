@@ -6,7 +6,7 @@ import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
-import org.joda.time.Interval;
+import org.threeten.extra.Interval;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,7 +91,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
     protected LogInterval visibleIntervalFor(Rectangle clipBounds) {
         Interval interval = uiTimeScale.viewToModel(clipBounds);
-        return new LogInterval(new LogInstant(interval.getStart().getMillis() - 1, 0), new LogInstant(interval.getEnd().getMillis() + 1, Integer.MAX_VALUE));
+        return new LogInterval(new LogInstant(interval.getStart().toEpochMilli() - 1, 0), new LogInstant(interval.getEnd().toEpochMilli() + 1, Integer.MAX_VALUE));
     }
 
     private int maxThreadIndexFor(Rectangle clipBounds, List<ThreadModel> fullThreadList) {

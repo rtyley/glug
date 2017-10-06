@@ -1,12 +1,12 @@
 package glug.gui;
 
-import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
+import org.threeten.extra.Interval;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class UITimeScale {
     }
 
     public int fullModelToViewLength() {
-        return (int) round(fullInterval.toDurationMillis() / millisecondsPerPixel);
+        return (int) round(fullInterval.toDuration().toMillis() / millisecondsPerPixel);
     }
 
     public int modelToView(Instant instant) {
@@ -56,23 +56,23 @@ public class UITimeScale {
     }
 
     public int modelToView(Instant instant, double specifiedMillisPerPixel) {
-        return (int) round(((instant.getMillis() - fullInterval.getStartMillis()) / specifiedMillisPerPixel));
+        return (int) round(((instant.toEpochMilli() - fullInterval.getStart().toEpochMilli()) / specifiedMillisPerPixel));
     }
 
     public Instant viewToModel(int viewX) {
-        return new Instant(fullInterval.getStartMillis() + round((viewX * millisecondsPerPixel)));
+        return Instant.ofEpochMilli(fullInterval.getStart().toEpochMilli() + round((viewX * millisecondsPerPixel)));
     }
 
     public Interval viewToModel(Rectangle rectangle) {
-        return new Interval(viewToModel(rectangle.x), viewToModel(rectangle.x + rectangle.width));
+        return Interval.of(viewToModel(rectangle.x), viewToModel(rectangle.x + rectangle.width));
     }
 
     public Duration viewPixelsToModelDuration(int pixels) {
-        return new Duration(round(millisecondsPerPixel * pixels));
+        return Duration.ofMillis(round(millisecondsPerPixel * pixels));
     }
 
     public int modelDurationToViewPixels(Duration duration) {
-        return (int) round(duration.getMillis() / millisecondsPerPixel);
+        return (int) round(duration.toMillis() / millisecondsPerPixel);
     }
 
     public Interval getFullInterval() {
@@ -84,7 +84,7 @@ public class UITimeScale {
     }
 
     public void setMillisecondsPerPixelToFit(Interval interval, int pixels) {
-        setMillisecondsPerPixel(((double) interval.toDurationMillis()) / pixels);
+        setMillisecondsPerPixel(((double) interval.toDuration().toMillis()) / pixels);
     }
 
 
