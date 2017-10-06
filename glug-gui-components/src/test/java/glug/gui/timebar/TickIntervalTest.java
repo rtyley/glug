@@ -4,7 +4,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.joda.time.DateTimeFieldType.dayOfMonth;
 import static org.joda.time.DateTimeFieldType.hourOfDay;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -3,7 +3,7 @@ package glug.model;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.joda.time.Duration.standardSeconds;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 

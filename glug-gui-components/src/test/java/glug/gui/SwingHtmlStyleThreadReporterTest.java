@@ -10,7 +10,7 @@ import org.junit.Test;
 import static java.awt.Color.RED;
 import static org.hamcrest.Matchers.*;
 import static org.joda.time.Duration.standardSeconds;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class SwingHtmlStyleThreadReporterTest {

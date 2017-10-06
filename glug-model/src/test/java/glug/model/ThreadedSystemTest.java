@@ -6,13 +6,15 @@ import org.joda.time.Interval;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import java.util.Map;
 
 import static com.google.common.collect.ImmutableMap.of;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 import static org.joda.time.Duration.standardSeconds;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 
 public class ThreadedSystemTest {
 	private ThreadedSystem threadedSystem;

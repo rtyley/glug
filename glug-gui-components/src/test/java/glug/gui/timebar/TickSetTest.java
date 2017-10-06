@@ -7,7 +7,7 @@ import static org.joda.time.DateTimeFieldType.secondOfMinute;
 import static org.joda.time.Duration.standardDays;
 import static org.joda.time.Duration.standardMinutes;
 import static org.joda.time.Duration.standardSeconds;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.joda.time.DateTimeFieldType;
 import org.junit.Test;
