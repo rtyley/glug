@@ -11,7 +11,6 @@
 
 package glug.gui;
 
-import glug.groovy.ParserDefLoader;
 import glug.gui.model.LogarithmicBoundedRange;
 import glug.gui.timebar.TimelineDateTimeComponent;
 import glug.gui.timelinecursor.TimelineCursor;
@@ -23,8 +22,6 @@ import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
-import glug.parser.logmessages.LogMessageParserRegistry;
-import groovy.lang.GroovyCodeSource;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -35,14 +32,9 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 
-import static glug.parser.logmessages.CompletedDatabaseQueryParser.DATABASE_QUERY;
-import static glug.parser.logmessages.CompletedPageRequestParser.PAGE_REQUEST;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 
 /**
@@ -82,15 +74,15 @@ public class MainFrame extends javax.swing.JFrame {
                 if (selectedInterval != null) {
                     text = selectedInterval.toJodaInterval().toPeriod().toString(PeriodFormat.getDefault());
                     Map<Object, Integer> occurences = threadedSystem.countOccurencesDuring(selectedInterval, "DB Query", "Page Request");
-                    if (occurences.containsKey(DATABASE_QUERY) && occurences.containsKey(PAGE_REQUEST)) {
-                        float dbQueries = occurences.get(DATABASE_QUERY);
-                        int pageRequests = occurences.get(PAGE_REQUEST);
-                        float ratio = dbQueries / pageRequests;
-                        NumberFormat instance = NumberFormat.getInstance();
-                        instance.setMinimumFractionDigits(2);
-                        instance.setMaximumFractionDigits(2);
-                        text = text + " " + instance.format(ratio) + " DB calls/Page req";
-                    }
+//                    if (occurences.containsKey(DATABASE_QUERY) && occurences.containsKey(PAGE_REQUEST)) {
+//                        float dbQueries = occurences.get(DATABASE_QUERY);
+//                        int pageRequests = occurences.get(PAGE_REQUEST);
+//                        float ratio = dbQueries / pageRequests;
+//                        NumberFormat instance = NumberFormat.getInstance();
+//                        instance.setMinimumFractionDigits(2);
+//                        instance.setMaximumFractionDigits(2);
+//                        text = text + " " + instance.format(ratio) + " DB calls/Page req";
+//                    }
                 }
                 selectedRegionLabel.setText(text);
             }
@@ -336,11 +328,7 @@ public class MainFrame extends javax.swing.JFrame {
         System.out.println("Loading Java process log...");
         LogLoaderFactory logLoaderFactory = new LogLoaderFactory();
         try {
-            InputStream stream = ParserDefLoader.class.getResourceAsStream("DefaultParsers.groovy");
-            //System.out.println("Groovy resource at "+resource);
-            LogMessageParserRegistry registry = new ParserDefLoader().load(new GroovyCodeSource(new InputStreamReader(stream), "foo", "bar"));
-
-            LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem, registry);
+            LogLoader logLoader = logLoaderFactory.createLoaderFor(file, threadedSystem);
             new LogLoadingTask(logLoader, new DataLoadedUIUpdater(threadedSystem, uiTimeScale, threadScale, zoomFactorSlideUpdater), 50000).execute();
         } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
