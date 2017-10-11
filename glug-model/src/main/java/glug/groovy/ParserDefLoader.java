@@ -31,19 +31,19 @@ public class ParserDefLoader {
     private Binding standardBinding(RegistrationFunction registration) {
         Binding binding = new Binding();
         binding.setProperty("register", registration);
-        binding.setProperty("durationInMillis",new HandyDurationFromTextConverterFunction());
-        binding.setProperty("urlParams",new UrlParamsFunction());
+        binding.setProperty("durationInMillis", new HandyDurationFromTextConverterFunction());
+        binding.setProperty("urlParams", new UrlParamsFunction());
         return binding;
     }
 
     public class RegistrationFunction {
-        private List<LogMessageParser> parsers = newArrayList((LogMessageParser)new JVMUptimeParser());
+        private List<LogMessageParser> parsers = newArrayList((LogMessageParser) new JVMUptimeParser());
 
         public void call(ParserDef... things) {
             for (ParserDef parserDef : things) {
                 parsers.add(new GroovyDrivenLogMessageParser(parserDef));
             }
-            System.out.println("Yep "+parsers);
+            System.out.println("Yep " + parsers);
         }
 
         public LogMessageParserRegistry getLogMessageParserRegistry() {
@@ -59,15 +59,15 @@ public class ParserDefLoader {
 
 
     public class UrlParamsFunction {
-        public ListMultimap<String,String> call(String uriString) throws URISyntaxException, UnsupportedEncodingException {
+        public ListMultimap<String, String> call(String uriString) throws URISyntaxException, UnsupportedEncodingException {
             URI uri = new URI(uriString);
             String queryString = uri.getRawQuery();
-            ListMultimap<String,String> params = LinkedListMultimap.create();
-            if (queryString!=null) {
+            ListMultimap<String, String> params = LinkedListMultimap.create();
+            if (queryString != null) {
                 for (String keyValue : queryString.split("&")) {
                     String[] items = keyValue.split("=");
-                    if (items.length==2) {
-                        params.put(decode(items[0],"UTF-8"),decode(items[1],"UTF-8"));
+                    if (items.length == 2) {
+                        params.put(decode(items[0], "UTF-8"), decode(items[1], "UTF-8"));
                     }
                 }
             }

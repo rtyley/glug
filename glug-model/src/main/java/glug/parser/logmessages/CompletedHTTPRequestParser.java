@@ -1,14 +1,14 @@
 package glug.parser.logmessages;
 
-import static java.awt.Color.GREEN;
-import static java.lang.Integer.parseInt;
 import glug.model.IntervalTypeDescriptor;
 import glug.model.SignificantIntervalOccupier;
+import org.joda.time.Duration;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.Duration;
+import static java.awt.Color.GREEN;
+import static java.lang.Integer.parseInt;
 
 /*
 2009-01-29 14:17:18,030 [resin-tcp-connection-respub.gutest.gnl:6802-97] INFO  com.gu.r2.common.util.http.HttpConnection - Http request for ESA http://gnm.esagroup.co.uk/football/match/1205261 completed in 50 ms
@@ -21,21 +21,21 @@ Http request for REUTERS http://ris.rois.com/TPRjIia1148tDU*g4QbwCAfnc3bxoT7RDGD
  */
 
 public class CompletedHTTPRequestParser {
-	public static final IntervalTypeDescriptor HTTP_REQUEST = new IntervalTypeDescriptor(GREEN.darker(), "HTTP Request");
-	
-	private static final Pattern httpRequestPattern = Pattern.compile("Http request for ([^ ]+) ([^ ]+) completed in (\\d+) ms");
+    public static final IntervalTypeDescriptor HTTP_REQUEST = new IntervalTypeDescriptor(GREEN.darker(), "HTTP Request");
 
-	public CompletedHTTPRequestParser() {
-		//super("com.gu.r2.common.util.http.HttpConnection", httpRequestPattern);
-	}
+    private static final Pattern httpRequestPattern = Pattern.compile("Http request for ([^ ]+) ([^ ]+) completed in (\\d+) ms");
 
-	SignificantIntervalOccupier intervalOccupierFor(Matcher matcher) {
-		String dbQuery = matcher.group(2);
-		return HTTP_REQUEST.with(dbQuery);
-	}
+    public CompletedHTTPRequestParser() {
+        //super("com.gu.r2.common.util.http.HttpConnection", httpRequestPattern);
+    }
 
-	Duration durationFrom(Matcher matcher) {
-		String durationInMillisText = matcher.group(3);
-		return new Duration(parseInt(durationInMillisText));
-	}
+    SignificantIntervalOccupier intervalOccupierFor(Matcher matcher) {
+        String dbQuery = matcher.group(2);
+        return HTTP_REQUEST.with(dbQuery);
+    }
+
+    Duration durationFrom(Matcher matcher) {
+        String durationInMillisText = matcher.group(3);
+        return new Duration(parseInt(durationInMillisText));
+    }
 }

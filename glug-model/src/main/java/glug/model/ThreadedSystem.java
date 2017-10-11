@@ -18,72 +18,71 @@ import static com.madgag.interval.SimpleInterval.union;
 
 public class ThreadedSystem {
 
-	private Uptime uptime = new Uptime();
+    private Uptime uptime = new Uptime();
 
-	private ConcurrentMap<String, ThreadModel> map = new ConcurrentHashMap<String, ThreadModel>();
-		
-	public void add(String threadName, SignificantInterval significantInterval) {
-		getOrCreateThread(threadName).add(significantInterval);
-	}
+    private ConcurrentMap<String, ThreadModel> map = new ConcurrentHashMap<String, ThreadModel>();
 
-	public Interval<LogInstant> getIntervalCoveredByAllThreads() {
+    public void add(String threadName, SignificantInterval significantInterval) {
+        getOrCreateThread(threadName).add(significantInterval);
+    }
+
+    public Interval<LogInstant> getIntervalCoveredByAllThreads() {
         return union(transform(map.values(), new Function<ThreadModel, Interval<LogInstant>>() {
-            public Interval<LogInstant> apply(ThreadModel threadModel) {
-                return threadModel.getInterval();
+                    public Interval<LogInstant> apply(ThreadModel threadModel) {
+                        return threadModel.getInterval();
+                    }
+                }
+        ));
+    }
+
+    public int getNumThreads() {
+        return map.size();
+    }
+
+    public Collection<ThreadModel> getThreads() {
+        return map.values();
+    }
+
+    public ThreadModel getOrCreateThread(String threadName) {
+        ThreadModel thread = getThread(threadName);
+        if (thread == null) {
+            thread = new ThreadModel(threadName, this);
+            map.put(threadName, thread);
+        }
+        return thread;
+    }
+
+    public ThreadModel getThread(String threadName) {
+        return map.get(threadName);
+    }
+
+    public Uptime uptime() {
+        return uptime;
+    }
+
+    public Map<Object, Integer> countOccurencesDuring(LogInterval logInterval, Object... typesOfIntervalsToCount) {
+        Map<Object, Integer> countMap = newHashMapWithExpectedSize(typesOfIntervalsToCount.length);
+        for (ThreadModel threadModel : map.values()) {
+            Map<Object, Integer> countsForThread = threadModel.countOccurencesDuring(logInterval, typesOfIntervalsToCount);
+            for (Entry<Object, Integer> entry : countsForThread.entrySet()) {
+                Object intervalType = entry.getKey();
+                Integer currentCount = countMap.get(intervalType);
+                int updatedCount = (currentCount == null ? 0 : currentCount) + entry.getValue();
+                countMap.put(intervalType, updatedCount);
             }
         }
-        ));
-	}
+        return countMap;
+    }
 
-	public int getNumThreads() {
-		return map.size();
-	}
-
-	public Collection<ThreadModel> getThreads() {
-		return map.values();
-	}
-
-	public ThreadModel getOrCreateThread(String threadName) {
-		ThreadModel thread = getThread(threadName);
-		if (thread==null) {
-			thread = new ThreadModel(threadName, this);
-			map.put(threadName, thread);
-		}
-		return thread;
-	}
-	
-	public ThreadModel getThread(String threadName) {
-		return map.get(threadName);
-	}
-
-	public Uptime uptime() {
-		return uptime;
-	}
-
-	public Map<Object,Integer> countOccurencesDuring(LogInterval logInterval, Object... typesOfIntervalsToCount) {
-		Map<Object,Integer> countMap= newHashMapWithExpectedSize(typesOfIntervalsToCount.length);
-		for (ThreadModel threadModel : map.values()) { 
-			Map<Object,Integer> countsForThread = threadModel.countOccurencesDuring(logInterval, typesOfIntervalsToCount);
-			for (Entry<Object, Integer> entry : countsForThread.entrySet()) {
-				Object intervalType = entry.getKey();
-				Integer currentCount=countMap.get(intervalType);
-				int updatedCount = (currentCount==null?0:currentCount) +entry.getValue();
-				countMap.put(intervalType, updatedCount);
-			}
-		}
-		return countMap;
-	}
-
-    private Map<Map<String, ?>,Map<String, ?>> cache=newHashMap();
-
+    private Map<Map<String, ?>, Map<String, ?>> cache = newHashMap();
 
 
     public Map<String, ?> intern(Map<String, ?> intervalOcc) {
         Map<String, ?> flyw = cache.get(intervalOcc);
-        if (flyw!=null) {
+        if (flyw != null) {
             return flyw;
         }
-        cache.put(intervalOcc,intervalOcc);
+        cache.put(intervalOcc, intervalOcc);
         return intervalOcc;
     }
 }

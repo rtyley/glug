@@ -1,9 +1,7 @@
 package glug.groovy;
 
-import glug.parser.LoggedDurationExtractor;
 import groovy.lang.Closure;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 

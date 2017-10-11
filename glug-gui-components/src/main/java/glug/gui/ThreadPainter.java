@@ -17,73 +17,73 @@ import static com.madgag.interval.SimpleInterval.union;
 import static java.lang.Math.round;
 
 public class ThreadPainter {
-	
-	private final UILogTimeScale uiLogTimeScale;
-	private final UIThreadScale uiThreadScale;
 
-	public ThreadPainter(UILogTimeScale uiLogTimeScale, UIThreadScale uiThreadScale) {
-		this.uiLogTimeScale = uiLogTimeScale;
-		this.uiThreadScale = uiThreadScale;
-	}
-	
-	public void paintThread(ThreadModel threadModel, int threadIndex, LogInterval visibleInterval, Graphics2D g) {
-		int durationFor1Pixel = (int) round(uiLogTimeScale.getMillisecondsPerPixel());
-		int threadGraphicsY = uiThreadScale.modelThreadIndexToView(threadIndex);
-		int threadGraphicsHeight = uiThreadScale.modelThreadIndexToView(threadIndex+1) - threadGraphicsY;
+    private final UILogTimeScale uiLogTimeScale;
+    private final UIThreadScale uiThreadScale;
+
+    public ThreadPainter(UILogTimeScale uiLogTimeScale, UIThreadScale uiThreadScale) {
+        this.uiLogTimeScale = uiLogTimeScale;
+        this.uiThreadScale = uiThreadScale;
+    }
+
+    public void paintThread(ThreadModel threadModel, int threadIndex, LogInterval visibleInterval, Graphics2D g) {
+        int durationFor1Pixel = (int) round(uiLogTimeScale.getMillisecondsPerPixel());
+        int threadGraphicsY = uiThreadScale.modelThreadIndexToView(threadIndex);
+        int threadGraphicsHeight = uiThreadScale.modelThreadIndexToView(threadIndex + 1) - threadGraphicsY;
 
 
-		for (Object intervalTypeDescriptor : threadModel.getIntervalTypes()) {
-			plotIntervalsOfType(intervalTypeDescriptor, threadModel,
-					visibleInterval, g, durationFor1Pixel, threadGraphicsY,
-					threadGraphicsHeight);
-		}
-	}
+        for (Object intervalTypeDescriptor : threadModel.getIntervalTypes()) {
+            plotIntervalsOfType(intervalTypeDescriptor, threadModel,
+                    visibleInterval, g, durationFor1Pixel, threadGraphicsY,
+                    threadGraphicsHeight);
+        }
+    }
 
     private Color colourFor(Object intervalTypeDescriptor) {
         return new Color(intervalTypeDescriptor.hashCode());
     }
 
-	private void plotIntervalsOfType(
-			Object intervalTypeDescriptor,
-			ThreadModel threadModel, LogInterval visibleInterval, Graphics2D g,
-			int durationFor1Pixel, int threadGraphicsY, int threadGraphicsHeight) {
-		g.setColor(colourFor(intervalTypeDescriptor));
+    private void plotIntervalsOfType(
+            Object intervalTypeDescriptor,
+            ThreadModel threadModel, LogInterval visibleInterval, Graphics2D g,
+            int durationFor1Pixel, int threadGraphicsY, int threadGraphicsHeight) {
+        g.setColor(colourFor(intervalTypeDescriptor));
 
-		IntervalMap<LogInstant, SignificantInterval> significantIntervals = threadModel.significantIntervalsFor(intervalTypeDescriptor);
-		
-		if (significantIntervals==null) {
-			return;
-		}
-		
-		Collection<SignificantInterval> sigInts = significantIntervals.getEventsDuring(visibleInterval);
-		
-		Interval<LogInstant> visibleIntervalToPlot = null;
-		
-		for (SignificantInterval significantInterval : sigInts) {
-			Interval<LogInstant> visibleIntervalOfCurrentSigInt =  overlap(significantInterval.getLogInterval(),visibleInterval);
-			if (visibleIntervalOfCurrentSigInt!=null) {
-				if (visibleIntervalToPlot==null) {
-					visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;
-				} else if (close(visibleIntervalToPlot, durationFor1Pixel, visibleIntervalOfCurrentSigInt)) {
-					visibleIntervalToPlot = union(visibleIntervalToPlot,visibleIntervalOfCurrentSigInt);
-				} else {
-					plotBlock(visibleIntervalToPlot, threadGraphicsY,threadGraphicsHeight, g); // finish with the old block
-					visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;  // start the new block
-				}
-			}
-		}
-		if (visibleIntervalToPlot != null) {
-			plotBlock(visibleIntervalToPlot, threadGraphicsY,threadGraphicsHeight, g);
-		}
-	}
+        IntervalMap<LogInstant, SignificantInterval> significantIntervals = threadModel.significantIntervalsFor(intervalTypeDescriptor);
 
-	private boolean close(Interval<LogInstant> visibleIntervalToPlot, int durationFor1Pixel, Interval<LogInstant> visibleIntervalOfCurrentSigInt) {
-		return (visibleIntervalOfCurrentSigInt.get(MIN).getMillis()-visibleIntervalToPlot.get(MAX).getMillis())<durationFor1Pixel;
-	}
+        if (significantIntervals == null) {
+            return;
+        }
 
-	private void plotBlock(Interval<LogInstant> visibleIntervalOfLine, int threadYStart, int threadGraphicsHeight, Graphics2D g) {
-		int startX = uiLogTimeScale.modelToView(visibleIntervalOfLine.get(MIN));
-		int endX = uiLogTimeScale.modelToView(visibleIntervalOfLine.get(MAX));
-		g.fillRect(startX, threadYStart, endX - startX,threadGraphicsHeight);
-	}
+        Collection<SignificantInterval> sigInts = significantIntervals.getEventsDuring(visibleInterval);
+
+        Interval<LogInstant> visibleIntervalToPlot = null;
+
+        for (SignificantInterval significantInterval : sigInts) {
+            Interval<LogInstant> visibleIntervalOfCurrentSigInt = overlap(significantInterval.getLogInterval(), visibleInterval);
+            if (visibleIntervalOfCurrentSigInt != null) {
+                if (visibleIntervalToPlot == null) {
+                    visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;
+                } else if (close(visibleIntervalToPlot, durationFor1Pixel, visibleIntervalOfCurrentSigInt)) {
+                    visibleIntervalToPlot = union(visibleIntervalToPlot, visibleIntervalOfCurrentSigInt);
+                } else {
+                    plotBlock(visibleIntervalToPlot, threadGraphicsY, threadGraphicsHeight, g); // finish with the old block
+                    visibleIntervalToPlot = visibleIntervalOfCurrentSigInt;  // start the new block
+                }
+            }
+        }
+        if (visibleIntervalToPlot != null) {
+            plotBlock(visibleIntervalToPlot, threadGraphicsY, threadGraphicsHeight, g);
+        }
+    }
+
+    private boolean close(Interval<LogInstant> visibleIntervalToPlot, int durationFor1Pixel, Interval<LogInstant> visibleIntervalOfCurrentSigInt) {
+        return (visibleIntervalOfCurrentSigInt.get(MIN).getMillis() - visibleIntervalToPlot.get(MAX).getMillis()) < durationFor1Pixel;
+    }
+
+    private void plotBlock(Interval<LogInstant> visibleIntervalOfLine, int threadYStart, int threadGraphicsHeight, Graphics2D g) {
+        int startX = uiLogTimeScale.modelToView(visibleIntervalOfLine.get(MIN));
+        int endX = uiLogTimeScale.modelToView(visibleIntervalOfLine.get(MAX));
+        g.fillRect(startX, threadYStart, endX - startX, threadGraphicsHeight);
+    }
 }
