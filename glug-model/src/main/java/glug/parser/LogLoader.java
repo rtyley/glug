@@ -12,7 +12,6 @@ import static com.madgag.interval.SimpleInterval.union;
 public class LogLoader {
 
     private LogParsingReader reader;
-    private LogReadingThrottle throttle = new LogReadingThrottle();
 
     public LogLoader(LogParsingReader reader) {
         this.reader = reader;
@@ -20,8 +19,6 @@ public class LogLoader {
 
     public LoadReport loadLines(int numLines) throws IOException {
         Interval<LogInstant> intervalUpdated = null;
-        //int numLinesRead=0,numEventsFound=0;
-        //while (!throttle.shouldReportGiven(numLinesRead,numEventsFound)  && !reader.endOfStream() ) {
         for (int numLinesRead = 0; numLinesRead < numLines && !reader.endOfStream(); ++numLinesRead) {
             try {
                 SignificantInterval significantInterval = reader.parseNext();
