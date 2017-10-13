@@ -42,9 +42,13 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
 
   val identitifier = P((CharPred(c => c.isUnicodeIdentifierPart) | CharsWhileIn("-.$:")).rep(min = 1) !)
 
+  // ophan-dashboard-PROD ophan-dashboard-PROD-application-i-0521ce4579a773ee8 2017-10-04 09:08:00,179 [ForkJoinPool-2-worker-3] INFO  AccessLog$ - 200 GET /lag-check in 375.0 μs
+  val awsPrefix: P[Unit] = P(identitifier ~ " " ~ identitifier ~ " ").map(_ => Unit)
+
   val logLevel = P(StringIn("INFO", "WARN")) !
 
-  val logLineStart: P[LogLineStart] = (instant ~ " [" ~ identitifier ~ "] " ~ logLevel ~ space ~ identitifier ~ " - ").map(LogLineStart.tupled)
+  val logLineStart: P[LogLineStart] =
+    (awsPrefix.? ~ instant ~ " [" ~ identitifier ~ "] " ~ logLevel ~ space ~ identitifier ~ " - ").map(LogLineStart.tupled)
 
   val duration: P[Duration] = P(digits ~ " ms").map(Duration.ofMillis)
 
@@ -74,7 +78,8 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
 
   val recognisedLines = P((logLineStart ~ elasticSearchCompletedLine) | (logLineStart.filter(_.logger=="AccessLog$") ~ accessCompletedLine))
 
-  def parse(line: String, lineNumber: Int): SignificantInterval = {
+  def parse(lin: String, lineNumber: Int): SignificantInterval = {
+    val line = lin.replaceAll("\u001B\\[[;\\d]*m", "")
     println(s"looking at : '$line'")
 
     recognisedLines.parse(line).fold[SignificantInterval]((_,_,_) => null, {
