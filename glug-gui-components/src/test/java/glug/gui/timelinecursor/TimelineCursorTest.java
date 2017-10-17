@@ -19,14 +19,14 @@ public class TimelineCursorTest {
     @Test
     public void shouldFireAChangeEventThatContainsCorrectOldAndNewState() {
         TimelineCursor cursor = new TimelineCursor();
-        LogInterval intervalSelected = new LogInterval(standardSeconds(5), new LogInstant(8000));
+        LogInterval intervalSelected = new LogInterval(standardSeconds(5), new LogInstant(8000,0));
         cursor.setDot(intervalSelected.getStart());
         cursor.moveDot(intervalSelected.getEnd());
 
         ChangeListenerStub changeListenerStub = new ChangeListenerStub();
         cursor.addChangeListener(changeListenerStub);
 
-        LogInstant newDot = new LogInstant(18000);
+        LogInstant newDot = new LogInstant(18000, 0);
         cursor.setDot(newDot);
 
         TimelineCursor.CursorPositionChanged o = (CursorPositionChanged) changeListenerStub.getChangeEvent().getSource();

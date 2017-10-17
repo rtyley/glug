@@ -1,6 +1,5 @@
 package glug.model;
 
-import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -18,9 +17,9 @@ public class ThreadModelTest {
     public void shouldReturnEmptySetIfNoBuggerMatches() throws Exception {
         ThreadModel thread = new ThreadModel("blahthread", null);
         new SignificantInterval(of("type", "My Type"),
-                new LogInterval(Duration.standardSeconds(1), new LogInstant(1000, 1)));
+                new LogInterval(Duration.standardSeconds(1), LogInstant.apply(1000, 1)));
 
-        LogInstant instantWhereNoDamnThingWasHappening = new LogInstant(5000, 5);
+        LogInstant instantWhereNoDamnThingWasHappening = LogInstant.apply(5000, 5);
 
         assertThat(thread.getSignificantIntervalsFor(instantWhereNoDamnThingWasHappening), equalTo(Collections.<Object, SignificantInterval>emptyMap()));
     }

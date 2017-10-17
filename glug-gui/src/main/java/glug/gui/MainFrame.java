@@ -22,10 +22,7 @@ import glug.model.ThreadedSystem;
 import glug.model.time.LogInterval;
 import glug.parser.LogLoader;
 import glug.parser.LogLoaderFactory;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
+import org.joda.time.*;
 import org.joda.time.format.PeriodFormat;
 
 import javax.swing.*;
@@ -289,7 +286,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void selectVisibleMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectVisibleMenuItemActionPerformed
         Interval visibleInterval = timelineViewport.getVisibleInterval();
-        timelineCursor.setSelectedInterval(new LogInterval(visibleInterval));
+        timelineCursor.setSelectedInterval(LogInterval.apply(visibleInterval));
     }//GEN-LAST:event_selectVisibleMenuItemActionPerformed
 
     private void zoomToSelectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_zoomToSelectionMenuItemActionPerformed

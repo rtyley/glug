@@ -58,7 +58,7 @@ public class TimelineCursorMouseInputListener extends MouseInputAdapter {
     }
 
     private LogInstant logInstantFor(MouseEvent e) {
-        return new LogInstant(timelineComponent.getUITimeScale().viewToModel(e.getPoint().x));
+        return LogInstant.apply(timelineComponent.getUITimeScale().viewToModel(e.getPoint().x));
     }
 
 

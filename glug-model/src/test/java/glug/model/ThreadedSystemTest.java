@@ -1,6 +1,5 @@
 package glug.model;
 
-import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import org.joda.time.Interval;
 import org.junit.Before;
@@ -40,7 +39,7 @@ public class ThreadedSystemTest {
     @Test
     public void shouldCountStuff() {
         IntervalTypeDescriptor intervalType = null;
-        LogInterval logInterval = new LogInterval(standardSeconds(10), new LogInstant(15));
+        LogInterval logInterval = new LogInterval(standardSeconds(10), LogInstant.apply(15));
         //threadedSystem.getOrCreateThread("a").add(significantInterval)
         Map<Object, Integer> countMap = threadedSystem.countOccurencesDuring(logInterval, intervalType);
     }

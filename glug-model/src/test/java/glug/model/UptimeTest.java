@@ -1,6 +1,5 @@
 package glug.model;
 
-import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import org.joda.time.Instant;
 import org.junit.Test;
@@ -15,7 +14,7 @@ public class UptimeTest {
     @Test
     public void shouldReturnCorrectUptimeForInstant() throws Exception {
         Uptime uptime = new Uptime();
-        uptime.addUptime(new LogInterval(standardSeconds(6), new LogInstant(10000)));
+        uptime.addUptime(new LogInterval(standardSeconds(6), LogInstant.apply(10000)));
 
         assertThat(uptime.at(new Instant(3000)), nullValue());
         assertThat(uptime.at(new Instant(4000)), equalTo(standardSeconds(0)));

@@ -82,10 +82,10 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
         println(s"got $lls $payload")
 
 
-        val logInstantAtEnd = new LogInstant(lls.instant.toEpochMilli, lineNumber)
+        val logInstantAtEnd = LogInstant.apply(lls.instant.toEpochMilli, lineNumber)
         val threadModel = threadedSystem.getOrCreateThread(lls.threadName)
 
-        val logInterval = new LogInterval(org.joda.time.Duration.millis(payload.elapsedDuration.toMillis), logInstantAtEnd)
+        val logInterval = LogInterval(org.joda.time.Duration.millis(payload.elapsedDuration.toMillis), logInstantAtEnd)
 
         val siPayload: Map[String, String] = payload match {
           case es: ESCompleted => Map("type" -> "ES Request", "Query" -> es.query)

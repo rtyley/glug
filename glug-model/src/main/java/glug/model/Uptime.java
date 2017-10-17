@@ -17,7 +17,7 @@ public class Uptime {
     }
 
     public Duration at(Instant instant) {
-        Interval<LogInstant> uptimeInterval = uptime.getLatestEventStartingAtOrBefore(new LogInstant(instant));
+        Interval<LogInstant> uptimeInterval = uptime.getLatestEventStartingAtOrBefore(LogInstant.apply(instant));
         if (uptimeInterval == null) {
             return null;
         }

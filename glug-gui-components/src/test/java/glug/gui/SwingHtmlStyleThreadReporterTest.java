@@ -2,7 +2,6 @@ package glug.gui;
 
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
-import glug.model.time.LogInstant;
 import glug.model.time.LogInterval;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,19 +26,19 @@ public class SwingHtmlStyleThreadReporterTest {
     @Test
     public void shouldCopeWithAbsentIntervalTypesForRequestedInstant() {
         ThreadModel thread = threadedSystem.getOrCreateThread("my-thread");
-        reporter.htmlSyledReportFor(thread, new LogInstant(1000));
+        reporter.htmlSyledReportFor(thread, LogInstant.apply(1000));
     }
 
 
     @Test
     public void shouldIncludeUptimeIfKnown() {
-        threadedSystem.uptime().addUptime(new LogInterval(standardSeconds(3), new LogInstant(3000)));
-        assertThat(reporter.uptimeStringFor(threadedSystem, new LogInstant(1000)), containsString("uptime: 1.000 s"));
+        threadedSystem.uptime().addUptime(new LogInterval(standardSeconds(3), LogInstant.apply(3000)));
+        assertThat(reporter.uptimeStringFor(threadedSystem, LogInstant.apply(1000)), containsString("uptime: 1.000 s"));
     }
 
     @Test
     public void shouldNotThrowExceptionIfUptimeIsNotKnown() {
-        assertThat(reporter.uptimeStringFor(threadedSystem, new LogInstant(1000)), equalTo(""));
+        assertThat(reporter.uptimeStringFor(threadedSystem, LogInstant.apply(1000)), equalTo(""));
     }
 
     @Test

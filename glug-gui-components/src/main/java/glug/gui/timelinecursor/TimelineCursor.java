@@ -181,8 +181,6 @@ public class TimelineCursor {
     public void setSelectedInterval(LogInterval logInterval) {
         setDot(logInterval.getStart());
         moveDot(logInterval.getEnd());
-
-
     }
 
     public static class State {

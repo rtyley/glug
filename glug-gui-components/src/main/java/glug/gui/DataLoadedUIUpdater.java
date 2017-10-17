@@ -5,7 +5,7 @@ import glug.gui.zoom.ZoomFactorSlideUpdater;
 import glug.model.ThreadedSystem;
 import glug.model.time.LogInstant;
 
-import static glug.model.time.LogInterval.toJodaInterval;
+import static glug.model.time.LogInterval.jodaIntervalFrom;
 
 public class DataLoadedUIUpdater {
     private final ThreadedSystem threadedSystem;
@@ -21,7 +21,7 @@ public class DataLoadedUIUpdater {
     }
 
     public void updateUI(Interval<LogInstant> updatedLogInterval) {
-        uiTimeScale.setFullInterval(toJodaInterval(threadedSystem.getIntervalCoveredByAllThreads()));
+        uiTimeScale.setFullInterval(jodaIntervalFrom(threadedSystem.getIntervalCoveredByAllThreads()));
         threadScale.setNumThreads(threadedSystem.getNumThreads());
         zoomFactorSlideUpdater.updateSliderMax();
     }

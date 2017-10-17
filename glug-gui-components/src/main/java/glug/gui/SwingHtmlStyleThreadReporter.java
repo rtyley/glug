@@ -1,5 +1,7 @@
 package glug.gui;
 
+import com.madgag.interval.Bound;
+import com.madgag.interval.Interval;
 import glug.model.SignificantInterval;
 import glug.model.ThreadModel;
 import glug.model.ThreadedSystem;
@@ -12,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static glug.model.time.LogInterval.durationInMillisOf;
 import static java.lang.Integer.toHexString;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 import static org.apache.commons.text.StringEscapeUtils.escapeHtml3;
@@ -63,7 +64,9 @@ public class SwingHtmlStyleThreadReporter {
     }
 
     private String durationStringFor(SignificantInterval significantInterval) {
-        return durationInMillisOf(significantInterval.getLogInterval()) + " ms";
+        Interval<LogInstant> logInterval = significantInterval.getLogInterval();
+        long millis = logInterval.get(Bound.MIN).getMillis() - logInterval.get(Bound.MIN).getMillis();
+        return millis + " ms";
     }
 
     String hexFor(Color colour) {

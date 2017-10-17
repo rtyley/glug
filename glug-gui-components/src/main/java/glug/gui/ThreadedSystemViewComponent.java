@@ -91,7 +91,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
 
     protected LogInterval visibleIntervalFor(Rectangle clipBounds) {
         Interval interval = uiTimeScale.viewToModel(clipBounds);
-        return new LogInterval(new LogInstant(interval.getStart().getMillis() - 1, 0), new LogInstant(interval.getEnd().getMillis() + 1, Integer.MAX_VALUE));
+        return new LogInterval(LogInstant.apply(interval.getStart().getMillis() - 1, 0), LogInstant.apply(interval.getEnd().getMillis() + 1, Integer.MAX_VALUE));
     }
 
     private int maxThreadIndexFor(Rectangle clipBounds, List<ThreadModel> fullThreadList) {
@@ -119,7 +119,7 @@ public class ThreadedSystemViewComponent extends TimelineComponent {
     }
 
     private LogInstant instantFor(int graphicsX) {
-        return new LogInstant(uiTimeScale.viewToModel(graphicsX), 0);
+        return LogInstant.apply(uiTimeScale.viewToModel(graphicsX));
     }
 
     private void repaint(LogInterval logInterval, int minThreadIndex, int maxThreadIndex) {
