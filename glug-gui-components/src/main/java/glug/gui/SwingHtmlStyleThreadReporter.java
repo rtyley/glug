@@ -65,7 +65,7 @@ public class SwingHtmlStyleThreadReporter {
 
     private String durationStringFor(SignificantInterval significantInterval) {
         Interval<LogInstant> logInterval = significantInterval.getLogInterval();
-        long millis = logInterval.get(Bound.MIN).getMillis() - logInterval.get(Bound.MIN).getMillis();
+        long millis = logInterval.get(Bound.MAX).getMillis() - logInterval.get(Bound.MIN).getMillis();
         return millis + " ms";
     }
 
