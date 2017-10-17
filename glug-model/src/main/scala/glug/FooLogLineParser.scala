@@ -58,6 +58,7 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
   val duration: P[Duration] = P(digits ~ " ms").map(Duration.ofMillis)
 
   object StopwatchTimeParsing {
+
     val NANOSECONDS = P("ns").map(_ => TimeUnit.NANOSECONDS)
 
     val MICROSECONDS = P("\u03bcs").map(_ => TimeUnit.MICROSECONDS) // μs

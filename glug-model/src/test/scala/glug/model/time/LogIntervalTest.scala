@@ -12,8 +12,8 @@ class LogIntervalTest extends FlatSpec with Matchers {
     val logIntervalAtA = LogInterval(logInstantA, logInstantA)
     val logIntervalAtB = LogInterval(logInstantB, logInstantB)
 
-    logIntervalAtA should be < logIntervalAtB
-    logIntervalAtB should be > logIntervalAtA
+    logIntervalAtA.isBefore(logIntervalAtB) shouldBe true
+    logIntervalAtB.isAfter(logIntervalAtA) shouldBe true
   }
 
   "LogInterval" should "implement contains()" in {
@@ -28,22 +28,22 @@ class LogIntervalTest extends FlatSpec with Matchers {
     val earlierLogInterval = LogInterval(LogInstant(1000L, 1), LogInstant(3000L, 3))
     val laterLogInterval = LogInterval(LogInstant(3000L, 3), LogInstant(5000L, 5))
 
-    earlierLogInterval should be > laterLogInterval
-    earlierLogInterval shouldNot be < laterLogInterval
+    earlierLogInterval.isAfter(laterLogInterval) shouldBe true
+    earlierLogInterval.isBefore(laterLogInterval) shouldBe false
 
-    laterLogInterval should be < earlierLogInterval
-    laterLogInterval shouldNot be > earlierLogInterval
+    laterLogInterval.isBefore(earlierLogInterval) shouldBe true
+    laterLogInterval.isAfter(earlierLogInterval) shouldBe false
   }
 
   it should "determine ordering of adjacent intervals" in {
     val earlierOverlapping = LogInterval(LogInstant(1000L, 1), LogInstant(3000L, 3))
     val laterOverlapping = LogInterval(LogInstant(2000L, 2), LogInstant(4000L, 4))
 
-    earlierOverlapping shouldNot be > laterOverlapping
-    earlierOverlapping shouldNot be < laterOverlapping
+    earlierOverlapping.isAfter(laterOverlapping) shouldBe false
+    earlierOverlapping.isBefore(laterOverlapping) shouldBe false
 
-    laterOverlapping shouldNot be < earlierOverlapping
-    laterOverlapping shouldNot be > earlierOverlapping
+    laterOverlapping.isBefore(earlierOverlapping) shouldBe false
+    laterOverlapping.isAfter(earlierOverlapping) shouldBe false
   }
 
   it should "determine if it is before or after a given instant" in {
