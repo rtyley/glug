@@ -18,12 +18,17 @@ import scala.concurrent.duration.TimeUnit
 //2017-10-04 09:08:00,179 [application-akka.actor.default-dispatcher-746] INFO  c.HealthCheck$ - Lagcheck ok
 //2017-10-04 09:08:00,179 [ForkJoinPool-2-worker-3] INFO  AccessLog$ - 200 GET /lag-check in 375.0 μs
 
-case class LogLineStart(instant: Instant, threadName: String, logLevel: String, logger: String)
+
+
+
+case class AwsPrefix(logStream: String, machineId: String)
+case class LogLineStart(awsPrefix: Option[AwsPrefix], instant: Instant, threadName: String, logLevel: String, logger: String) {
+  val threadIdHack: String = (awsPrefix.map(_.machineId).toSeq :+ threadName).mkString(" ")
+}
 
 trait HasElapsedDuration {
   val elapsedDuration: Duration
 }
-
 case class ESCompleted(query: String, elapsedDuration: Duration, elasticSearchDuration: Duration) extends HasElapsedDuration
 case class AccessCompleted(httpResponseCode: Int, path: String, elapsedDuration: Duration) extends HasElapsedDuration
 
@@ -42,8 +47,8 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
 
   val identitifier = P((CharPred(c => c.isUnicodeIdentifierPart) | CharsWhileIn("-.$:")).rep(min = 1) !)
 
-  // ophan-dashboard-PROD ophan-dashboard-PROD-application-i-0521ce4579a773ee8 2017-10-04 09:08:00,179 [ForkJoinPool-2-worker-3] INFO  AccessLog$ - 200 GET /lag-check in 375.0 μs
-  val awsPrefix: P[Unit] = P(identitifier ~ " " ~ identitifier ~ " ").map(_ => Unit)
+  // ophan-dashboard-PROD ophan-dashboard-PROD-application-i-0521ce4579a773ee8 2017-10-04 09:08:00,037 [application-akka.actor.default-dispatcher-745] INFO  lib.DashboardData$ - completed lib.DashboardData$::topPagesQueryNonContentAgg in 121 ms elapsed, 116 ms elasticsearch
+  val awsPrefix: P[AwsPrefix] = P(identitifier ~ " " ~ identitifier ~ " ").map(AwsPrefix.tupled)
 
   val logLevel = P(StringIn("INFO", "WARN")) !
 
@@ -88,7 +93,7 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
 
 
         val logInstantAtEnd = LogInstant.apply(lls.instant.toEpochMilli, lineNumber)
-        val threadModel = threadedSystem.getOrCreateThread(lls.threadName)
+        val threadModel = threadedSystem.getOrCreateThread(lls.threadIdHack)
 
         val logInterval = LogInterval(org.joda.time.Duration.millis(payload.elapsedDuration.toMillis), logInstantAtEnd)
 
