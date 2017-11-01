@@ -30,7 +30,7 @@ trait HasElapsedDuration {
   val elapsedDuration: Duration
 }
 case class ESCompleted(query: String, elapsedDuration: Duration, elasticSearchDuration: Duration) extends HasElapsedDuration
-case class AccessCompleted(httpResponseCode: Int, path: String, elapsedDuration: Duration) extends HasElapsedDuration
+case class AccessCompleted(httpResponseCode: Int, path: String, elapsedDuration: Duration, userOpt: Option[String]) extends HasElapsedDuration
 
 class FooLogLineParser(threadedSystem: ThreadedSystem) {
 
@@ -76,11 +76,13 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
     val stopwatchDuration: P[Duration] = P(decimal ~ " " ~ timeUnit).map { case (num, tu) => Duration.ofNanos(Math.round(num * tu.toNanos(1))) }
   }
 
+  val user = P("user=" ~ identitifier)
 
   val elasticSearchCompletedLine: P[ESCompleted] = P("completed " ~ identitifier ~ " in " ~ duration ~ " elapsed, " ~ duration ~ " elasticsearch").map(ESCompleted.tupled)
 
   //2017-10-04 09:08:00,121 [ForkJoinPool-2-worker-3] INFO  AccessLog$ - 200 GET /top20chart?section=business in 236.6 ms
-  val accessCompletedLine: P[AccessCompleted] = P(intDigits ~ " GET " ~ (noSpace.rep(min=1)!) ~ " in " ~ StopwatchTimeParsing.stopwatchDuration ).map(AccessCompleted.tupled)
+  val accessCompletedLine: P[AccessCompleted] =
+    P(intDigits ~ " GET " ~ (noSpace.rep(min=1)!) ~ " in " ~ StopwatchTimeParsing.stopwatchDuration ~ (" "~ user).?).map(AccessCompleted.tupled)
 
   val recognisedLines = P((logLineStart ~ elasticSearchCompletedLine) | (logLineStart.filter(_.logger=="AccessLog$") ~ accessCompletedLine))
 
@@ -100,7 +102,7 @@ class FooLogLineParser(threadedSystem: ThreadedSystem) {
 
         val siPayload: Map[String, String] = payload match {
           case es: ESCompleted => Map("type" -> "ES Request", "Query" -> es.query)
-          case ac: AccessCompleted =>Map("type" -> "Page Request", "Path" -> ac.path)
+          case ac: AccessCompleted =>Map("type" -> "Page Request", "Path" -> ac.path) ++ ac.userOpt.map(u => "User" -> u)
         }
 
         val significantInterval = new SignificantInterval(siPayload.asJava, logInterval)
