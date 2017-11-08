@@ -28,14 +28,14 @@ class LogIntervalTest extends FlatSpec with Matchers {
     val earlierLogInterval = LogInterval(LogInstant(1000L, 1), LogInstant(3000L, 3))
     val laterLogInterval = LogInterval(LogInstant(3000L, 3), LogInstant(5000L, 5))
 
-    earlierLogInterval.isAfter(laterLogInterval) shouldBe true
-    earlierLogInterval.isBefore(laterLogInterval) shouldBe false
+    earlierLogInterval.isBefore(laterLogInterval) shouldBe true
+    earlierLogInterval.isAfter(laterLogInterval) shouldBe false
 
-    laterLogInterval.isBefore(earlierLogInterval) shouldBe true
-    laterLogInterval.isAfter(earlierLogInterval) shouldBe false
+    laterLogInterval.isAfter(earlierLogInterval) shouldBe true
+    laterLogInterval.isBefore(earlierLogInterval) shouldBe false
   }
 
-  it should "determine ordering of adjacent intervals" in {
+  it should "determine ordering of overlapping intervals" in {
     val earlierOverlapping = LogInterval(LogInstant(1000L, 1), LogInstant(3000L, 3))
     val laterOverlapping = LogInterval(LogInstant(2000L, 2), LogInstant(4000L, 4))
 

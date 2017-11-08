@@ -25,7 +25,7 @@ public class LogLoadingTaskTest {
 
         int numLinesLoadedBetweenUIUpdates = 2;
 
-        LogInterval intervalUpdated = new LogInterval(standardSeconds(1), new LogInstant(2000L, 0));
+        LogInterval intervalUpdated = LogInterval.apply(standardSeconds(1), LogInstant.apply(2000L, 0));
         LogLoader.LoadReport endOfStreamLogReport = new LogLoader.LoadReport(true, intervalUpdated);
 
         when(logLoader.loadLines(numLinesLoadedBetweenUIUpdates)).thenReturn(endOfStreamLogReport);

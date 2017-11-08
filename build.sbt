@@ -4,7 +4,8 @@ lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
     "org.mockito" % "mockito-all" % "1.10.19" % "test",
     "org.hamcrest" % "hamcrest-all" % "1.3" % "test",
-    "junit" % "junit" % "4.12" % "test"
+    "junit" % "junit" % "4.12" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.4" % "test"
   )
 
 )

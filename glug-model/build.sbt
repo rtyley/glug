@@ -3,8 +3,7 @@ libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "23.1-jre",
   "com.madgag" % "util-intervals" % "1.35",
   "org.codehaus.groovy" % "groovy" % "2.4.12",
-  "com.lihaoyi" %% "fastparse" % "0.4.4",
-  "org.scalatest" %% "scalatest" % "3.0.4" % "test"
+  "com.lihaoyi" %% "fastparse" % "0.4.4"
 )
 
 resolvers += Resolver.sonatypeRepo("public")
