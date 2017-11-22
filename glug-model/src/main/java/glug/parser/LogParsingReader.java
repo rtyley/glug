@@ -7,6 +7,7 @@ import glug.model.SignificantInterval;
 import glug.model.time.LogInstant;
 import org.joda.time.Duration;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Writer;
@@ -19,11 +20,11 @@ import static com.madgag.interval.Bound.MIN;
 public class LogParsingReader {
 
     private final LineNumberReader lineNumberReader;
-    private final Writer writer;
+    private final BufferedWriter writer;
     private final FooLogLineParser logLineParser;
     private boolean endOfStream = false;
 
-    public LogParsingReader(LineNumberReader lineNumberReader, Writer writer, FooLogLineParser logLineParser) {
+    public LogParsingReader(LineNumberReader lineNumberReader, BufferedWriter writer, FooLogLineParser logLineParser) {
         this.lineNumberReader = lineNumberReader;
         this.writer = writer;
         this.logLineParser = logLineParser;
@@ -33,15 +34,19 @@ public class LogParsingReader {
         String line = lineNumberReader.readLine();
         if (line == null) {
             endOfStream = true;
+            writer.flush();
+            writer.close();
             return null;
         }
         SignificantInterval significantInterval = logLineParser.parse(line, lineNumberReader.getLineNumber());
-        Interval<LogInstant> logInterval = significantInterval.getLogInterval();
+        if (significantInterval!=null) {
+            Interval<LogInstant> logInterval = significantInterval.getLogInterval();
 
-        LogInstant start = logInterval.get(MIN);
-        LogInstant end = logInterval.get(MAX);
-        Duration d = new Duration(start.getMillis(), end.getMillis());
-        writer.write(start +" "+d.getMillis()+" ms "+significantInterval);
+            LogInstant start = logInterval.get(MIN);
+            LogInstant end = logInterval.get(MAX);
+            Duration d = new Duration(start.getMillis(), end.getMillis());
+            writer.write(start.getRecordedInstant() + " " + d.getMillis() + " ms " + significantInterval + "\n");
+        }
         return significantInterval;
     }
 

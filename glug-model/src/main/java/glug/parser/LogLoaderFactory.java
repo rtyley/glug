@@ -10,10 +10,10 @@ public class LogLoaderFactory {
     public LogLoader createLoaderFor(File logFile, ThreadedSystem threadedSystem) {
         // System.out.println("Processing "+logFile);
         LineNumberReader reader;
-        Writer writer
+        BufferedWriter writer;
         try {
             reader = new LineNumberReader(new InputStreamReader(streamForFile(logFile)), 8192 * 2);
-            writer = new FileWriter(logFile.getAbsolutePath()+".glug")
+            writer = new BufferedWriter(new FileWriter(logFile.getAbsolutePath()+".glug"));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
